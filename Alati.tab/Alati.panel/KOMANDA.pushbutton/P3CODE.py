@@ -266,5 +266,3 @@ def NapraviP3847(Elementi):
         Redukcija=P3847(debljinaMaterijala, Mark,ElId,**parametri)
         listaRedukcija.append(Redukcija)
     return listaRedukcija
-
-#    asdasdasdasda
