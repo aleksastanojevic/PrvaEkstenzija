@@ -39,7 +39,7 @@ if __name__ == '__main__': #GLAVNI PROGRAM
         OdabraniScheduli = [ListaSchedula[sch] for sch in ListaOdabira]
         for sch in OdabraniScheduli:
             [Elementi.append(i) for i in FilteredElementCollector(doc,sch.Id) if i.Category.Name in DozCat ]
-    DictKodova={801 :[], 802 :[],803:[],804:[],827:[],843:[],847:[],853:[],854:[]} #Kreira se dictionary po kodu elemenata i zatim se sortira u odredjenu listu unutar vrednosti kljuca()REVIT ELEMENATA
+    DictKodova={801 :[], 802 :[],803:[],804:[],827:[],843:[],847:[],853:[],854:[],812:[]} #Kreira se dictionary po kodu elemenata i zatim se sortira u odredjenu listu unutar vrednosti kljuca()REVIT ELEMENATA
     for fiting in Elementi:
         tip=doc.GetElement(fiting.GetTypeId())  # GetElement Type
         paramF=tip.GetParameters('P3 - Code') #traži parametre prema imenu i kreira listu.Ako je jedan nađen, svakako je lista pa je potrebno uzeti element na indeksu 0
@@ -88,7 +88,7 @@ if __name__ == '__main__': #GLAVNI PROGRAM
             RedniBroj+=1
             KOD+=r.CODE()
             # print(r.CODE())
-        # Cipele=NapraviP3812
+        # Cipele=NapraviP3812(DictKodova[812])
         # for c in Cipele:
         #     c.RedniBroj=RedniBroj
         #     RedniBroj+=1

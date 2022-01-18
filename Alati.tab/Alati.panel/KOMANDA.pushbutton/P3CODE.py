@@ -268,6 +268,7 @@ def NapraviP3847(Elementi):
     return listaRedukcija
 
 class P3812:
+    ductType_012='1'
     LineType_012='1'
     def __init__(self,DebMat, Mark,ElId ,**kwargs):
         for key, value in kwargs.items():
@@ -279,17 +280,15 @@ class P3812:
         self.Prirubnice=[]
 		    
     def __str__(self):
-        s =self.__class__.__name__ +'>>>' +' A:'+str(self.P3_AWidth_1) +' B:'+str(self.P3_BDepth_1)+' M:'+ str(self.P3_MWidth_2) +\
-            ' N:'+ str(self.P3_NDepth_2)+' H: '+ str(self.P3_HHeight)+' Mark:'+str( self.Mark) +' ID:'+ str(self.ElId)
+        s =self.__class__.__name__ +'>>>' +' A:'+str(self.P3_AWidth_1) +' b:'+str(self.P3_Sup_b)+' a:'+ str(self.P3_Sup_a) +\
+            ' H:'+ str(self.Hheight)+' Mark:'+str( self.Mark) +' ID:'+ str(self.ElId)
         return s
 
     def povrsina(self):
         doc=__revit__.ActiveUIDocument.Document
         sel=doc.GetElement(self.ElId)
         P1=sel.GetParameters('P3_Sup_S.app')[0].AsValueString()
-        P2=sel.GetParameters('P3_Sup_S.app2')[0].AsValueString()
-        P3=sel.GetParameters('P3_Sup_S.app3')[0].AsValueString()
-        return P1+P2+P3
+        return P1
 
     def materijal(self):
         M=int(self.debMat)
@@ -302,10 +301,9 @@ class P3812:
         return sel
 
     def CODE(self):
-        s='* \n'+ '847\n' +  str(self.RedniBroj) + '\n' + '1 \n' + '11\n' 
-        l=[self.P3_AWidth_1,self.P3_BDepth_1,self.P3_MWidth_2,self.P3_NDepth_2,self.P3_HHeight,self.P3_ELine_1,self.P3_FLine_2,self.P3_MisalignmentX\
-            ,self.P3_MisalignmentY,self.P3_ShiftX1,self.P3_ShiftX2,self.P3_ShiftY1,self.P3_ShiftY2,self.P3_Addition_1,self.P3_Addition_2,self.P3_Addition_3,self.P3_Addition_4\
-                ,str(int(float(self.P3_Right_Angle.replace('\xb0' , '')))),str(int(float(self.P3_Left_Angle.replace('\xb0' , '')))),self.LineType_012]
+        s='* \n'+ '812\n' +  str(self.RedniBroj) + '\n' + '1 \n' + '11\n' 
+        l=[self.P3_AWidth_1,self.P3_Sup_b,self.P3_Sup_a,self.Hheight,self.Lunghezzastaccolineare,self.Lunghezzastaccolineare,self.RRadius,self.SRadius\
+            ,str(int(float(self.Angle.replace('\xb0' , '')))),self.ductType_012,self.LineType_012]
         s+= (',').join(l)+'\n' 
         s+='0,0,0,0,0,0,0,0,0,0,0,0\n'
         if self.Mark == None:
@@ -317,25 +315,15 @@ class P3812:
 def NapraviP3812(Elementi):
     doc=__revit__.ActiveUIDocument.Document
     from  Autodesk.Revit.DB import BuiltInParameter
-    parametri812=['P3 - A Width_1',
-        'P3 - B Depth_1',
-        'P3 - M Width_2',
-        'P3 - N Depth_2',
-        'P3 - H Height',
-        'P3 - E Line_1',
-        'P3 - F Line_2',
-        'P3 - MisalignmentX',
-        'P3 - MisalignmentY',
-        'P3 - ShiftX1',
-        'P3 - ShiftX2',
-        'P3 - ShiftY1',
-        'P3 - ShiftY2',
-        'P3 - Addition_1',
-        'P3 - Addition_2',
-        'P3 - Addition_3',
-        'P3 - Addition_4',
-        'P3 - Right_Angle',
-        'P3 - Left_Angle'
+    parametri812=['P3_A width',
+        'P3_Sup_b',
+        'P3_Sup_a',
+        'H height',
+        'Lunghezza stacco lineare',
+        'Lunghezza stacco lineare',
+        'R Radius',
+        'S Radius',
+        'Angle'
         ]
     listaCipela=[]
     for element in Elementi:
