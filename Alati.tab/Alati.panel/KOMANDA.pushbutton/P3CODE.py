@@ -184,7 +184,7 @@ def NapraviP3803(Elementi):
         listaTracvi.append(Tracva)
     return listaTracvi
 
-
+##### ##### ##### ##### KLASA P3847 REDUKCIJA!!!!!!
 class P3847:
     LineType_012='1'
     def __init__(self,DebMat, Mark,ElId ,**kwargs):
@@ -266,7 +266,7 @@ def NapraviP3847(Elementi):
         Redukcija=P3847(debljinaMaterijala, Mark,ElId,**parametri)
         listaRedukcija.append(Redukcija)
     return listaRedukcija
-
+##### ##### ##### ##### KLASA P3812 TAP/CIPELA!!!!!!
 class P3812:
     ductType_012='1'
     LineType_012='1'
@@ -336,3 +336,67 @@ def NapraviP3812(Elementi):
         Cipela=P3812(debljinaMaterijala, Mark,ElId,**parametri)
         listaCipela.append(Cipela)
     return listaCipela
+
+######################OVDE NASTAVITI  ##### ##### ##### ##### KLASA P3827 LASTIN REP!!!!!!
+class P3827:
+    cutDef_01='0'
+    LineDef='0'
+    LineType_012='1'
+    def __init__(self,DebMat, Mark,ElId ,**kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+        self.DebMat=DebMat
+        self.Mark=Mark
+        self.RedniBroj=None
+        self.ElId=ElId
+        self.Prirubnice=[]
+		    
+    def __str__(self):
+        s =self.__class__.__name__ +'>>>' +' A:'+str(self.P3_AWidth_1) +' M:'+ str(self.P3_MWidth_2) +' P:'+ str(self.P3_PWidth_3) +' B:'+str(self.P3_BDepth) +' Mark:'+str( self.Mark) +' ID:'+ str(self.ElId)
+        return s
+
+    def povrsina(self):
+        doc=__revit__.ActiveUIDocument.Document
+        sel=doc.GetElement(self.ElId)
+        P=sel.GetParameters('P3_Sup_S.app')[0].AsValueString()
+        return P
+
+    def materijal(self):
+        M=int(self.debMat)
+        return M
+
+    def Selektuj(self):
+        elementIdList = List[ElementId]()
+        elementIdList.Add(self.ElId)
+        sel = SetElementIds(elementIdList)
+        return sel
+
+    def CODE(self):
+        s='* \n'+ '803\n' +  str(self.RedniBroj) + '\n' + '1 \n' + '11\n' 
+        l=[self.P3_AWidth_1 ,self.P3_BDepth ,self.P3_MWidth_2 ,self.P3_PWidth_3,self.P3_RRadius_1,self.P3_SRadius_2,self.P3_ZShift,self.P3_ELine_1 ,self.P3_FLine_2 ,self.P3_GLine_3,self.P3_KLine_4,self.P3_LLine_5 \
+            ,str(int(float(self.P3_Angle.replace('\xb0' , '')))) ,self.RD1_Lf,self.RD2_Lf ,self.RD3_Lf ,self.RD4_Lf ,self.RD1_Rg,self.RD2_Rg,self.RD3_Rg,self.RD4_Rg ,self.LineDef ,self.cutDef_01 ,self.LineType_012,self.BuildType_1_2]
+        s+= (',').join(l)+'\n' 
+        s+='0,0,0,0,0,0,0,0,0,0,0,0\n'
+        if self.Mark == None:
+            s+='\n'
+        else:
+            s+= self.Mark+'\n'
+        return s
+
+def NapraviP3827(Elementi):
+    doc=__revit__.ActiveUIDocument.Document
+    from  Autodesk.Revit.DB import BuiltInParameter
+    parametri827=[
+        #####
+        ]
+    listaLastinRep=[]
+    for element in Elementi:
+        debljinaMaterijala=element.get_Parameter(BuiltInParameter.RBS_REFERENCE_INSULATION_THICKNESS).AsInteger()
+        Mark=element.get_Parameter(BuiltInParameter.ALL_MODEL_MARK).AsString()
+        ElId=element.Id
+        parametri={}
+        for j in parametri827:
+            parametri[j.replace(' ','').replace('-','_')]=element.GetParameters(j)[0].AsValueString()
+        LastinRep=P3803(debljinaMaterijala, Mark,ElId,**parametri)
+        listaLastinRep.append(LastinRep)
+    return listaLastinRep

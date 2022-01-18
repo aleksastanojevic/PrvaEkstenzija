@@ -94,6 +94,12 @@ if __name__ == '__main__': #GLAVNI PROGRAM
         #     RedniBroj+=1
         #     KOD+=c.CODE()
         #     # print(c.CODE())    
+        # LastinRep=NapraviP3827(DictKodova[827])
+        # for lr in LastinRep:
+        #     lr.RedniBroj=RedniBroj
+        #     RedniBroj+=1
+        #     KOD+=lr.CODE()
+        #     # print(lr.CODE())    
         
         WF.MessageBox.Show(" УСПЕШНО ЈЕ НАПИСАН КОД !")
         imeFajla=SysRef+'.BRV'
