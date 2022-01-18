@@ -267,4 +267,4 @@ def NapraviP3847(Elementi):
         listaRedukcija.append(Redukcija)
     return listaRedukcija
 
-    asdasdasdasda
+#    asdasdasdasda
