@@ -255,14 +255,16 @@ def NapraviP3847(Elementi):
         'P3 - Right_Angle',
         'P3 - Left_Angle'
         ]
-    # listaRedukcija=[]
-    # for element in Elementi:
-    #     debljinaMaterijala=element.get_Parameter(BuiltInParameter.RBS_REFERENCE_INSULATION_THICKNESS).AsInteger()
-    #     Mark=element.get_Parameter(BuiltInParameter.ALL_MODEL_MARK).AsString()
-    #     ElId=element.Id
-    #     parametri={}
-    #     for j in parametri847:
-    #         parametri[j.replace(' ','').replace('-','_')]=element.GetParameters(j)[0].AsValueString()
-    #     Redukcija=P3847(debljinaMaterijala, Mark,ElId,**parametri)
-    #     listaRedukcija.append(Redukcija)
-    # return listaRedukcija
+    listaRedukcija=[]
+    for element in Elementi:
+        debljinaMaterijala=element.get_Parameter(BuiltInParameter.RBS_REFERENCE_INSULATION_THICKNESS).AsInteger()
+        Mark=element.get_Parameter(BuiltInParameter.ALL_MODEL_MARK).AsString()
+        ElId=element.Id
+        parametri={}
+        for j in parametri847:
+            parametri[j.replace(' ','').replace('-','_')]=element.GetParameters(j)[0].AsValueString()
+        Redukcija=P3847(debljinaMaterijala, Mark,ElId,**parametri)
+        listaRedukcija.append(Redukcija)
+    return listaRedukcija
+
+    asdasdasdasda
