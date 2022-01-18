@@ -10,7 +10,7 @@ from Autodesk.Revit.DB.Architecture import *
 from Autodesk.Revit.DB.Analysis import *
 from Autodesk.Revit.UI import *
 from System.Collections.Generic import *
-from P3CODE import NapraviNoviPosao, NapraviP3802 , NapraviP3803, NapraviP3847
+from P3CODE import NapraviNoviPosao, NapraviP3802 , NapraviP3803, NapraviP3847, NapraviP3812
 from Windows_Forma import FormaPrograma
 from WindowsFormaJobInfo import FormaProgramaJob
 clr.AddReference('RevitAPIUI')
@@ -88,6 +88,12 @@ if __name__ == '__main__': #GLAVNI PROGRAM
             RedniBroj+=1
             KOD+=r.CODE()
             # print(r.CODE())
+        # Cipele=NapraviP3812
+        # for c in Cipele:
+        #     c.RedniBroj=RedniBroj
+        #     RedniBroj+=1
+        #     KOD+=c.CODE()
+        #     # print(c.CODE())    
         
         WF.MessageBox.Show(" УСПЕШНО ЈЕ НАПИСАН КОД !")
         imeFajla=SysRef+'.BRV'
