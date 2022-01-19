@@ -21,7 +21,6 @@ class P3Posao:
 def NapraviNoviPosao(UnosOPoslu):
     NoviPosao=P3Posao(*UnosOPoslu)
     return NoviPosao
-
 ##### ##### ##### ##### KLASA P3802 KOLENO!!!!!!
 class P3802:
     cutDef_01='0'
@@ -76,19 +75,8 @@ def NapraviP3802(Elementi):
     '''
     doc=__revit__.ActiveUIDocument.Document
     from  Autodesk.Revit.DB import BuiltInParameter
-    parametri802=['P3 - A Width_1',
-		'P3 - B Depth',
-		'P3 - M Width_2',
-		'P3 - Radius_Internal',
-		'P3 - Radius_External',
-		'P3 - E Line_1',
-		'P3 - F Line_2',
-		'P3 - Angle',
-		'P3 - R1D',
-		'P3 - R2D',
-		'P3 - R3D',
-		'P3 - R4D',
-		]
+    parametri802=['P3 - A Width_1','P3 - B Depth','P3 - M Width_2','P3 - Radius_Internal','P3 - Radius_External','P3 - E Line_1','P3 - F Line_2',\
+        'P3 - Angle','P3 - R1D','P3 - R2D','P3 - R3D','P3 - R4D']
     listaKolena=[]
     for element in Elementi:
         debljinaMaterijala=element.get_Parameter(BuiltInParameter.RBS_REFERENCE_INSULATION_THICKNESS).AsInteger()
@@ -158,20 +146,8 @@ class P3803:
 def NapraviP3803(Elementi):
     doc=__revit__.ActiveUIDocument.Document
     from  Autodesk.Revit.DB import BuiltInParameter
-    parametri803=['P3 - A Width_1',
-        'P3 - B Depth',
-        'P3 - M Width_2',
-        'P3 - P Width_3',
-        'P3 - R Radius_1',
-        'P3 - S Radius_2',
-        'P3 - Z Shift',
-        'P3 - E Line_1',
-        'P3 - F Line_2',
-        'P3 - G Line_3',
-        'P3 - K Line_4',
-        'P3 - L Line_5',
-        'P3 - Angle'
-        ]
+    parametri803=['P3 - A Width_1','P3 - B Depth','P3 - M Width_2','P3 - P Width_3','P3 - R Radius_1','P3 - S Radius_2','P3 - Z Shift','P3 - E Line_1',\
+        'P3 - F Line_2','P3 - G Line_3','P3 - K Line_4','P3 - L Line_5','P3 - Angle']
     listaTracvi=[]
     for element in Elementi:
         debljinaMaterijala=element.get_Parameter(BuiltInParameter.RBS_REFERENCE_INSULATION_THICKNESS).AsInteger()
@@ -235,26 +211,8 @@ class P3847:
 def NapraviP3847(Elementi):
     doc=__revit__.ActiveUIDocument.Document
     from  Autodesk.Revit.DB import BuiltInParameter
-    parametri847=['P3 - A Width_1',
-        'P3 - B Depth_1',
-        'P3 - M Width_2',
-        'P3 - N Depth_2',
-        'P3 - H Height',
-        'P3 - E Line_1',
-        'P3 - F Line_2',
-        'P3 - MisalignmentX',
-        'P3 - MisalignmentY',
-        'P3 - ShiftX1',
-        'P3 - ShiftX2',
-        'P3 - ShiftY1',
-        'P3 - ShiftY2',
-        'P3 - Addition_1',
-        'P3 - Addition_2',
-        'P3 - Addition_3',
-        'P3 - Addition_4',
-        'P3 - Right_Angle',
-        'P3 - Left_Angle'
-        ]
+    parametri847=['P3 - A Width_1','P3 - B Depth_1','P3 - M Width_2','P3 - N Depth_2','P3 - H Height','P3 - E Line_1','P3 - F Line_2','P3 - MisalignmentX','P3 - MisalignmentY','P3 - ShiftX1','P3 - ShiftX2',\
+        'P3 - ShiftY1','P3 - ShiftY2','P3 - Addition_1','P3 - Addition_2','P3 - Addition_3','P3 - Addition_4','P3 - Right_Angle','P3 - Left_Angle']
     listaRedukcija=[]
     for element in Elementi:
         debljinaMaterijala=element.get_Parameter(BuiltInParameter.RBS_REFERENCE_INSULATION_THICKNESS).AsInteger()
@@ -315,16 +273,7 @@ class P3812:
 def NapraviP3812(Elementi):
     doc=__revit__.ActiveUIDocument.Document
     from  Autodesk.Revit.DB import BuiltInParameter
-    parametri812=['P3_A width',
-        'P3_Sup_b',
-        'P3_Sup_a',
-        'H height',
-        'Lunghezza stacco lineare',
-        'Lunghezza stacco lineare',
-        'R Radius',
-        'S Radius',
-        'Angle'
-        ]
+    parametri812=['P3_A width','P3_Sup_b','P3_Sup_a','H height','Lunghezza stacco lineare','Lunghezza stacco lineare','R Radius','S Radius','Angle']
     listaCipela=[]
     for element in Elementi:
         debljinaMaterijala=element.get_Parameter(BuiltInParameter.RBS_REFERENCE_INSULATION_THICKNESS).AsInteger()
@@ -336,8 +285,7 @@ def NapraviP3812(Elementi):
         Cipela=P3812(debljinaMaterijala, Mark,ElId,**parametri)
         listaCipela.append(Cipela)
     return listaCipela
-
-######################OVDE NASTAVITI  ##### ##### ##### ##### KLASA P3827 LASTIN REP!!!!!!
+##### ##### ##### ##### KLASA P3827 LASTIN REP!!!!!!
 class P3827:
     cutDef_01='0'
     LineDef='0'
@@ -352,7 +300,7 @@ class P3827:
         self.Prirubnice=[]
 		    
     def __str__(self):
-        s =self.__class__.__name__ +'>>>' +' A:'+str(self.P3_AWidth_1) +' M:'+ str(self.P3_MWidth_2) +' P:'+ str(self.P3_PWidth_3) +' B:'+str(self.P3_BDepth) +' Mark:'+str( self.Mark) +' ID:'+ str(self.ElId)
+        s =self.__class__.__name__ +'>>>' +' A:'+str(self.P3_PWidth_1) +' M:'+ str(self.P3_OWidth_2) +' P:'+ str(self.P3_BDepth) +' B:'+str(self.P3_NWidth_3) +' Mark:'+str( self.Mark) +' ID:'+ str(self.ElId)
         return s
 
     def povrsina(self):
@@ -373,8 +321,9 @@ class P3827:
 
     def CODE(self):
         s='* \n'+ '803\n' +  str(self.RedniBroj) + '\n' + '1 \n' + '11\n' 
-        l=[self.P3_AWidth_1 ,self.P3_BDepth ,self.P3_MWidth_2 ,self.P3_PWidth_3,self.P3_RRadius_1,self.P3_SRadius_2,self.P3_ZShift,self.P3_ELine_1 ,self.P3_FLine_2 ,self.P3_GLine_3,self.P3_KLine_4,self.P3_LLine_5 \
-            ,str(int(float(self.P3_Angle.replace('\xb0' , '')))) ,self.RD1_Lf,self.RD2_Lf ,self.RD3_Lf ,self.RD4_Lf ,self.RD1_Rg,self.RD2_Rg,self.RD3_Rg,self.RD4_Rg ,self.LineDef ,self.cutDef_01 ,self.LineType_012,self.BuildType_1_2]
+        l=[self.P3_PWidth_1,self.P3_OWidth_2,self.P3_BDepth,self.P3_NWidth_3,str(int(float(self.P3_Angle_Dx.replace('\xb0' , '')))),self.P3_RRadius_1,self.P3_SRadius_2,self.P3_ELine_1,self.P3_GLine_3,\
+            self.P3_FLine_2,self.P3_MWidth_4,str(int(float(self.P3_Angle_Sx.replace('\xb0' , '')))),self.P3_TRadius_3,self.P3_URadius_4,self.P3_HLine_4,self.P3_LLine_6,self.P3_ILine_5,self.P3_R1D_Sx,\
+                self.P3_R2D_Sx,self.P3_R3D_Sx,self.P3_R4D_Sx,self.P3_R1D_Dx,self.P3_R2D_Dx,self.P3_R3D_Dx,self.P3_R4D_Dx]
         s+= (',').join(l)+'\n' 
         s+='0,0,0,0,0,0,0,0,0,0,0,0\n'
         if self.Mark == None:
@@ -386,9 +335,9 @@ class P3827:
 def NapraviP3827(Elementi):
     doc=__revit__.ActiveUIDocument.Document
     from  Autodesk.Revit.DB import BuiltInParameter
-    parametri827=[
-        #####
-        ]
+    parametri827=['P3 - P Width_1','P3 - O Width_2','P3 - B Depth','P3 - N Width_3','P3 - Angle_Dx','P3 - R Radius_1','P3 - S Radius_2','P3 - E Line_1','P3 - G Line_3',\
+        'P3 - F Line_2','P3 - M Width_4','P3 - Angle_Sx','P3 - T Radius_3','P3 - U Radius_4','P3 - H Line_4','P3 - L Line_6','P3 - I Line_5','P3 - R1D_Sx',\
+            'P3 - R2D_Sx','P3 - R3D_Sx','P3 - R4D_Sx','P3 - R1D_Dx','P3 - R2D_Dx','P3 - R3D_Dx','P3 - R4D_Dx']
     listaLastinRep=[]
     for element in Elementi:
         debljinaMaterijala=element.get_Parameter(BuiltInParameter.RBS_REFERENCE_INSULATION_THICKNESS).AsInteger()

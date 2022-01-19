@@ -88,18 +88,18 @@ if __name__ == '__main__': #GLAVNI PROGRAM
             RedniBroj+=1
             KOD+=r.CODE()
             # print(r.CODE())
-        # Cipele=NapraviP3812(DictKodova[812])
-        # for c in Cipele:
-        #     c.RedniBroj=RedniBroj
-        #     RedniBroj+=1
-        #     KOD+=c.CODE()
-        #     # print(c.CODE())    
-        # LastinRep=NapraviP3827(DictKodova[827])
-        # for lr in LastinRep:
-        #     lr.RedniBroj=RedniBroj
-        #     RedniBroj+=1
-        #     KOD+=lr.CODE()
-        #     # print(lr.CODE())    
+        Cipele=NapraviP3812(DictKodova[812])
+        for c in Cipele:
+            c.RedniBroj=RedniBroj
+            RedniBroj+=1
+            KOD+=c.CODE()
+            # print(c.CODE())    
+        LastinRep=NapraviP3827(DictKodova[827])
+        for lr in LastinRep:
+            lr.RedniBroj=RedniBroj
+            RedniBroj+=1
+            KOD+=lr.CODE()
+            # print(lr.CODE())    
         
         WF.MessageBox.Show(" УСПЕШНО ЈЕ НАПИСАН КОД !")
         imeFajla=SysRef+'.BRV'
