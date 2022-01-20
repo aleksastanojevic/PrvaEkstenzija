@@ -238,7 +238,7 @@ class P3812:
         self.Prirubnice=[]
 		    
     def __str__(self):
-        s =self.__class__.__name__ +'>>>' +' A:'+str(self.P3_AWidth_1) +' b:'+str(self.P3_Sup_b)+' a:'+ str(self.P3_Sup_a) +\
+        s =self.__class__.__name__ +'>>>' +' A:'+str(self.P3_Awidth) +' b:'+str(self.P3_Sup_b)+' a:'+ str(self.P3_Sup_a) +\
             ' H:'+ str(self.Hheight)+' Mark:'+str( self.Mark) +' ID:'+ str(self.ElId)
         return s
 
@@ -260,7 +260,7 @@ class P3812:
 
     def CODE(self):
         s='* \n'+ '812\n' +  str(self.RedniBroj) + '\n' + '1 \n' + '11\n' 
-        l=[self.P3_AWidth_1,self.P3_Sup_b,self.P3_Sup_a,self.Hheight,self.Lunghezzastaccolineare,self.Lunghezzastaccolineare,str(int(float(self.RRadius.replace('\xb0' , ''))))\
+        l=[self.P3_Awidth,self.P3_Sup_b,self.P3_Sup_a,self.Hheight,self.Lunghezzastaccolineare,self.Lunghezzastaccolineare,str(int(float(self.RRadius.replace('\xb0' , ''))))\
             ,str(int(float(self.SRadius.replace('\xb0' , '')))),str(int(float(self.Angle.replace('\xb0' , '')))),self.ductType_012,self.LineType_012]
         s+= (',').join(l)+'\n' 
         s+='0,0,0,0,0,0,0,0,0,0,0,0\n'
