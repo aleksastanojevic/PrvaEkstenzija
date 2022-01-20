@@ -320,7 +320,7 @@ class P3827:
         return sel
 
     def CODE(self):
-        s='* \n'+ '803\n' +  str(self.RedniBroj) + '\n' + '1 \n' + '11\n' 
+        s='* \n'+ '827\n' +  str(self.RedniBroj) + '\n' + '1 \n' + '11\n' 
         l=[self.P3_PWidth_1,self.P3_OWidth_2,self.P3_BDepth,self.P3_NWidth_3,str(int(float(self.P3_Angle_Dx.replace('\xb0' , '')))),self.P3_RRadius_1,self.P3_SRadius_2,self.P3_ELine_1,self.P3_GLine_3,\
             self.P3_FLine_2,self.P3_MWidth_4,str(int(float(self.P3_Angle_Sx.replace('\xb0' , '')))),self.P3_TRadius_3,self.P3_URadius_4,self.P3_HLine_4,self.P3_LLine_6,self.P3_ILine_5,self.P3_R1D_Sx,\
                 self.P3_R2D_Sx,self.P3_R3D_Sx,self.P3_R4D_Sx,self.P3_R1D_Dx,self.P3_R2D_Dx,self.P3_R3D_Dx,self.P3_R4D_Dx]
@@ -346,6 +346,65 @@ def NapraviP3827(Elementi):
         parametri={}
         for j in parametri827:
             parametri[j.replace(' ','').replace('-','_')]=element.GetParameters(j)[0].AsValueString()
-        LastinRep=P3803(debljinaMaterijala, Mark,ElId,**parametri)
+        LastinRep=P3827(debljinaMaterijala, Mark,ElId,**parametri)
         listaLastinRep.append(LastinRep)
     return listaLastinRep
+
+##### ##### ##### ##### KLASA P3827 ČEP-END CAP!!!!!!
+class P3843:
+    holeNew='-1'
+    def __init__(self,DebMat, Mark,ElId ,**kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+        self.DebMat=DebMat
+        self.Mark=Mark
+        self.RedniBroj=None
+        self.ElId=ElId
+        self.Prirubnice=[]
+		    
+    def __str__(self):
+        s =self.__class__.__name__ +'>>>' +' A:'+str(self.P3_Sup_a) +' B:'+ str(self.P3_Sup_b) +' Mark:'+str( self.Mark) +' ID:'+ str(self.ElId)
+        return s
+
+    def povrsina(self):
+        doc=__revit__.ActiveUIDocument.Document
+        sel=doc.GetElement(self.ElId)
+        P=sel.GetParameters('P3_Sup_S.app')[0].AsValueString()
+        return P
+
+    def materijal(self):
+        M=int(self.debMat)
+        return M
+
+    def Selektuj(self):
+        elementIdList = List[ElementId]()
+        elementIdList.Add(self.ElId)
+        sel = SetElementIds(elementIdList)
+        return sel
+
+    def CODE(self):
+        s='* \n'+ '843\n' +  str(self.RedniBroj) + '\n' + '1 \n' + '11\n' 
+        l=[self.P3_Sup_a,self.P3_Sup_b,self.cut90_45,self.holeDimension,self.holeDimension2,self.holeCenterX,self.holeCenterY]
+        s+= (',').join(l)+'\n' 
+        s+='0,0,0,0,0,0,0,0,0,0,0,0\n'
+        if self.Mark == None:
+            s+='\n'
+        else:
+            s+= self.Mark+'\n'
+        return s
+
+def NapraviP3843(Elementi):
+    doc=__revit__.ActiveUIDocument.Document
+    from  Autodesk.Revit.DB import BuiltInParameter
+    parametri843=['P3_Sup_a','P3_Sup_b','cut90/45','holeDimension','holeDimension2','holeCenterX','holeCenterY']
+    listaCepova=[]
+    for element in Elementi:
+        debljinaMaterijala=element.get_Parameter(BuiltInParameter.RBS_REFERENCE_INSULATION_THICKNESS).AsInteger()
+        Mark=element.get_Parameter(BuiltInParameter.ALL_MODEL_MARK).AsString()
+        ElId=element.Id
+        parametri={}
+        for j in parametri843:
+            parametri[j.replace(' ','').replace('-','_').replace('/','_')]=element.GetParameters(j)[0].AsValueString()
+        Cep=P3843(debljinaMaterijala, Mark,ElId,**parametri)
+        listaCepova.append(Cep)
+    return listaCepova
