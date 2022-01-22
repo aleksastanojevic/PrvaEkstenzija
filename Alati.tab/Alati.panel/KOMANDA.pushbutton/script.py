@@ -69,7 +69,7 @@ if __name__ == '__main__': #GLAVNI PROGRAM
     if StatusUI1 and StatusUI2:  #PROGRAM SE MOZE POKRENUTI-Status predtavlja dugme dalje na prvom i drugom UI
         Posao=NapraviNoviPosao(UnosOPoslu)
         KOD+=Posao.CODE()
-        RedniBroj=0  # Redni broj pocinje od 0 i ide kroz sve elemente jednog posla
+        RedniBroj=1  # Redni broj pocinje od 1 i ide kroz sve elemente jednog posla
         Kolena=NapraviP3802(DictKodova[802])
         for k in Kolena:
             k.RedniBroj=RedniBroj

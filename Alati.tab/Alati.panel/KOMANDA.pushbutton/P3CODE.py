@@ -404,7 +404,10 @@ def NapraviP3843(Elementi):
         ElId=element.Id
         parametri={}
         for j in parametri843:
-            parametri[j.replace(' ','').replace('-','_').replace('/','_')]=element.GetParameters(j)[0].AsValueString()
+            try:
+                parametri[j.replace(' ','').replace('-','_').replace('/','_')]=element.GetParameters(j)[0].AsValueString()
+            except:
+                parametri[j.replace(' ','').replace('-','_').replace('/','_')]='0'
         Cep=P3843(debljinaMaterijala, Mark,ElId,**parametri)
         listaCepova.append(Cep)
     return listaCepova
