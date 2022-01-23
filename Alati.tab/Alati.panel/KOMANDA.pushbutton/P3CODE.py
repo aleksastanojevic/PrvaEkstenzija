@@ -323,7 +323,7 @@ class P3827:
         s='* \n'+ '827\n' +  str(self.RedniBroj) + '\n' + '1 \n' + '11\n' 
         l=[self.P3_PWidth_1,self.P3_OWidth_2,self.P3_BDepth,self.P3_NWidth_3,str(int(float(self.P3_Angle_Dx.replace('\xb0' , '')))),self.P3_RRadius_1,self.P3_SRadius_2,self.P3_ELine_1,self.P3_GLine_3,\
             self.P3_FLine_2,self.P3_MWidth_4,str(int(float(self.P3_Angle_Sx.replace('\xb0' , '')))),self.P3_TRadius_3,self.P3_URadius_4,self.P3_HLine_4,self.P3_LLine_6,self.P3_ILine_5,self.P3_R1D_Sx,\
-                self.P3_R2D_Sx,self.P3_R3D_Sx,self.P3_R4D_Sx,self.P3_R1D_Dx,self.P3_R2D_Dx,self.P3_R3D_Dx,self.P3_R4D_Dx]
+                self.P3_R2D_Sx,self.P3_R3D_Sx,self.P3_R4D_Sx,self.P3_R1D_Dx,self.P3_R2D_Dx,self.P3_R3D_Dx,self.P3_R4D_Dx,self.cutDef_01,self.LineDef,self.LineType_012]
         s+= (',').join(l)+'\n' 
         s+='0,0,0,0,0,0,0,0,0,0,0,0\n'
         if self.Mark == None:
@@ -384,7 +384,7 @@ class P3843:
 
     def CODE(self):
         s='* \n'+ '843\n' +  str(self.RedniBroj) + '\n' + '1 \n' + '11\n' 
-        l=[self.P3_Sup_a,self.P3_Sup_b,self.cut90_45,self.holeDimension,self.holeDimension2,self.holeCenterX,self.holeCenterY]
+        l=[self.P3_Sup_a,self.P3_Sup_b,self.cut90_45,self.holeDimension,self.holeDimension2,self.holeCenterX,self.holeCenterY,self.holeNew]
         s+= (',').join(l)+'\n' 
         s+='0,0,0,0,0,0,0,0,0,0,0,0\n'
         if self.Mark == None:
@@ -411,3 +411,66 @@ def NapraviP3843(Elementi):
         Cep=P3843(debljinaMaterijala, Mark,ElId,**parametri)
         listaCepova.append(Cep)
     return listaCepova
+
+##### ##### ##### ##### KLASA P3853 RACVA-SKRETANJE-PROLAZ-Redukcija!!!!!!
+class P3853:
+    cutDef_01='0'
+    LineDef='0'
+    LineType_012='1'
+    def __init__(self,DebMat, Mark,ElId ,**kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+        self.DebMat=DebMat
+        self.Mark=Mark
+        self.RedniBroj=None
+        self.ElId=ElId
+        self.Prirubnice=[]
+		    
+    def __str__(self):
+        s =self.__class__.__name__ +'>>>' +' A:'+str(self.P3_AWidth_1) +' M:'+ str(self.P3_MWidth_2) +' P:'+ str(self.P3_PWidth_3) +' B:'+str(self.P3_BDepth) +' Mark:'+str( self.Mark) +' ID:'+ str(self.ElId)
+        return s
+
+    def povrsina(self):
+        doc=__revit__.ActiveUIDocument.Document
+        sel=doc.GetElement(self.ElId)
+        P=sel.GetParameters('P3_Sup_S.app')[0].AsValueString()
+        return P
+
+    def materijal(self):
+        M=int(self.debMat)
+        return M
+
+    def Selektuj(self):
+        elementIdList = List[ElementId]()
+        elementIdList.Add(self.ElId)
+        sel = SetElementIds(elementIdList)
+        return sel
+
+    def CODE(self):
+        s='* \n'+ '853\n' +  str(self.RedniBroj) + '\n' + '1 \n' + '11\n' 
+        l=[self.P3_CWidth_1,self.P3_AWidth_2,self.P3_BDepth,self.P3_MWidth_2,self.P3_PWidth_3,self.P3_ELine_1,self.P3_FLine_2,self.P3_GLine_3,str(int(float(self.P3_RadiusInt.replace('\xb0' , '')))),str(int(float(self.P3_RadiusExt.replace('\xb0' , '')))),\
+            str(int(float(self.P3_Angle.replace('\xb0' , '')))),self.P3_HHeight,self.P3_LHeight_1,self.P3_R1D,self.P3_R2D,self.P3_R3D,self.P3_R4D,self.cutDef_01,str(int(float(self.P3_Bending_Angle.replace('\xb0' , '')))),self.cutDef_01,self.LineDef,self.LineType_012]
+        s+= (',').join(l)+'\n' 
+        s+='0,0,0,0,0,0,0,0,0,0,0,0\n'
+        if self.Mark == None:
+            s+='\n'
+        else:
+            s+= self.Mark+'\n'
+        return s
+
+def NapraviP3853(Elementi):
+    doc=__revit__.ActiveUIDocument.Document
+    from  Autodesk.Revit.DB import BuiltInParameter
+    parametri853=['P3 - C Width_1','P3 - A Width_2','P3 - B Depth','P3 - M Width_2','P3 - P Width_3','P3 - E Line_1','P3 - F Line_2','P3 - G Line_3','P3 - RadiusInt'\
+        ,'P3 - RadiusExt','P3 - Angle','P3 - H Height','P3 - L Height_1','P3 - R1D','P3 - R2D','P3 - R3D','P3 - R4D','P3 - Bending_Angle']
+    listaRacviRedukcija=[]
+    for element in Elementi:
+        debljinaMaterijala=element.get_Parameter(BuiltInParameter.RBS_REFERENCE_INSULATION_THICKNESS).AsInteger()
+        Mark=element.get_Parameter(BuiltInParameter.ALL_MODEL_MARK).AsString()
+        ElId=element.Id
+        parametri={}
+        for j in parametri853:
+            parametri[j.replace(' ','').replace('-','_')]=element.GetParameters(j)[0].AsValueString()
+        RacvaRedukcija=P3853(debljinaMaterijala, Mark,ElId,**parametri)
+        listaRacviRedukcija.append(RacvaRedukcija)
+    return listaRacviRedukcija
