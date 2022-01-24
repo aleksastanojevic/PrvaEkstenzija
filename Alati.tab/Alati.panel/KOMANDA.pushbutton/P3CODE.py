@@ -477,3 +477,73 @@ def NapraviP3853(Elementi):
         RacvaRedukcija=P3853(debljinaMaterijala, Mark,ElId,**parametri)
         listaRacviRedukcija.append(RacvaRedukcija)
     return listaRacviRedukcija
+
+
+##### ##### ##### ##### KLASA P3801 PRAVOUGAONI KANAL!!!!!!
+class P3801:
+    ductType_1234=None  #ako je kanal iz jednog dela onda je 1.Moze biti i 2,3,4
+    cutOption=None  #da li se seče ili ne
+    def __init__(self,DebMat, Mark,ElId ,**kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+        self.DebMat=DebMat
+        self.Mark=Mark
+        self.RedniBroj=None
+        self.ElId=ElId
+        self.Prirubnice=[]
+        
+        Obim=(int(self.P3_Width)+int(self.P3_Height))*2
+
+        if Obim<=3960 and int(self.P3_Length) <= 1200:
+            self.ductType_1234='1'
+            self.cutOption='1'
+        else:
+            self.ductType_1234='4'
+            self.cutOption='0'
+        
+    def __str__(self):
+        s =self.__class__.__name__ +'>>>' +' W:'+str(self.P3_Width) +' H:'+ str(self.P3_Height) +' L:'+str(self.P3_Length)+' Mark:'+str( self.Mark) +' ID:'+ str(self.ElId)
+        return s
+
+    def povrsina(self):
+        doc=__revit__.ActiveUIDocument.Document
+        sel=doc.GetElement(self.ElId)
+        P=sel.GetParameters('Area')[0].AsValueString()
+        return P
+
+    def materijal(self):
+        M=int(self.debMat)
+        return M
+
+    def Selektuj(self):
+        elementIdList = List[ElementId]()
+        elementIdList.Add(self.ElId)
+        sel = SetElementIds(elementIdList)
+        return sel
+
+    def CODE(self):
+        s='*\n'+ '801\n' + str(self.RedniBroj) + '\n' + '1\n' + '11\n' 
+        l=[self.P3_Width,self.P3_Height,self.P3_Length,self.ductType_1234,self.cutOption]
+        s+= (',').join(l)+ ',0,0,0,0,0,0'+'\n' 
+        s+='0,0,0,0,0,0,0,0,0,0,0,0\n'
+        if self.Mark == None:
+            s+='\n'
+        else:
+            s+= self.Mark+'\n'
+        return s
+
+def NapraviP3801(Elementi):
+    doc=__revit__.ActiveUIDocument.Document
+    from  Autodesk.Revit.DB import BuiltInParameter
+    parametri801=['Width','Height','Length']
+    listaKanala=[]
+    for element in Elementi:
+        debljinaMaterijala=element.get_Parameter(BuiltInParameter.RBS_REFERENCE_INSULATION_THICKNESS).AsInteger()
+        Mark=element.get_Parameter(BuiltInParameter.ALL_MODEL_MARK).AsString()
+        ElId=element.Id
+        parametri={}
+        for j in parametri801:
+            parametri['P3_'+j]=element.GetParameters(j)[0].AsValueString()
+        Kanal=P3801(debljinaMaterijala, Mark,ElId,**parametri)
+        listaKanala.append(Kanal)
+    return listaKanala
