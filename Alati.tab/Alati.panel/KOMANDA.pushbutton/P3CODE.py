@@ -57,7 +57,7 @@ class P3802:
         return sel
 
     def CODE(self):
-        s='* \n'+ '802\n' +  str(self.RedniBroj) + '\n' + '1 \n' + '11\n' 
+        s='*\n'+ '802\n' +  str(self.RedniBroj) + '\n' + '1\n' + '11\n' 
         l=[self.P3_AWidth_1 ,self.P3_BDepth ,self.P3_MWidth_2 ,self.P3_Radius_Internal ,self.P3_Radius_External ,self.P3_ELine_1 ,self.P3_FLine_2 ,\
 			str(int(float(self.P3_Angle.replace('\xb0' , '')))) ,self.P3_R1D \
 				 ,self.P3_R2D ,self.P3_R3D ,self.P3_R4D ,self.cutDef_01 ,self.LineDef ,self.LineType_012]
@@ -132,7 +132,7 @@ class P3803:
         return sel
 
     def CODE(self):
-        s='* \n'+ '803\n' +  str(self.RedniBroj) + '\n' + '1 \n' + '11\n' 
+        s='*\n'+ '803\n' +  str(self.RedniBroj) + '\n' + '1\n' + '11\n' 
         l=[self.P3_AWidth_1 ,self.P3_BDepth ,self.P3_MWidth_2 ,self.P3_PWidth_3,self.P3_RRadius_1,self.P3_SRadius_2,self.P3_ZShift,self.P3_ELine_1 ,self.P3_FLine_2 ,self.P3_GLine_3,self.P3_KLine_4,self.P3_LLine_5 \
             ,str(int(float(self.P3_Angle.replace('\xb0' , '')))) ,self.RD1_Lf,self.RD2_Lf ,self.RD3_Lf ,self.RD4_Lf ,self.RD1_Rg,self.RD2_Rg,self.RD3_Rg,self.RD4_Rg ,self.LineDef ,self.cutDef_01 ,self.LineType_012,self.BuildType_1_2]
         s+= (',').join(l)+'\n' 
@@ -196,7 +196,7 @@ class P3847:
         return sel
 
     def CODE(self):
-        s='* \n'+ '847\n' +  str(self.RedniBroj) + '\n' + '1 \n' + '11\n' 
+        s='*\n'+ '847\n' +  str(self.RedniBroj) + '\n' + '1\n' + '11\n' 
         l=[self.P3_AWidth_1,self.P3_BDepth_1,self.P3_MWidth_2,self.P3_NDepth_2,self.P3_HHeight,self.P3_ELine_1,self.P3_FLine_2,self.P3_MisalignmentX\
             ,self.P3_MisalignmentY,self.P3_ShiftX1,self.P3_ShiftX2,self.P3_ShiftY1,self.P3_ShiftY2,self.P3_Addition_1,self.P3_Addition_2,self.P3_Addition_3,self.P3_Addition_4\
                 ,str(int(float(self.P3_Right_Angle.replace('\xb0' , '')))),str(int(float(self.P3_Left_Angle.replace('\xb0' , '')))),self.LineType_012]
@@ -259,7 +259,7 @@ class P3812:
         return sel
 
     def CODE(self):
-        s='* \n'+ '812\n' +  str(self.RedniBroj) + '\n' + '1 \n' + '11\n' 
+        s='*\n'+ '812\n' +  str(self.RedniBroj) + '\n' + '1\n' + '11\n' 
         l=[self.P3_Awidth,self.P3_Sup_b,self.P3_Sup_a,self.Hheight,self.Lunghezzastaccolineare,self.Lunghezzastaccolineare,str(int(float(self.RRadius.replace('\xb0' , ''))))\
             ,str(int(float(self.SRadius.replace('\xb0' , '')))),str(int(float(self.Angle.replace('\xb0' , '')))),self.ductType_012,self.LineType_012]
         s+= (',').join(l)+'\n' 
@@ -300,7 +300,7 @@ class P3827:
         self.Prirubnice=[]
 		    
     def __str__(self):
-        s =self.__class__.__name__ +'>>>' +' A:'+str(self.P3_PWidth_1) +' M:'+ str(self.P3_OWidth_2) +' P:'+ str(self.P3_BDepth) +' B:'+str(self.P3_NWidth_3) +' Mark:'+str( self.Mark) +' ID:'+ str(self.ElId)
+        s =self.__class__.__name__ +'>>>' +' P:'+str(self.P3_PWidth_1) +' M:'+ str(self.P3_MWidth_4) +' N:'+str(self.P3_NWidth_3) +' B:'+ str(self.P3_BDepth)+' Mark:'+str( self.Mark) +' ID:'+ str(self.ElId)
         return s
 
     def povrsina(self):
@@ -320,7 +320,7 @@ class P3827:
         return sel
 
     def CODE(self):
-        s='* \n'+ '827\n' +  str(self.RedniBroj) + '\n' + '1 \n' + '11\n' 
+        s='*\n'+ '827\n' +  str(self.RedniBroj) + '\n' + '1\n' + '11\n' 
         l=[self.P3_PWidth_1,self.P3_OWidth_2,self.P3_BDepth,self.P3_NWidth_3,str(int(float(self.P3_Angle_Dx.replace('\xb0' , '')))),self.P3_RRadius_1,self.P3_SRadius_2,self.P3_ELine_1,self.P3_GLine_3,\
             self.P3_FLine_2,self.P3_MWidth_4,str(int(float(self.P3_Angle_Sx.replace('\xb0' , '')))),self.P3_TRadius_3,self.P3_URadius_4,self.P3_HLine_4,self.P3_LLine_6,self.P3_ILine_5,self.P3_R1D_Sx,\
                 self.P3_R2D_Sx,self.P3_R3D_Sx,self.P3_R4D_Sx,self.P3_R1D_Dx,self.P3_R2D_Dx,self.P3_R3D_Dx,self.P3_R4D_Dx,self.cutDef_01,self.LineDef,self.LineType_012]
@@ -383,7 +383,7 @@ class P3843:
         return sel
 
     def CODE(self):
-        s='* \n'+ '843\n' +  str(self.RedniBroj) + '\n' + '1 \n' + '11\n' 
+        s='*\n'+ '843\n' +  str(self.RedniBroj) + '\n' + '1\n' + '11\n' 
         l=[self.P3_Sup_a,self.P3_Sup_b,self.cut90_45,self.holeDimension,self.holeDimension2,self.holeCenterX,self.holeCenterY,self.holeNew]
         s+= (',').join(l)+'\n' 
         s+='0,0,0,0,0,0,0,0,0,0,0,0\n'
@@ -427,7 +427,8 @@ class P3853:
         self.Prirubnice=[]
 		    
     def __str__(self):
-        s =self.__class__.__name__ +'>>>' +' A:'+str(self.P3_AWidth_1) +' M:'+ str(self.P3_MWidth_2) +' P:'+ str(self.P3_PWidth_3) +' B:'+str(self.P3_BDepth) +' Mark:'+str( self.Mark) +' ID:'+ str(self.ElId)
+        s =self.__class__.__name__ +'>>>' +' C:'+str(self.P3_CWidth_1) +' B:'+ str(self.P3_BDepth) +\
+            ' M:'+str(self.P3_MWidth_2)+ ' P:'+ str(self.P3_PWidth_3) +' Mark:'+str( self.Mark) +' ID:'+ str(self.ElId)
         return s
 
     def povrsina(self):
@@ -447,9 +448,11 @@ class P3853:
         return sel
 
     def CODE(self):
-        s='* \n'+ '853\n' +  str(self.RedniBroj) + '\n' + '1 \n' + '11\n' 
-        l=[self.P3_CWidth_1,self.P3_AWidth_2,self.P3_BDepth,self.P3_MWidth_2,self.P3_PWidth_3,self.P3_ELine_1,self.P3_FLine_2,self.P3_GLine_3,str(int(float(self.P3_RadiusInt.replace('\xb0' , '')))),str(int(float(self.P3_RadiusExt.replace('\xb0' , '')))),\
-            str(int(float(self.P3_Angle.replace('\xb0' , '')))),self.P3_HHeight,self.P3_LHeight_1,self.P3_R1D,self.P3_R2D,self.P3_R3D,self.P3_R4D,self.cutDef_01,str(int(float(self.P3_Bending_Angle.replace('\xb0' , '')))),self.cutDef_01,self.LineDef,self.LineType_012]
+        s='*\n'+ '853\n' +  str(self.RedniBroj) + '\n' + '1\n' + '11\n' 
+        l=[self.P3_CWidth_1,self.P3_AWidth_2,self.P3_BDepth,self.P3_MWidth_2,self.P3_PWidth_3,self.P3_ELine_1,self.P3_FLine_2,self.P3_GLine_3,\
+            str(int(float(self.P3_RadiusInt.replace('\xb0' , '')))),str(int(float(self.P3_RadiusExt.replace('\xb0' , '')))),\
+            str(int(float(self.P3_Angle.replace('\xb0' , '')))),self.P3_HHeight,self.P3_LHeight_1,self.P3_R1D,self.P3_R2D,self.P3_R3D,self.P3_R4D,\
+                self.cutDef_01,str(int(float(self.P3_Bending_Angle.replace('\xb0' , '')))),self.LineDef,self.LineType_012]
         s+= (',').join(l)+'\n' 
         s+='0,0,0,0,0,0,0,0,0,0,0,0\n'
         if self.Mark == None:
