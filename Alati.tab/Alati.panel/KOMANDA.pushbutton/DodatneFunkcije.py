@@ -59,6 +59,23 @@ def KolektorP3Schedula():
         print('NIJE MOGUC PRISTUP REVITU C')
         return False
 
+# def PretvoriJedinicu(RevitParametar):
+#     import math
+#     from  Autodesk.Revit.DB.Definition import ParameterType
+#     '''
+#     FUNKCIJA PRETVARA RADIJANE U UGAO ILI FITE U MILIMETRE.
+#     NA ULAZU POTREBNO DOVESTI Autodesk.Revit.DB.ParameterType.HVACDuctSize ili Angle
+#     '''
+#     try:
+#         if RevitParametar.Definition.ParameterType == ParameterType.HVACDuctSize :
+#             PretvorenaVrednost=round(RevitParametar.AsDouble()*304.8 ,1)
+#         elif RevitParametar.Definition.ParameterType == ParameterType.Angle :
+#             PretvorenaVrednost=round(RevitParametar.AsDouble()*180/math.pi ,1)
+#     except TypeError:
+#         print('NA ULAZ TREBA DOSVESTI AUTODESK OBJEKAT /PARAMETAR/')
+    
+#     return PretvorenaVrednost
+
 
      
     

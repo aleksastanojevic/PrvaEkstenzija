@@ -1,4 +1,6 @@
 # This Python file uses the following encoding: utf-8
+from DodatneFunkcije import PretvoriJedinicu
+
 class P3Posao:
     def __init__(self,*args):
         self.SysRef=args[0]
@@ -84,7 +86,7 @@ def NapraviP3802(Elementi):
         ElId=element.Id
         parametri={}
         for j in parametri802:
-            parametri[j.replace(' ','').replace('-','_')]=element.GetParameters(j)[0].AsValueString()
+            parametri[j.replace(' ','').replace('-','_')]=PretvoriJedinicu(element.GetParameters(j)[0])
         koleno=P3802(debljinaMaterijala, Mark,ElId,**parametri)
         listaKolena.append(koleno)
     return listaKolena
@@ -493,7 +495,6 @@ class P3801:
         self.Prirubnice=[]
         
         Obim=(int(self.P3_Width)+int(self.P3_Height))*2
-
         if Obim<=3960 and int(self.P3_Length) <= 1200:
             self.ductType_1234='1'
             self.cutOption='1'
