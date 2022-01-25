@@ -23,6 +23,7 @@ class P3Posao:
 def NapraviNoviPosao(UnosOPoslu):
     NoviPosao=P3Posao(*UnosOPoslu)
     return NoviPosao
+
 ##### ##### ##### ##### KLASA P3802 KOLENO!!!!!!
 class P3802:
     cutDef_01='0'
@@ -61,8 +62,7 @@ class P3802:
     def CODE(self):
         s='*\n'+ '802\n' +  str(self.RedniBroj) + '\n' + '1\n' + '11\n' 
         l=[self.P3_AWidth_1 ,self.P3_BDepth ,self.P3_MWidth_2 ,self.P3_Radius_Internal ,self.P3_Radius_External ,self.P3_ELine_1 ,self.P3_FLine_2 ,\
-			str(int(float(self.P3_Angle.replace('\xb0' , '')))) ,self.P3_R1D \
-				 ,self.P3_R2D ,self.P3_R3D ,self.P3_R4D ,self.cutDef_01 ,self.LineDef ,self.LineType_012]
+            self.P3_Angle ,self.P3_R1D ,self.P3_R2D ,self.P3_R3D ,self.P3_R4D ,self.cutDef_01 ,self.LineDef ,self.LineType_012]
         s+= (',').join(l)+'\n' 
         s+='0,0,0,0,0,0,0,0,0,0,0,0\n'
         if self.Mark == None:
