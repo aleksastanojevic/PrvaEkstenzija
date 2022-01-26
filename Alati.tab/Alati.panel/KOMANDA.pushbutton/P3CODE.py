@@ -23,7 +23,6 @@ class P3Posao:
 def NapraviNoviPosao(UnosOPoslu):
     NoviPosao=P3Posao(*UnosOPoslu)
     return NoviPosao
-
 ##### ##### ##### ##### KLASA P3802 KOLENO!!!!!!
 class P3802:
     cutDef_01='0'
@@ -37,9 +36,13 @@ class P3802:
         self.RedniBroj=None
         self.ElId=ElId
         self.Prirubnice=[]
+
+        if int(float(self.P3_Radius_Internal)) == 1:  #Ako je unutrasnji radijus 1 , onda je radijus 0
+            self.P3_Radius_Internal='0'
 		    
     def __str__(self):
-        s =self.__class__.__name__ + '>>>' +' A:'+str(self.P3_AWidth_1) +' M:'+ str(self.P3_MWidth_2) + ' B:'+str(self.P3_BDepth) +' Angle:'+ str(self.P3_Angle) + ' Mark:'+str( self.Mark) +' ID:'+ str(self.ElId)
+        s =self.__class__.__name__ + '>>>' +' A:'+self.P3_AWidth_1 +' M:'+ self.P3_MWidth_2 + ' B:'+self.P3_BDepth \
+            +' Angle:'+ self.P3_Angle + ' Mark:'+self.Mark+' ID:'+ self.ElId
         return s
 
     def povrsina(self):
@@ -114,7 +117,8 @@ class P3803:
         self.Prirubnice=[]
 		    
     def __str__(self):
-        s =self.__class__.__name__ +'>>>' +' A:'+str(self.P3_AWidth_1) +' M:'+ str(self.P3_MWidth_2) +' P:'+ str(self.P3_PWidth_3) +' B:'+str(self.P3_BDepth) +' Mark:'+str( self.Mark) +' ID:'+ str(self.ElId)
+        s =self.__class__.__name__ +'>>>' +' A:'+self.P3_AWidth_1 +' M:'+ self.P3_MWidth_2 +' P:'+ self.P3_PWidth_3 +\
+            ' B:'+self.P3_BDepth +' Mark:'+ self.Mark +' ID:'+ self.ElId
         return s
 
     def povrsina(self):
@@ -135,8 +139,9 @@ class P3803:
 
     def CODE(self):
         s='*\n'+ '803\n' +  str(self.RedniBroj) + '\n' + '1\n' + '11\n' 
-        l=[self.P3_AWidth_1 ,self.P3_BDepth ,self.P3_MWidth_2 ,self.P3_PWidth_3,self.P3_RRadius_1,self.P3_SRadius_2,self.P3_ZShift,self.P3_ELine_1 ,self.P3_FLine_2 ,self.P3_GLine_3,self.P3_KLine_4,self.P3_LLine_5 \
-            ,str(int(float(self.P3_Angle.replace('\xb0' , '')))) ,self.RD1_Lf,self.RD2_Lf ,self.RD3_Lf ,self.RD4_Lf ,self.RD1_Rg,self.RD2_Rg,self.RD3_Rg,self.RD4_Rg ,self.LineDef ,self.cutDef_01 ,self.LineType_012,self.BuildType_1_2]
+        l=[self.P3_AWidth_1 ,self.P3_BDepth ,self.P3_MWidth_2 ,self.P3_PWidth_3,self.P3_RRadius_1,self.P3_SRadius_2,self.P3_ZShift,self.P3_ELine_1 \
+            ,self.P3_FLine_2 ,self.P3_GLine_3,self.P3_KLine_4,self.P3_LLine_5,self.P3_Angle ,self.RD1_Lf,self.RD2_Lf ,self.RD3_Lf ,self.RD4_Lf \
+                ,self.RD1_Rg,self.RD2_Rg,self.RD3_Rg,self.RD4_Rg ,self.LineDef ,self.cutDef_01 ,self.LineType_012,self.BuildType_1_2]
         s+= (',').join(l)+'\n' 
         s+='0,0,0,0,0,0,0,0,0,0,0,0\n'
         if self.Mark == None:
@@ -157,7 +162,7 @@ def NapraviP3803(Elementi):
         ElId=element.Id
         parametri={}
         for j in parametri803:
-            parametri[j.replace(' ','').replace('-','_')]=element.GetParameters(j)[0].AsValueString()
+            parametri[j.replace(' ','').replace('-','_')]=PretvoriJedinicu(element.GetParameters(j)[0])
         Tracva=P3803(debljinaMaterijala, Mark,ElId,**parametri)
         listaTracvi.append(Tracva)
     return listaTracvi
@@ -175,8 +180,8 @@ class P3847:
         self.Prirubnice=[]
 		    
     def __str__(self):
-        s =self.__class__.__name__ +'>>>' +' A:'+str(self.P3_AWidth_1) +' B:'+str(self.P3_BDepth_1)+' M:'+ str(self.P3_MWidth_2) +\
-            ' N:'+ str(self.P3_NDepth_2)+' H: '+ str(self.P3_HHeight)+' Mark:'+str( self.Mark) +' ID:'+ str(self.ElId)
+        s =self.__class__.__name__ +'>>>' +' A:'+self.P3_AWidth_1 +' B:'+ self.P3_BDepth_1+' M:'+ self.P3_MWidth_2 +\
+            ' N:'+ self.P3_NDepth_2+' H: '+ self.P3_HHeight+' Mark:'+ self.Mark +' ID:'+ self.ElId
         return s
 
     def povrsina(self):
@@ -201,7 +206,7 @@ class P3847:
         s='*\n'+ '847\n' +  str(self.RedniBroj) + '\n' + '1\n' + '11\n' 
         l=[self.P3_AWidth_1,self.P3_BDepth_1,self.P3_MWidth_2,self.P3_NDepth_2,self.P3_HHeight,self.P3_ELine_1,self.P3_FLine_2,self.P3_MisalignmentX\
             ,self.P3_MisalignmentY,self.P3_ShiftX1,self.P3_ShiftX2,self.P3_ShiftY1,self.P3_ShiftY2,self.P3_Addition_1,self.P3_Addition_2,self.P3_Addition_3,self.P3_Addition_4\
-                ,str(int(float(self.P3_Right_Angle.replace('\xb0' , '')))),str(int(float(self.P3_Left_Angle.replace('\xb0' , '')))),self.LineType_012]
+                ,self.P3_Right_Angle,self.P3_Left_Angle,self.LineType_012]
         s+= (',').join(l)+'\n' 
         s+='0,0,0,0,0,0,0,0,0,0,0,0\n'
         if self.Mark == None:
@@ -213,8 +218,9 @@ class P3847:
 def NapraviP3847(Elementi):
     doc=__revit__.ActiveUIDocument.Document
     from  Autodesk.Revit.DB import BuiltInParameter
-    parametri847=['P3 - A Width_1','P3 - B Depth_1','P3 - M Width_2','P3 - N Depth_2','P3 - H Height','P3 - E Line_1','P3 - F Line_2','P3 - MisalignmentX','P3 - MisalignmentY','P3 - ShiftX1','P3 - ShiftX2',\
-        'P3 - ShiftY1','P3 - ShiftY2','P3 - Addition_1','P3 - Addition_2','P3 - Addition_3','P3 - Addition_4','P3 - Right_Angle','P3 - Left_Angle']
+    parametri847=['P3 - A Width_1','P3 - B Depth_1','P3 - M Width_2','P3 - N Depth_2','P3 - H Height','P3 - E Line_1','P3 - F Line_2','P3 - MisalignmentX'\
+        ,'P3 - MisalignmentY','P3 - ShiftX1','P3 - ShiftX2','P3 - ShiftY1','P3 - ShiftY2','P3 - Addition_1','P3 - Addition_2','P3 - Addition_3','P3 - Addition_4'\
+            ,'P3 - Right_Angle','P3 - Left_Angle']
     listaRedukcija=[]
     for element in Elementi:
         debljinaMaterijala=element.get_Parameter(BuiltInParameter.RBS_REFERENCE_INSULATION_THICKNESS).AsInteger()
@@ -222,7 +228,7 @@ def NapraviP3847(Elementi):
         ElId=element.Id
         parametri={}
         for j in parametri847:
-            parametri[j.replace(' ','').replace('-','_')]=element.GetParameters(j)[0].AsValueString()
+            parametri[j.replace(' ','').replace('-','_')]=PretvoriJedinicu(element.GetParameters(j)[0])
         Redukcija=P3847(debljinaMaterijala, Mark,ElId,**parametri)
         listaRedukcija.append(Redukcija)
     return listaRedukcija
@@ -240,8 +246,8 @@ class P3812:
         self.Prirubnice=[]
 		    
     def __str__(self):
-        s =self.__class__.__name__ +'>>>' +' A:'+str(self.P3_Awidth) +' b:'+str(self.P3_Sup_b)+' a:'+ str(self.P3_Sup_a) +\
-            ' H:'+ str(self.Hheight)+' Mark:'+str( self.Mark) +' ID:'+ str(self.ElId)
+        s =self.__class__.__name__ +'>>>' +' A:'+self.P3_Awidth +' b:'+ self.P3_Sup_b+' a:'+ self.P3_Sup_a +\
+            ' H:'+ self.Hheight+' Mark:'+ self.Mark +' ID:'+ self.ElId
         return s
 
     def povrsina(self):
@@ -262,8 +268,8 @@ class P3812:
 
     def CODE(self):
         s='*\n'+ '812\n' +  str(self.RedniBroj) + '\n' + '1\n' + '11\n' 
-        l=[self.P3_Awidth,self.P3_Sup_b,self.P3_Sup_a,self.Hheight,self.Lunghezzastaccolineare,self.Lunghezzastaccolineare,str(int(float(self.RRadius.replace('\xb0' , ''))))\
-            ,str(int(float(self.SRadius.replace('\xb0' , '')))),str(int(float(self.Angle.replace('\xb0' , '')))),self.ductType_012,self.LineType_012]
+        l=[self.P3_Awidth,self.P3_Sup_b,self.P3_Sup_a,self.Hheight,self.Lunghezzastaccolineare,self.Lunghezzastaccolineare,self.RRadius\
+            ,self.SRadius,self.Angle,self.ductType_012,self.LineType_012]
         s+= (',').join(l)+'\n' 
         s+='0,0,0,0,0,0,0,0,0,0,0,0\n'
         if self.Mark == None:
@@ -283,7 +289,7 @@ def NapraviP3812(Elementi):
         ElId=element.Id
         parametri={}
         for j in parametri812:
-            parametri[j.replace(' ','').replace('-','_')]=element.GetParameters(j)[0].AsValueString()
+            parametri[j.replace(' ','').replace('-','_')]=PretvoriJedinicu(element.GetParameters(j)[0])
         Cipela=P3812(debljinaMaterijala, Mark,ElId,**parametri)
         listaCipela.append(Cipela)
     return listaCipela
@@ -302,7 +308,8 @@ class P3827:
         self.Prirubnice=[]
 		    
     def __str__(self):
-        s =self.__class__.__name__ +'>>>' +' P:'+str(self.P3_PWidth_1) +' M:'+ str(self.P3_MWidth_4) +' N:'+str(self.P3_NWidth_3) +' B:'+ str(self.P3_BDepth)+' Mark:'+str( self.Mark) +' ID:'+ str(self.ElId)
+        s =self.__class__.__name__ +'>>>' +' P:'+self.P3_PWidth_1 +' M:'+ self.P3_MWidth_4 +' N:'+self.P3_NWidth_3 +' B:'+ self.P3_BDepth+\
+            ' Mark:'+ self.Mark +' ID:'+ self.ElId
         return s
 
     def povrsina(self):
@@ -323,8 +330,8 @@ class P3827:
 
     def CODE(self):
         s='*\n'+ '827\n' +  str(self.RedniBroj) + '\n' + '1\n' + '11\n' 
-        l=[self.P3_PWidth_1,self.P3_OWidth_2,self.P3_BDepth,self.P3_NWidth_3,str(int(float(self.P3_Angle_Dx.replace('\xb0' , '')))),self.P3_RRadius_1,self.P3_SRadius_2,self.P3_ELine_1,self.P3_GLine_3,\
-            self.P3_FLine_2,self.P3_MWidth_4,str(int(float(self.P3_Angle_Sx.replace('\xb0' , '')))),self.P3_TRadius_3,self.P3_URadius_4,self.P3_HLine_4,self.P3_LLine_6,self.P3_ILine_5,self.P3_R1D_Sx,\
+        l=[self.P3_PWidth_1,self.P3_OWidth_2,self.P3_BDepth,self.P3_NWidth_3,self.P3_Angle_Dx,self.P3_RRadius_1,self.P3_SRadius_2,self.P3_ELine_1,self.P3_GLine_3,\
+            self.P3_FLine_2,self.P3_MWidth_4,self.P3_Angle_Sx,self.P3_TRadius_3,self.P3_URadius_4,self.P3_HLine_4,self.P3_LLine_6,self.P3_ILine_5,self.P3_R1D_Sx,\
                 self.P3_R2D_Sx,self.P3_R3D_Sx,self.P3_R4D_Sx,self.P3_R1D_Dx,self.P3_R2D_Dx,self.P3_R3D_Dx,self.P3_R4D_Dx,self.cutDef_01,self.LineDef,self.LineType_012]
         s+= (',').join(l)+'\n' 
         s+='0,0,0,0,0,0,0,0,0,0,0,0\n'
@@ -347,7 +354,7 @@ def NapraviP3827(Elementi):
         ElId=element.Id
         parametri={}
         for j in parametri827:
-            parametri[j.replace(' ','').replace('-','_')]=element.GetParameters(j)[0].AsValueString()
+            parametri[j.replace(' ','').replace('-','_')]=PretvoriJedinicu(element.GetParameters(j)[0])
         LastinRep=P3827(debljinaMaterijala, Mark,ElId,**parametri)
         listaLastinRep.append(LastinRep)
     return listaLastinRep
@@ -365,7 +372,7 @@ class P3843:
         self.Prirubnice=[]
 		    
     def __str__(self):
-        s =self.__class__.__name__ +'>>>' +' A:'+str(self.P3_Sup_a) +' B:'+ str(self.P3_Sup_b) +' Mark:'+str( self.Mark) +' ID:'+ str(self.ElId)
+        s =self.__class__.__name__ +'>>>' +' A:'+self.P3_Sup_a +' B:'+self.P3_Sup_b +' Mark:'+ self.Mark +' ID:'+ self.ElId
         return s
 
     def povrsina(self):
@@ -407,7 +414,7 @@ def NapraviP3843(Elementi):
         parametri={}
         for j in parametri843:
             try:
-                parametri[j.replace(' ','').replace('-','_').replace('/','_')]=element.GetParameters(j)[0].AsValueString()
+                parametri[j.replace(' ','').replace('-','_').replace('/','_')]=PretvoriJedinicu(element.GetParameters(j)[0])
             except:
                 parametri[j.replace(' ','').replace('-','_').replace('/','_')]='0'
         Cep=P3843(debljinaMaterijala, Mark,ElId,**parametri)
@@ -429,8 +436,8 @@ class P3853:
         self.Prirubnice=[]
 		    
     def __str__(self):
-        s =self.__class__.__name__ +'>>>' +' C:'+str(self.P3_CWidth_1) +' B:'+ str(self.P3_BDepth) +\
-            ' M:'+str(self.P3_MWidth_2)+ ' P:'+ str(self.P3_PWidth_3) +' Mark:'+str( self.Mark) +' ID:'+ str(self.ElId)
+        s =self.__class__.__name__ +'>>>' +' C:'+ self.P3_CWidth_1 +' B:'+  self.P3_BDepth +\
+            ' M:'+ self.P3_MWidth_2+ ' P:'+  self.P3_PWidth_3 +' Mark:'+ self.Mark +' ID:'+ self.ElId
         return s
 
     def povrsina(self):
@@ -452,9 +459,8 @@ class P3853:
     def CODE(self):
         s='*\n'+ '853\n' +  str(self.RedniBroj) + '\n' + '1\n' + '11\n' 
         l=[self.P3_CWidth_1,self.P3_AWidth_2,self.P3_BDepth,self.P3_MWidth_2,self.P3_PWidth_3,self.P3_ELine_1,self.P3_FLine_2,self.P3_GLine_3,\
-            str(int(float(self.P3_RadiusInt.replace('\xb0' , '')))),str(int(float(self.P3_RadiusExt.replace('\xb0' , '')))),\
-            str(int(float(self.P3_Angle.replace('\xb0' , '')))),self.P3_HHeight,self.P3_LHeight_1,self.P3_R1D,self.P3_R2D,self.P3_R3D,self.P3_R4D,\
-                self.cutDef_01,str(int(float(self.P3_Bending_Angle.replace('\xb0' , '')))),self.LineDef,self.LineType_012]
+            self.P3_RadiusInt,self.P3_RadiusExt,self.P3_Angle,self.P3_HHeight,self.P3_LHeight_1,self.P3_R1D,self.P3_R2D,self.P3_R3D,self.P3_R4D,\
+                self.cutDef_01,self.P3_Bending_Angle,self.LineDef,self.LineType_012]
         s+= (',').join(l)+'\n' 
         s+='0,0,0,0,0,0,0,0,0,0,0,0\n'
         if self.Mark == None:
@@ -475,7 +481,7 @@ def NapraviP3853(Elementi):
         ElId=element.Id
         parametri={}
         for j in parametri853:
-            parametri[j.replace(' ','').replace('-','_')]=element.GetParameters(j)[0].AsValueString()
+            parametri[j.replace(' ','').replace('-','_')]=PretvoriJedinicu(element.GetParameters(j)[0])
         RacvaRedukcija=P3853(debljinaMaterijala, Mark,ElId,**parametri)
         listaRacviRedukcija.append(RacvaRedukcija)
     return listaRacviRedukcija
@@ -485,7 +491,7 @@ def NapraviP3853(Elementi):
 class P3801:
     ductType_1234=None  #ako je kanal iz jednog dela onda je 1.Moze biti i 2,3,4
     cutOption=None  #da li se seče ili ne
-    def __init__(self,DebMat, Mark,ElId ,**kwargs):
+    def __init__ (self,DebMat, Mark,ElId ,**kwargs):
         for key, value in kwargs.items():
             setattr(self, key, value)
         self.DebMat=DebMat
@@ -494,8 +500,8 @@ class P3801:
         self.ElId=ElId
         self.Prirubnice=[]
         
-        Obim=(int(self.P3_Width)+int(self.P3_Height))*2
-        if Obim<=3960 and int(self.P3_Length) <= 1200:
+        Obim=(float(self.P3_Width)+float(self.P3_Height))*2
+        if Obim<=3960 and (float(self.P3_Length))<=1200:
             self.ductType_1234='1'
             self.cutOption='1'
         else:
@@ -503,7 +509,7 @@ class P3801:
             self.cutOption='0'
         
     def __str__(self):
-        s =self.__class__.__name__ +'>>>' +' W:'+str(self.P3_Width) +' H:'+ str(self.P3_Height) +' L:'+str(self.P3_Length)+' Mark:'+str( self.Mark) +' ID:'+ str(self.ElId)
+        s =self.__class__.__name__ +'>>>' +' W:'+self.P3_Width +' H:'+self.P3_Height+' L:'+self.P3_Length+' Mark:'+self.Mark +' ID:'+ self.ElId
         return s
 
     def povrsina(self):
@@ -544,7 +550,7 @@ def NapraviP3801(Elementi):
         ElId=element.Id
         parametri={}
         for j in parametri801:
-            parametri['P3_'+j]=element.GetParameters(j)[0].AsValueString()
+            parametri['P3_'+j]=PretvoriJedinicu(element.GetParameters(j)[0])
         Kanal=P3801(debljinaMaterijala, Mark,ElId,**parametri)
         listaKanala.append(Kanal)
     return listaKanala

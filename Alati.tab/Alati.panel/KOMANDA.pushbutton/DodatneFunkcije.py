@@ -69,12 +69,14 @@ def PretvoriJedinicu(RevitParametar):
         from  Autodesk.Revit.DB import ParameterType
         if RevitParametar.Definition.ParameterType == ParameterType.HVACDuctSize :
             V=RevitParametar.AsDouble()*304.8
-        if RevitParametar.Definition.ParameterType == ParameterType.Length :
+        elif RevitParametar.Definition.ParameterType == ParameterType.Length :
             V=RevitParametar.AsDouble()*304.8
         elif RevitParametar.Definition.ParameterType == ParameterType.Angle :
             V=RevitParametar.AsDouble()*180/math.pi
-        return str(round(V,1))
-
+        if round(V,3).is_integer():
+            return str(int(round(V,3)))
+        else:
+            return str(round(V,3))
     except TypeError:  
         return 'GRESKA U PRETVARANJU'
     
