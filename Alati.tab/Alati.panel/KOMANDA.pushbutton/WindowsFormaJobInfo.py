@@ -37,7 +37,7 @@ class ProzorJ(System.Windows.Forms.Form):
         self.dugme1=Button()
         self.dugme1.Location=Point(380,500)
         self.dugme1.Size=Size(100,45)
-        self.dugme1.Text="ГОТОВО"
+        self.dugme1.Text="НАПРАВИ .BRV"
         self.dugme1.BackColor=Color.FromName('White')
         self.dugme1.Click+=self.pritisnutoDugme
         #kreiranje dugmeta2
@@ -118,6 +118,7 @@ def FormaProgramaJob(ulaz):
     (ulaz-->Lista ulaznih default textova za UI2)
     '''
     FormaJ=ProzorJ()
+    FormaJ.Status=None   
     for i in range(len(ulaz)):
         FormaJ.listaInputa[i].Text = ulaz[i]
     Application.EnableVisualStyles()    

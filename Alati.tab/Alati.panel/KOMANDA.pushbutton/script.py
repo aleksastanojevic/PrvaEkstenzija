@@ -70,62 +70,30 @@ if __name__ == '__main__': #GLAVNI PROGRAM
         Posao=NapraviNoviPosao(UnosOPoslu)
         KOD+=Posao.CODE()
         RedniBroj=1  # Redni broj pocinje od 1 i ide kroz sve elemente jednog posla
+
         Kolena=NapraviP3802(DictKodova[802])
-        for k in Kolena:
-            k.RedniBroj=RedniBroj
-            RedniBroj+=1
-            KOD+=k.CODE()
-            # print(k.CODE())
         TRacve=NapraviP3803(DictKodova[803])
-        for t in TRacve:
-            t.RedniBroj=RedniBroj
-            RedniBroj+=1
-            KOD+=t.CODE()
-            # print(t.CODE())
         Redukcije=NapraviP3847(DictKodova[847])
-        for r in Redukcije:
-            r.RedniBroj=RedniBroj
-            RedniBroj+=1
-            KOD+=r.CODE()
-            # print(r.CODE())
         Cipele=NapraviP3812(DictKodova[812])
-        for c in Cipele:
-            c.RedniBroj=RedniBroj
-            RedniBroj+=1
-            KOD+=c.CODE()
-            # print(c.CODE())    
         LastinRep=NapraviP3827(DictKodova[827])
-        for lr in LastinRep:
-            lr.RedniBroj=RedniBroj
-            RedniBroj+=1
-            KOD+=lr.CODE()
-            # print(lr.CODE())    
         Cep=NapraviP3843(DictKodova[843])
-        for c in Cep:
-            c.RedniBroj=RedniBroj
-            RedniBroj+=1
-            KOD+=c.CODE()
-            # print(c.CODE())  
         RacvaRedukcije=NapraviP3853(DictKodova[853])
-        for RR in RacvaRedukcije:
-            RR.RedniBroj=RedniBroj
-            RedniBroj+=1
-            KOD+=RR.CODE()
-            # print(RR.CODE()) 
         Kanali=NapraviP3801(DictKodova[801])
-        for K in Kanali:
-            K.RedniBroj=RedniBroj
+
+        P3Elementi=Kolena+TRacve+Redukcije+Cipele+LastinRep+Cep+RacvaRedukcije+Kanali
+
+        for P3 in P3Elementi:
+            P3.RedniBroj=RedniBroj
             RedniBroj+=1
-            KOD+=K.CODE()
-            # print(K.CODE()) 
-        
+            KOD+=P3.CODE()       
+             
         WF.MessageBox.Show(" УСПЕШНО ЈЕ НАПИСАН КОД !")
         imeFajla=SysRef+'.BRV'
         lokacijaCuvanja=os.path.expanduser("~\\Desktop\\"+imeFajla) # CITA HOMEPATH I DODAJE DEKSTOP I IME FAJLA.BRV
         with open(lokacijaCuvanja,'w') as f:
             f.write(KOD)
         subprocess.Popen('explorer /select ,'+lokacijaCuvanja , shell=True) # Otvara Windows Explorer sa selektovanim fajlom
-        # print(KOD)
+
 
 
         

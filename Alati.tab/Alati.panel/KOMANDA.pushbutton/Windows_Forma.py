@@ -253,6 +253,7 @@ class Prozor(Form):
             
 def FormaPrograma():      #Kreiranje funkcije u kojoj se kreira objekat klase Prozor i dodeljuju stavke za odabir
     Forma=Prozor()
+    Forma.Status=None     # Funkcija FormaPrograma ocekuje Forma.Status, ali ako korisnik iskljuci program na X onda se Status ne definise. Ovim korakom se dodeljuje None dok program ne promeni status u True ili False
     ######  UCITAVANJE LISTE SISTEMA IZ REVITA
     try:
         from DodatneFunkcije import KolektorSistema

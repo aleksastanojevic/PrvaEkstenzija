@@ -1,6 +1,5 @@
 # This Python file uses the following encoding: utf-8
 from DodatneFunkcije import PretvoriJedinicu
-
 class P3Posao:
     def __init__(self,*args):
         self.SysRef=args[0]
@@ -23,27 +22,12 @@ class P3Posao:
 def NapraviNoviPosao(UnosOPoslu):
     NoviPosao=P3Posao(*UnosOPoslu)
     return NoviPosao
-##### ##### ##### ##### KLASA P3802 KOLENO!!!!!!
-class P3802:
-    cutDef_01='0'
-    LineDef='0'
-    LineType_012='1'
-    def __init__(self,DebMat, Mark,ElId ,**kwargs):
-        for key, value in kwargs.items():
-            setattr(self, key, value)
+##### ##### ##### ##### KLASA P3!!!!!!
+class P3:
+    def __init__(self,DebMat, Mark,ElId):
         self.DebMat=DebMat
         self.Mark=Mark
-        self.RedniBroj=None
         self.ElId=ElId
-        self.Prirubnice=[]
-
-        if int(float(self.P3_Radius_Internal)) == 1:  #Ako je unutrasnji radijus 1 , onda je radijus 0
-            self.P3_Radius_Internal='0'
-		    
-    def __str__(self):
-        s =self.__class__.__name__ + '>>>' +' A:'+self.P3_AWidth_1 +' M:'+ self.P3_MWidth_2 + ' B:'+self.P3_BDepth \
-            +' Angle:'+ self.P3_Angle + ' Mark:'+self.Mark+' ID:'+ self.ElId
-        return s
 
     def povrsina(self):
         doc=__revit__.ActiveUIDocument.Document
@@ -59,8 +43,26 @@ class P3802:
         elementIdList = List[ElementId]()
         elementIdList.Add(self.ElId)
         sel = SetElementIds(elementIdList)
-
         return sel
+
+class P3802(P3):
+    cutDef_01='0'
+    LineDef='0'
+    LineType_012='1'
+    def __init__(self,DebMat, Mark,ElId ,**kwargs):
+        P3.__init__(self,DebMat, Mark,ElId)
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+        self.RedniBroj=None
+        self.Prirubnice=[]
+
+        if int(float(self.P3_Radius_Internal)) == 1:  #Ako je unutrasnji radijus 1 , onda je radijus 0
+            self.P3_Radius_Internal='0'
+		    
+    def __str__(self):
+        s =self.__class__.__name__ + '>>>' +' A:'+self.P3_AWidth_1 +' M:'+ self.P3_MWidth_2 + ' B:'+self.P3_BDepth \
+            +' Angle:'+ self.P3_Angle + ' Mark:'+self.Mark+' ID:'+ self.ElId
+        return s
 
     def CODE(self):
         s='*\n'+ '802\n' +  str(self.RedniBroj) + '\n' + '1\n' + '11\n' 
@@ -93,8 +95,8 @@ def NapraviP3802(Elementi):
         koleno=P3802(debljinaMaterijala, Mark,ElId,**parametri)
         listaKolena.append(koleno)
     return listaKolena
-##### ##### ##### ##### KLASA P3803 KOLENO!!!!!!
-class P3803:
+##### ##### ##### ##### KLASA P3803 T RACVA!!!!!!
+class P3803(P3):
     RD1_Lf='0'
     RD2_Lf='0'
     RD3_Lf='0'
@@ -108,34 +110,16 @@ class P3803:
     LineType_012='1'
     BuildType_1_2='2'
     def __init__(self,DebMat, Mark,ElId ,**kwargs):
+        P3.__init__(self,DebMat, Mark,ElId)
         for key, value in kwargs.items():
             setattr(self, key, value)
-        self.DebMat=DebMat
-        self.Mark=Mark
         self.RedniBroj=None
-        self.ElId=ElId
         self.Prirubnice=[]
 		    
     def __str__(self):
         s =self.__class__.__name__ +'>>>' +' A:'+self.P3_AWidth_1 +' M:'+ self.P3_MWidth_2 +' P:'+ self.P3_PWidth_3 +\
             ' B:'+self.P3_BDepth +' Mark:'+ self.Mark +' ID:'+ self.ElId
         return s
-
-    def povrsina(self):
-        doc=__revit__.ActiveUIDocument.Document
-        sel=doc.GetElement(self.ElId)
-        P=sel.GetParameters('P3_Sup_S.app')[0].AsValueString()
-        return P
-
-    def materijal(self):
-        M=int(self.debMat)
-        return M
-
-    def Selektuj(self):
-        elementIdList = List[ElementId]()
-        elementIdList.Add(self.ElId)
-        sel = SetElementIds(elementIdList)
-        return sel
 
     def CODE(self):
         s='*\n'+ '803\n' +  str(self.RedniBroj) + '\n' + '1\n' + '11\n' 
@@ -151,6 +135,9 @@ class P3803:
         return s
 
 def NapraviP3803(Elementi):
+    '''
+    Funkcija od Elemenata na unosu pravi elemente klase P3803 i popunjava ga parametrima iz modela,kao i nephodnim parametrima za softver BRAVO i prirubnicama
+    '''
     doc=__revit__.ActiveUIDocument.Document
     from  Autodesk.Revit.DB import BuiltInParameter
     parametri803=['P3 - A Width_1','P3 - B Depth','P3 - M Width_2','P3 - P Width_3','P3 - R Radius_1','P3 - S Radius_2','P3 - Z Shift','P3 - E Line_1',\
@@ -168,17 +155,15 @@ def NapraviP3803(Elementi):
     return listaTracvi
 
 ##### ##### ##### ##### KLASA P3847 REDUKCIJA!!!!!!
-class P3847:
+class P3847(P3):
     LineType_012='1'
     def __init__(self,DebMat, Mark,ElId ,**kwargs):
+        P3.__init__(self,DebMat, Mark,ElId)
         for key, value in kwargs.items():
             setattr(self, key, value)
-        self.DebMat=DebMat
-        self.Mark=Mark
         self.RedniBroj=None
-        self.ElId=ElId
         self.Prirubnice=[]
-		    
+		     
     def __str__(self):
         s =self.__class__.__name__ +'>>>' +' A:'+self.P3_AWidth_1 +' B:'+ self.P3_BDepth_1+' M:'+ self.P3_MWidth_2 +\
             ' N:'+ self.P3_NDepth_2+' H: '+ self.P3_HHeight+' Mark:'+ self.Mark +' ID:'+ self.ElId
@@ -191,16 +176,6 @@ class P3847:
         P2=sel.GetParameters('P3_Sup_S.app2')[0].AsValueString()
         P3=sel.GetParameters('P3_Sup_S.app3')[0].AsValueString()
         return P1+P2+P3
-
-    def materijal(self):
-        M=int(self.debMat)
-        return M
-
-    def Selektuj(self):
-        elementIdList = List[ElementId]()
-        elementIdList.Add(self.ElId)
-        sel = SetElementIds(elementIdList)
-        return sel
 
     def CODE(self):
         s='*\n'+ '847\n' +  str(self.RedniBroj) + '\n' + '1\n' + '11\n' 
@@ -216,6 +191,9 @@ class P3847:
         return s    
 
 def NapraviP3847(Elementi):
+    '''
+    Funkcija od Elemenata na unosu pravi elemente klase P3847 i popunjava ga parametrima iz modela,kao i nephodnim parametrima za softver BRAVO i prirubnicama
+    '''
     doc=__revit__.ActiveUIDocument.Document
     from  Autodesk.Revit.DB import BuiltInParameter
     parametri847=['P3 - A Width_1','P3 - B Depth_1','P3 - M Width_2','P3 - N Depth_2','P3 - H Height','P3 - E Line_1','P3 - F Line_2','P3 - MisalignmentX'\
@@ -233,38 +211,20 @@ def NapraviP3847(Elementi):
         listaRedukcija.append(Redukcija)
     return listaRedukcija
 ##### ##### ##### ##### KLASA P3812 TAP/CIPELA!!!!!!
-class P3812:
+class P3812(P3):
     ductType_012='1'
     LineType_012='1'
     def __init__(self,DebMat, Mark,ElId ,**kwargs):
+        P3.__init__(self,DebMat, Mark,ElId)
         for key, value in kwargs.items():
             setattr(self, key, value)
-        self.DebMat=DebMat
-        self.Mark=Mark
         self.RedniBroj=None
-        self.ElId=ElId
         self.Prirubnice=[]
 		    
     def __str__(self):
         s =self.__class__.__name__ +'>>>' +' A:'+self.P3_Awidth +' b:'+ self.P3_Sup_b+' a:'+ self.P3_Sup_a +\
             ' H:'+ self.Hheight+' Mark:'+ self.Mark +' ID:'+ self.ElId
         return s
-
-    def povrsina(self):
-        doc=__revit__.ActiveUIDocument.Document
-        sel=doc.GetElement(self.ElId)
-        P1=sel.GetParameters('P3_Sup_S.app')[0].AsValueString()
-        return P1
-
-    def materijal(self):
-        M=int(self.debMat)
-        return M
-
-    def Selektuj(self):
-        elementIdList = List[ElementId]()
-        elementIdList.Add(self.ElId)
-        sel = SetElementIds(elementIdList)
-        return sel
 
     def CODE(self):
         s='*\n'+ '812\n' +  str(self.RedniBroj) + '\n' + '1\n' + '11\n' 
@@ -279,6 +239,9 @@ class P3812:
         return s    
 
 def NapraviP3812(Elementi):
+    '''
+    Funkcija od Elemenata na unosu pravi elemente klase P3812 i popunjava ga parametrima iz modela,kao i nephodnim parametrima za softver BRAVO i prirubnicama
+    '''
     doc=__revit__.ActiveUIDocument.Document
     from  Autodesk.Revit.DB import BuiltInParameter
     parametri812=['P3_A width','P3_Sup_b','P3_Sup_a','H height','Lunghezza stacco lineare','Lunghezza stacco lineare','R Radius','S Radius','Angle']
@@ -294,39 +257,21 @@ def NapraviP3812(Elementi):
         listaCipela.append(Cipela)
     return listaCipela
 ##### ##### ##### ##### KLASA P3827 LASTIN REP!!!!!!
-class P3827:
+class P3827(P3):
     cutDef_01='0'
     LineDef='0'
     LineType_012='1'
     def __init__(self,DebMat, Mark,ElId ,**kwargs):
+        P3.__init__(self,DebMat, Mark,ElId)
         for key, value in kwargs.items():
             setattr(self, key, value)
-        self.DebMat=DebMat
-        self.Mark=Mark
         self.RedniBroj=None
-        self.ElId=ElId
         self.Prirubnice=[]
 		    
     def __str__(self):
         s =self.__class__.__name__ +'>>>' +' P:'+self.P3_PWidth_1 +' M:'+ self.P3_MWidth_4 +' N:'+self.P3_NWidth_3 +' B:'+ self.P3_BDepth+\
             ' Mark:'+ self.Mark +' ID:'+ self.ElId
         return s
-
-    def povrsina(self):
-        doc=__revit__.ActiveUIDocument.Document
-        sel=doc.GetElement(self.ElId)
-        P=sel.GetParameters('P3_Sup_S.app')[0].AsValueString()
-        return P
-
-    def materijal(self):
-        M=int(self.debMat)
-        return M
-
-    def Selektuj(self):
-        elementIdList = List[ElementId]()
-        elementIdList.Add(self.ElId)
-        sel = SetElementIds(elementIdList)
-        return sel
 
     def CODE(self):
         s='*\n'+ '827\n' +  str(self.RedniBroj) + '\n' + '1\n' + '11\n' 
@@ -342,6 +287,9 @@ class P3827:
         return s
 
 def NapraviP3827(Elementi):
+    '''
+    Funkcija od Elemenata na unosu pravi elemente klase P3827 i popunjava ga parametrima iz modela,kao i nephodnim parametrima za softver BRAVO i prirubnicama
+    '''
     doc=__revit__.ActiveUIDocument.Document
     from  Autodesk.Revit.DB import BuiltInParameter
     parametri827=['P3 - P Width_1','P3 - O Width_2','P3 - B Depth','P3 - N Width_3','P3 - Angle_Dx','P3 - R Radius_1','P3 - S Radius_2','P3 - E Line_1','P3 - G Line_3',\
@@ -360,36 +308,18 @@ def NapraviP3827(Elementi):
     return listaLastinRep
 
 ##### ##### ##### ##### KLASA P3827 ČEP-END CAP!!!!!!
-class P3843:
+class P3843(P3):
     holeNew='-1'
     def __init__(self,DebMat, Mark,ElId ,**kwargs):
+        P3.__init__(self,DebMat, Mark,ElId)
         for key, value in kwargs.items():
             setattr(self, key, value)
-        self.DebMat=DebMat
-        self.Mark=Mark
         self.RedniBroj=None
-        self.ElId=ElId
         self.Prirubnice=[]
 		    
     def __str__(self):
         s =self.__class__.__name__ +'>>>' +' A:'+self.P3_Sup_a +' B:'+self.P3_Sup_b +' Mark:'+ self.Mark +' ID:'+ self.ElId
         return s
-
-    def povrsina(self):
-        doc=__revit__.ActiveUIDocument.Document
-        sel=doc.GetElement(self.ElId)
-        P=sel.GetParameters('P3_Sup_S.app')[0].AsValueString()
-        return P
-
-    def materijal(self):
-        M=int(self.debMat)
-        return M
-
-    def Selektuj(self):
-        elementIdList = List[ElementId]()
-        elementIdList.Add(self.ElId)
-        sel = SetElementIds(elementIdList)
-        return sel
 
     def CODE(self):
         s='*\n'+ '843\n' +  str(self.RedniBroj) + '\n' + '1\n' + '11\n' 
@@ -403,6 +333,9 @@ class P3843:
         return s
 
 def NapraviP3843(Elementi):
+    '''
+    Funkcija od Elemenata na unosu pravi elemente klase P3843 i popunjava ga parametrima iz modela,kao i nephodnim parametrima za softver BRAVO i prirubnicama
+    '''
     doc=__revit__.ActiveUIDocument.Document
     from  Autodesk.Revit.DB import BuiltInParameter
     parametri843=['P3_Sup_a','P3_Sup_b','cut90/45','holeDimension','holeDimension2','holeCenterX','holeCenterY']
@@ -422,39 +355,21 @@ def NapraviP3843(Elementi):
     return listaCepova
 
 ##### ##### ##### ##### KLASA P3853 RACVA-SKRETANJE-PROLAZ-Redukcija!!!!!!
-class P3853:
+class P3853(P3):
     cutDef_01='0'
     LineDef='0'
     LineType_012='1'
     def __init__(self,DebMat, Mark,ElId ,**kwargs):
+        P3.__init__(self,DebMat, Mark,ElId)
         for key, value in kwargs.items():
             setattr(self, key, value)
-        self.DebMat=DebMat
-        self.Mark=Mark
         self.RedniBroj=None
-        self.ElId=ElId
         self.Prirubnice=[]
 		    
     def __str__(self):
         s =self.__class__.__name__ +'>>>' +' C:'+ self.P3_CWidth_1 +' B:'+  self.P3_BDepth +\
             ' M:'+ self.P3_MWidth_2+ ' P:'+  self.P3_PWidth_3 +' Mark:'+ self.Mark +' ID:'+ self.ElId
         return s
-
-    def povrsina(self):
-        doc=__revit__.ActiveUIDocument.Document
-        sel=doc.GetElement(self.ElId)
-        P=sel.GetParameters('P3_Sup_S.app')[0].AsValueString()
-        return P
-
-    def materijal(self):
-        M=int(self.debMat)
-        return M
-
-    def Selektuj(self):
-        elementIdList = List[ElementId]()
-        elementIdList.Add(self.ElId)
-        sel = SetElementIds(elementIdList)
-        return sel
 
     def CODE(self):
         s='*\n'+ '853\n' +  str(self.RedniBroj) + '\n' + '1\n' + '11\n' 
@@ -470,6 +385,9 @@ class P3853:
         return s
 
 def NapraviP3853(Elementi):
+    '''
+    Funkcija od Elemenata na unosu pravi elemente klase P3853 i popunjava ga parametrima iz modela,kao i nephodnim parametrima za softver BRAVO i prirubnicama
+    '''
     doc=__revit__.ActiveUIDocument.Document
     from  Autodesk.Revit.DB import BuiltInParameter
     parametri853=['P3 - C Width_1','P3 - A Width_2','P3 - B Depth','P3 - M Width_2','P3 - P Width_3','P3 - E Line_1','P3 - F Line_2','P3 - G Line_3','P3 - RadiusInt'\
@@ -488,16 +406,14 @@ def NapraviP3853(Elementi):
 
 
 ##### ##### ##### ##### KLASA P3801 PRAVOUGAONI KANAL!!!!!!
-class P3801:
+class P3801(P3):
     ductType_1234=None  #ako je kanal iz jednog dela onda je 1.Moze biti i 2,3,4
     cutOption=None  #da li se seče ili ne
     def __init__ (self,DebMat, Mark,ElId ,**kwargs):
+        P3.__init__(self,DebMat, Mark,ElId)
         for key, value in kwargs.items():
             setattr(self, key, value)
-        self.DebMat=DebMat
-        self.Mark=Mark
         self.RedniBroj=None
-        self.ElId=ElId
         self.Prirubnice=[]
         
         Obim=(float(self.P3_Width)+float(self.P3_Height))*2
@@ -512,22 +428,6 @@ class P3801:
         s =self.__class__.__name__ +'>>>' +' W:'+self.P3_Width +' H:'+self.P3_Height+' L:'+self.P3_Length+' Mark:'+self.Mark +' ID:'+ self.ElId
         return s
 
-    def povrsina(self):
-        doc=__revit__.ActiveUIDocument.Document
-        sel=doc.GetElement(self.ElId)
-        P=sel.GetParameters('Area')[0].AsValueString()
-        return P
-
-    def materijal(self):
-        M=int(self.debMat)
-        return M
-
-    def Selektuj(self):
-        elementIdList = List[ElementId]()
-        elementIdList.Add(self.ElId)
-        sel = SetElementIds(elementIdList)
-        return sel
-
     def CODE(self):
         s='*\n'+ '801\n' + str(self.RedniBroj) + '\n' + '1\n' + '11\n' 
         l=[self.P3_Width,self.P3_Height,self.P3_Length,self.ductType_1234,self.cutOption]
@@ -540,6 +440,9 @@ class P3801:
         return s
 
 def NapraviP3801(Elementi):
+    '''
+    Funkcija od Elemenata na unosu pravi elemente klase P3801 i popunjava ga parametrima iz modela,kao i nephodnim parametrima za softver BRAVO i prirubnicama
+    '''
     doc=__revit__.ActiveUIDocument.Document
     from  Autodesk.Revit.DB import BuiltInParameter
     parametri801=['Width','Height','Length']
