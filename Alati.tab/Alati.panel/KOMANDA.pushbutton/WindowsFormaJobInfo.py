@@ -49,7 +49,7 @@ class ProzorJ(System.Windows.Forms.Form):
         self.dugme2.Click+=self.pritisnutoCancel
         #######################################
         #KREIRANJE UNOSA INFORMACIJA O POSLU
-        listaLabela=['Reference','Description','Customer Name','Address','Telephone','Order Date','Order Date','Notes']
+        listaLabela=['Reference*','Description*','Customer Name*','Address','Telephone','Order Date','Order Date','Notes']
         self.listaInputa=[None]*len(listaLabela)
         y=80
         for i in range(len(listaLabela)):
@@ -95,14 +95,17 @@ class ProzorJ(System.Windows.Forms.Form):
         '''
         DOGADJAJ NA STISNUTO DUGME 'DALJE'  
         '''
-        #TREBA DODATI AKCIJU DA NA NEPRAVILNO UNET UNOS ILI PRAZAN ISKOCI OBAVESTENJE
-        # for i in self.listaInputa:
-        #     print(i.Text)
-        # else:
-        #     pass
-        self.izlaz=[i.Text for i in self.listaInputa]
-        self.Status = True
-        print(self.Status)
+        praznaPolja=0
+        for i in range(3):
+            if len(self.listaInputa[i].Text)==0:
+                praznaPolja+=1
+        if praznaPolja>0:
+            PraznoPoljeGreska = System.Windows.Forms.ErrorProvider()
+            PraznoPoljeGreska.SetError(sender, 'ПОЉА СА (*) СУ ОБАВЕЗНА')
+        else:
+            self.izlaz=[i.Text for i in self.listaInputa]
+            self.Status = True
+            self.Close()
     
     def pritisnutoCancel(self,sender,args):
         '''
@@ -122,16 +125,16 @@ def FormaProgramaJob(ulaz):
     for i in range(len(ulaz)):
         FormaJ.listaInputa[i].Text = ulaz[i]
     Application.EnableVisualStyles()    
-    Application.Run(FormaJ)                   
+    Application.Run(FormaJ)          
 
     return FormaJ.Status,FormaJ.izlaz
+    
 
 if __name__=='__main__':   #ZA TESTIRANJE-NIJE GLAVNI PROGRAM
-    from multiprocessing import Process
     ulaz=['A','V','l','r','k','V','s','\n '] 
-    p=Process(target=FormaProgramaJob,args=[ulaz])
-    p.start()
-    p.join()
+    a=FormaProgramaJob(ulaz)
+    print(a[0])
+
 
     
 
