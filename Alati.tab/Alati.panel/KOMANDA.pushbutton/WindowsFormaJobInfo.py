@@ -95,14 +95,14 @@ class ProzorJ(System.Windows.Forms.Form):
         '''
         DOGADJAJ NA STISNUTO DUGME 'DALJE'  
         '''
-        #TREBA DODATI AKCIJU DA NA NEPRAVILNO UINET UNOS ILI PRAZAN ISKOCI OBAVESTENJE
+        #TREBA DODATI AKCIJU DA NA NEPRAVILNO UNET UNOS ILI PRAZAN ISKOCI OBAVESTENJE
         # for i in self.listaInputa:
         #     print(i.Text)
         # else:
         #     pass
         self.izlaz=[i.Text for i in self.listaInputa]
         self.Status = True
-        self.Close()
+        print(self.Status)
     
     def pritisnutoCancel(self,sender,args):
         '''
@@ -127,9 +127,13 @@ def FormaProgramaJob(ulaz):
     return FormaJ.Status,FormaJ.izlaz
 
 if __name__=='__main__':   #ZA TESTIRANJE-NIJE GLAVNI PROGRAM
-    a=FormaProgramaJob(['A','V','l','r','k','V','s','\n '] )
-    print(a[1])
+    from multiprocessing import Process
+    ulaz=['A','V','l','r','k','V','s','\n '] 
+    p=Process(target=FormaProgramaJob,args=[ulaz])
+    p.start()
+    p.join()
 
+    
 
     
 

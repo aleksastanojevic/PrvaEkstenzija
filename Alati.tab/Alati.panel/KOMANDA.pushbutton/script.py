@@ -67,10 +67,6 @@ if __name__ == '__main__': #GLAVNI PROGRAM
         StatusUI2=pokrenutUI2[0]
         UnosOPoslu=pokrenutUI2[1]
     if StatusUI1 and StatusUI2:  #PROGRAM SE MOZE POKRENUTI-Status predtavlja dugme dalje na prvom i drugom UI
-        Posao=NapraviNoviPosao(UnosOPoslu)
-        KOD+=Posao.CODE()
-        RedniBroj=1  # Redni broj pocinje od 1 i ide kroz sve elemente jednog posla
-
         Kolena=NapraviP3802(DictKodova[802])
         TRacve=NapraviP3803(DictKodova[803])
         Redukcije=NapraviP3847(DictKodova[847])
@@ -82,6 +78,9 @@ if __name__ == '__main__': #GLAVNI PROGRAM
 
         P3Elementi=Kolena+TRacve+Redukcije+Cipele+LastinRep+Cep+RacvaRedukcije+Kanali
 
+        Posao=NapraviNoviPosao(UnosOPoslu)
+        KOD+=Posao.CODE()
+        RedniBroj=1  # Redni broj pocinje od 1 i ide kroz sve elemente jednog posla
         for P3 in P3Elementi:
             P3.RedniBroj=RedniBroj
             RedniBroj+=1
