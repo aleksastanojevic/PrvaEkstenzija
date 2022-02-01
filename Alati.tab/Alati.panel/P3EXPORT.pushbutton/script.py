@@ -1,4 +1,5 @@
 # This Python file uses the following encoding: utf-8
+import codecs
 import sys
 import clr
 clr.AddReference("System.Windows.Forms")
@@ -35,24 +36,23 @@ if __name__ == '__main__': #GLAVNI PROGRAM
         try:
             OdabraniSistem=ListaSistema[ListaOdabira[0]]
             [Elementi.append(element)for element in OdabraniSistem.DuctNetwork if element.Category.Name in DozCat]
-        except:
             if len(Elementi)==0:
-                WF.MessageBox.Show(" У СИСТЕМУ НЕМА КАНАЛСКИХ ЕЛЕМЕНАТА !", 'УПС')
-                sys.exit('')
+                WF.MessageBox.Show(" У СИСТЕМУ НЕМА КАНАЛСКИХ ЕЛЕМЕНАТА !", '  УПС  ')
+                sys.exit(1)
+        except:
+            WF.MessageBox.Show(" НЕМА СИСТЕМА У ПРОЈЕКТУ", '  УПС  ')
+            sys.exit(1)
     elif Opcija == 2:
         [Elementi.append(element) for element in ListaOdabira if element.Category.Name in DozCat]
-        if len(Elementi)==0:
-            WF.MessageBox.Show(" НЕМА КАНАЛСКИХ ЕЛЕМЕНАТА У ОДАБИРУ !", 'УПС')
-            sys.exit('')
     elif Opcija ==3:
-        OdabraniScheduli = [ListaSchedula[sch] for sch in ListaOdabira]
-        print(ListaOdabira)
-        for sch in OdabraniScheduli:
-            [Elementi.append(i) for i in FilteredElementCollector(doc,sch.Id) if i.Category.Name in DozCat ]
-        if len(Elementi)==0:
-            WF.MessageBox.Show(" НЕМА КАНАЛСКИХ ЕЛЕМЕНАТА У ОДАБРАНИМ 'SCHEDULE-има !", 'УПС')
-            sys.exit('')
-
+        try:
+            OdabraniScheduli = [ListaSchedula[sch] for sch in ListaOdabira]
+            for sch in OdabraniScheduli:
+                [Elementi.append(i) for i in FilteredElementCollector(doc,sch.Id) if i.Category.Name in DozCat ]
+        except:
+            if len(Elementi)==0:
+                WF.MessageBox.Show(" НЕМА КАНАЛСКИХ ЕЛЕМЕНАТА У ОДАБРАНИМ 'SCHEDULE-има !", '  УПС  ')
+                sys.exit(3)
     DictKodova={801 :[], 802 :[],803:[],804:[],827:[],843:[],847:[],853:[],854:[],812:[]} #Kreira se dictionary po kodu elemenata i zatim se sortira u odredjenu listu unutar vrednosti kljuca()REVIT ELEMENATA
     for fiting in Elementi:
         tip=doc.GetElement(fiting.GetTypeId())  # GetElement Type
@@ -65,15 +65,16 @@ if __name__ == '__main__': #GLAVNI PROGRAM
                     DictKodova[kod].append(fiting)
         if paramD and paramD=='P3 - Rectangular' and fiting.Category.Name=='Ducts':
             DictKodova[801].append(fiting)
-    nula=0
-    for i in DictKodova:
-        if len(DictKodova[i])==0:
-            nula+=1
-    if nula==len(DictKodova):
-        WF.MessageBox.Show(" НЕМА 'P3' КАНАЛСКИХ ЕЛЕМЕНАТА ", 'УПС')
-        sys.exit('')
-    #PRAVLJANJE JEDINSTVENE LISTE DEFAULT VREDNOSTI ZA PODATKE O POSLU
     if StatusUI1:  
+        #PROVERA DA LI IMA ELEMENATA U JEDINSTVENOM RECNIKU ELEMENATA
+        nula=0
+        for i in DictKodova:
+            if len(DictKodova[i])==0:
+                nula+=1
+        if nula==len(DictKodova):
+            WF.MessageBox.Show(" НЕМА 'P3' КАНАЛСКИХ ЕЛЕМЕНАТА ", 'УПС')
+            sys.exit('')
+        #PRAVLJANJE JEDINSTVENE LISTE DEFAULT VREDNOSTI ZA PODATKE O POSLU
         SysRef=Elementi[0].LookupParameter('System Name').AsString()
         SysDes=SysRef + ' Ducting System'
         ClName = doc.ProjectInformation.ClientName
@@ -109,7 +110,7 @@ if __name__ == '__main__': #GLAVNI PROGRAM
         imeFajla=SysRef+'.BRV'
         lokacijaCuvanja=os.path.expanduser("~\\Desktop\\"+imeFajla) # CITA HOMEPATH I DODAJE DEKSTOP I IME FAJLA.BRV
         try:
-            with open(lokacijaCuvanja,'w') as f:
+            with codecs.open(lokacijaCuvanja,'w', 'utf-8') as f:   #ZA PYTHON 3 (with open(lokacijaCuvanja,'w', encoding='utf-8') as f:)
                 f.write(KOD)
                 WF.MessageBox.Show(" УСПЕШНО ЈЕ НАПИСАН КОД !",' УСПЕХ ')
                 subprocess.Popen('explorer /select ,'+lokacijaCuvanja , shell=True) # Otvara Windows Explorer sa selektovanim fajlom

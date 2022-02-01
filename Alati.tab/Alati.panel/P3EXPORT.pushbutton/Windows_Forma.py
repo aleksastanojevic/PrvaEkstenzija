@@ -193,22 +193,34 @@ class Prozor(Form):
         if self.radio1.Checked:
             self.Opcija=1
             self.izlaz.append(self.PadajucaLista.SelectedItem)
+            self.Status = True
+            self.Close()
         elif self.radio2.Checked:
             self.Opcija=2
             try: 
                 self.izlaz=self.selelem
+                if len(self.izlaz)==0:
+                    SelekcijaProblem = System.Windows.Forms.ErrorProvider()
+                    SelekcijaProblem.SetError(sender, " НИШТА НИЈЕ ИЗАБРАНО  ! !")
+                else:
+                    self.Status = True
+                    self.Close()
             except:
-                WF.MessageBox.Show(" ПРИТИСНИ ИЗАБЕРИ ИЗ МОДЕЛА ! !")
+                SelekcijaProblem = System.Windows.Forms.ErrorProvider()
+                SelekcijaProblem.SetError(sender, " ПРИТИСНИ ИЗАБЕРИ ИЗ МОДЕЛА ! !")
         elif self.radio3.Checked:
             self.Opcija=3
             for i in range(0,self.PadajucaLista3.CheckedItems.Count):
                 self.izlaz.append(self.PadajucaLista3.CheckedItems[i])
+            if len(self.izlaz)==0:
+                SchProblem = System.Windows.Forms.ErrorProvider()
+                SchProblem.SetError(sender, " НИШТА НИЈЕ ИЗАБРАНО  ! !")
+            else:
+                self.Status = True
+                self.Close()
         else:
             pass
-    
-        self.Status = True
-        self.Close()
-    
+
     def pritisnutoCancel(self,sender,args):
         '''
         DOGADJAJ NA STISNUTO IZADJI DUGME

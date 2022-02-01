@@ -1,5 +1,5 @@
 
-def pickobjects(self, sender, event):
+def pickobjects(self, sender, event):    #PROMENITI DA BUDE SELEKCIJA ALI SA  FILTEROM KATEGORIJE
     '''
     DOGADJAJ PRITISKOM NA DUGME IZABERI IZ MODELA
     '''
