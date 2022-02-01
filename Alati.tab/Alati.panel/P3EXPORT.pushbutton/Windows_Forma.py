@@ -189,6 +189,7 @@ class Prozor(Form):
         '''
         DOGADJAJ NA STISNUTO DUGME 'DALJE'  
         '''
+        import System.Windows.Forms as WF
         if self.radio1.Checked:
             self.Opcija=1
             self.izlaz.append(self.PadajucaLista.SelectedItem)
@@ -197,7 +198,7 @@ class Prozor(Form):
             try: 
                 self.izlaz=self.selelem
             except:
-                print('Nije nista izabrano')
+                WF.MessageBox.Show(" ПРИТИСНИ ИЗАБЕРИ ИЗ МОДЕЛА ! !")
         elif self.radio3.Checked:
             self.Opcija=3
             for i in range(0,self.PadajucaLista3.CheckedItems.Count):
@@ -259,29 +260,31 @@ def FormaPrograma():      #Kreiranje funkcije u kojoj se kreira objekat klase Pr
         from DodatneFunkcije import KolektorSistema
         from DodatneFunkcije import KolektorP3Schedula
     except:
-        print('Nedostaje modul DodatneFunkcije')
+        print('Nedostaje modul DodatneFunkcije.py')
     
-    if KolektorSistema():
+    if KolektorSistema(): #popunjava se lista sistema Forme
         ListaSistema=KolektorSistema()
         [Forma.PadajucaLista.Items.Add(sis) for sis in ListaSistema]
         Forma.PadajucaLista.SelectedIndex=0
     else:
-        Forma.PadajucaLista.Text='NE POSTOJI NI JEDAN SISTEM'  
+        Forma.PadajucaLista.Text='НЕМА СИСТЕМА'  
         ListaSistema=None
     ######  UCITAVANJE LISTE SCHEDULE-a IZ REVITA
     
-    if KolektorP3Schedula():
+    if KolektorP3Schedula():  #popunjava se lista schedule-a Forme
         ListaSchedula=KolektorP3Schedula()  
         [Forma.PadajucaLista3.Items.Add(sch, CheckState.Checked) for sch in ListaSchedula]
     else:
-        Forma.PadajucaLista3.Text='Nema P3 Schedule-a'
+        Forma.PadajucaLista3.Text='Нема - P3 Schedule-а'
         ListaSchedula=None
     Application.EnableVisualStyles()    
     Application.Run(Forma)
+    # print(Forma.izlaz)
     
     return Forma.Opcija, Forma.izlaz, ListaSchedula, ListaSistema,Forma.Status
 
 if __name__=='__main__': #ZA TESTIRANJE-NIJE GLAVNI PROGRAM
     pokrenutUI=FormaPrograma()
+    
     
         

@@ -52,8 +52,6 @@ def KolektorP3Schedula():
                 print('NE POSTOJI NI JEDAN SCHEDULE' )
             elif schedule.Name in Dozvoljeni:
                 imenaSchedula[schedule.Name]=schedule
-            else:
-                pass
         return imenaSchedula
     except:
         print('NIJE MOGUC PRISTUP REVITU C')
