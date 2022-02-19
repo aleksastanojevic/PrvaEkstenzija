@@ -14,27 +14,38 @@ else:
 
 konektori=[ElKon for ElKon in k if ElKon.IsConnected]
 KonElementi={}
+UklonjeniKonektori=[]
+konS=[]
 konU=[]
 konF=[]
-konS=[]
 for Kon in konektori:  #PROLAZI SE KROZ SVAKI KONEKTOR ELEMENTA
 	for Par in Kon.AllRefs:  #PROLAZI SE KROZ SVE UPARENE KONEKTORE TOG KONEKTORA (MOZE BITI VISE KONEKTORA KONEKTOVANO NA OVAJ KONEKTOR npr. IZOLACIJA)
 		if Par.Owner.Category.Name in dozvoljenaKategorija:  # ISPITUJE SE DA LI JE KONEKTOVANI ELEMENT U DOZVOLJENIM KATEGORIJAMA
 			# KonElementi[Par.Owner.Category.Name]=[Par.Owner]   # U RECNIK SE DODAJU SVI KONEKTOVANI ELEMENTI PO KATEGORIJI NA ULAZNI ELEMENT 
 			tip=doc.GetElement(Par.Owner.GetTypeId())
+			model=tip.get_Parameter(BuiltInParameter.ALL_MODEL_MODEL).AsString()
 			if Par.Owner.Category.Name == 'Duct Fittings':
 				try:
-					paramF=tip.GetParameters('P3 - Code')
-					konS.append(Kon)
+					paramF=tip.GetParameters('P3 - Code')[0].AsInteger()
 				except:
-					pass
-			if Par.Owner.Category.Name == 'Ducts':
-				try:
-					paramD=tip.get_Parameter(BuiltInParameter.ALL_MODEL_MODEL).AsString()
-					if paramD == 'P3 - Rectangular':
+					paramF=None
+				finally:
+					if (paramF ==812 or model == 'P3-TAP') and Par.GetMEPConnectorInfo().IsPrimary:
+						konU.append(Kon)
+					elif paramF ==812 and not Par.GetMEPConnectorInfo().IsPrimary:
 						konS.append(Kon)
-				except:
-					pass
+					elif model == 'P3-TAP'and not Par.GetMEPConnectorInfo().IsPrimary:
+						konF.append(Kon)
+					elif paramF ==843:
+						UklonjeniKonektori.append(Kon)
+					elif paramF:
+						konS.append(Kon)
+
+			if Par.Owner.Category.Name == 'Ducts':
+				paramD=tip.get_Parameter(BuiltInParameter.ALL_MODEL_MODEL).AsString()
+				if paramD == 'P3 - Rectangular':
+					konS.append(Kon)
+
 			if Par.Owner.Category.Name == 'Duct Accessories':
 				try:
 					paramDA=Par.Owner.GetParameters('TK_SetTipPrirubnice')[0].AsString()
@@ -59,5 +70,6 @@ for Kon in konektori:  #PROLAZI SE KROZ SVAKI KONEKTOR ELEMENTA
 print(konS)
 print(konU)
 print(konF)
+print(UklonjeniKonektori)
 
 # def ProveraFitinga(fiting):
