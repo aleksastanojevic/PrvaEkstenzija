@@ -37,13 +37,12 @@ for Kon in konektori:  #PROLAZI SE KROZ SVAKI KONEKTOR ELEMENTA
 					elif model == 'P3-TAP'and not Par.GetMEPConnectorInfo().IsPrimary:
 						konF.append(Kon)
 					elif paramF ==843:
-						UklonjeniKonektori.append(Kon)
+						UklonjeniKonektori.append(Kon) # ODSTRANJUJE SE KONEKTOR KOJI PRIPADA END CAP-u ili CEPU JER NA NJEGA NE IDE PRIRUBNICA
 					elif paramF:
 						konS.append(Kon)
 
 			if Par.Owner.Category.Name == 'Ducts':
-				paramD=tip.get_Parameter(BuiltInParameter.ALL_MODEL_MODEL).AsString()
-				if paramD == 'P3 - Rectangular':
+				if model == 'P3 - Rectangular':
 					konS.append(Kon)
 
 			if Par.Owner.Category.Name == 'Duct Accessories':
@@ -60,6 +59,8 @@ for Kon in konektori:  #PROLAZI SE KROZ SVAKI KONEKTOR ELEMENTA
 			if Par.Owner.Category.Name == 'Air Terminals':
 				konF.append(Kon)
 
+			if Par.Owner.Category.Name == 'Mechanical Equipment':
+				konU.append(Kon)
 
 			# W=Kon.Width*304.8
 			# H=Kon.Height*304.8
