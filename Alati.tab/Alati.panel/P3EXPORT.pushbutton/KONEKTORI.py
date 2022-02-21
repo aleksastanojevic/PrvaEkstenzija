@@ -5,6 +5,8 @@ dozvoljenaKategorija=['Duct Fittings',  'Duct Accessories', 'Air Terminals', 'Du
 #ISPITUJE SE ELEMENT NA ULAZU FUNKCIJE KOJE JE KATEGORIJE - U ZAVISNOSTI OD KATEGORIJE DRUGACIJE SE CITA KOJI SU KONEKTORI
 if element.Category.Name=='Duct Fittings': 
     k=element.MEPModel.ConnectorManager.Connectors		
+    TipElementa=doc.GetElement(Par.Owner.GetTypeId())
+    KODelementa=tip.GetParameters('P3 - Code')[0].AsInteger()
 elif element.Category.Name=='Ducts':
     k=element.ConnectorManager.Connectors
     dozvoljenaKategorija=dozvoljenaKategorija[0:3]
@@ -21,7 +23,6 @@ konF=[]
 for Kon in konektori:  #PROLAZI SE KROZ SVAKI KONEKTOR ELEMENTA
 	for Par in Kon.AllRefs:  #PROLAZI SE KROZ SVE UPARENE KONEKTORE TOG KONEKTORA (MOZE BITI VISE KONEKTORA KONEKTOVANO NA OVAJ KONEKTOR npr. IZOLACIJA)
 		if Par.Owner.Category.Name in dozvoljenaKategorija:  # ISPITUJE SE DA LI JE KONEKTOVANI ELEMENT U DOZVOLJENIM KATEGORIJAMA
-			# KonElementi[Par.Owner.Category.Name]=[Par.Owner]   # U RECNIK SE DODAJU SVI KONEKTOVANI ELEMENTI PO KATEGORIJI NA ULAZNI ELEMENT 
 			tip=doc.GetElement(Par.Owner.GetTypeId())
 			model=tip.get_Parameter(BuiltInParameter.ALL_MODEL_MODEL).AsString()
 			if Par.Owner.Category.Name == 'Duct Fittings':
@@ -30,6 +31,8 @@ for Kon in konektori:  #PROLAZI SE KROZ SVAKI KONEKTOR ELEMENTA
 				except:
 					paramF=None
 				finally:
+					if KODelementa == 812 and not Par.GetMEPConnectorInfo().IsPrimary:
+						konS.append(Kon)
 					if (paramF ==812 or model == 'P3-TAP') and Par.GetMEPConnectorInfo().IsPrimary:
 						konU.append(Kon)
 					elif paramF ==812 and not Par.GetMEPConnectorInfo().IsPrimary:
@@ -42,12 +45,16 @@ for Kon in konektori:  #PROLAZI SE KROZ SVAKI KONEKTOR ELEMENTA
 						konS.append(Kon)
 
 			if Par.Owner.Category.Name == 'Ducts':
+				if KODelementa == 812 and Par.GetMEPConnectorInfo().IsPrimary:
+					konF.append(Kon)
 				if model == 'P3 - Rectangular':
 					konS.append(Kon)
 
 			if Par.Owner.Category.Name == 'Duct Accessories':
 				try:
 					paramDA=Par.Owner.GetParameters('TK_SetTipPrirubnice')[0].AsString()
+					if KODelementa == 812 and not Par.GetMEPConnectorInfo().IsPrimary:
+						konU.append(Kon)
 					if paramDA.upper()=='U':
 						konU.append(Kon)
 					elif paramDA.upper()=='F':
