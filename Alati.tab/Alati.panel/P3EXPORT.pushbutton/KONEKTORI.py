@@ -5,11 +5,12 @@ dozvoljenaKategorija=['Duct Fittings',  'Duct Accessories', 'Air Terminals', 'Du
 #ISPITUJE SE ELEMENT NA ULAZU FUNKCIJE KOJE JE KATEGORIJE - U ZAVISNOSTI OD KATEGORIJE DRUGACIJE SE CITA KOJI SU KONEKTORI
 if element.Category.Name=='Duct Fittings': 
     k=element.MEPModel.ConnectorManager.Connectors		
-    TipElementa=doc.GetElement(Par.Owner.GetTypeId())
-    KODelementa=tip.GetParameters('P3 - Code')[0].AsInteger()
+    TipElementa=doc.GetElement(element.GetTypeId())
+    KODelementa=TipElementa.GetParameters('P3 - Code')[0].AsInteger() # Ne treba Try jer je na ulazu element koji sigurno ima vrednost P3Code-a
 elif element.Category.Name=='Ducts':
     k=element.ConnectorManager.Connectors
     dozvoljenaKategorija=dozvoljenaKategorija[0:3]
+    KODelementa=None
 else: 
     print('Kategorija elementa nije dobra')
     exit(1)
@@ -44,18 +45,18 @@ for Kon in konektori:  #PROLAZI SE KROZ SVAKI KONEKTOR ELEMENTA
 					elif paramF:
 						konS.append(Kon)
 
-			if Par.Owner.Category.Name == 'Ducts':
-				if KODelementa == 812 and Par.GetMEPConnectorInfo().IsPrimary:
+			elif Par.Owner.Category.Name == 'Ducts':
+				if KODelementa == 812 and Kon.GetMEPConnectorInfo().IsPrimary:   #ako je primaran konektor elementa onda je ubod u kanal , u svakom drugom slucaju ako je P3 kanal onda je  S
 					konF.append(Kon)
-				if model == 'P3 - Rectangular':
+				elif model == 'P3 - Rectangular':
 					konS.append(Kon)
 
-			if Par.Owner.Category.Name == 'Duct Accessories':
+			elif Par.Owner.Category.Name == 'Duct Accessories':
 				try:
 					paramDA=Par.Owner.GetParameters('TK_SetTipPrirubnice')[0].AsString()
 					if KODelementa == 812 and not Par.GetMEPConnectorInfo().IsPrimary:
 						konU.append(Kon)
-					if paramDA.upper()=='U':
+					elif paramDA.upper()=='U':
 						konU.append(Kon)
 					elif paramDA.upper()=='F':
 						konF.append(Kon)
@@ -63,12 +64,14 @@ for Kon in konektori:  #PROLAZI SE KROZ SVAKI KONEKTOR ELEMENTA
 						pass
 				except:
 					konU.append(Kon)
-			if Par.Owner.Category.Name == 'Air Terminals':
+			elif Par.Owner.Category.Name == 'Air Terminals':
 				konF.append(Kon)
 
-			if Par.Owner.Category.Name == 'Mechanical Equipment':
+			elif Par.Owner.Category.Name == 'Mechanical Equipment':
 				konU.append(Kon)
-
+			else:
+				print('KATEGORIJA KONEKTOVANOG ELEMENTA NIJE DOZVOLJENA')
+				exit(1)
 			# W=Kon.Width*304.8
 			# H=Kon.Height*304.8
 			# print(str(W) + '/'+  str(H))
