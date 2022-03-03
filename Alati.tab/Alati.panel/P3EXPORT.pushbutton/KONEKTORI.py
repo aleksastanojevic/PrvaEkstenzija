@@ -32,9 +32,9 @@ for Kon in konektori:  #PROLAZI SE KROZ SVAKI KONEKTOR ELEMENTA
 				except:
 					paramF=None
 				finally:
-					if KODelementa == 812 and not Par.GetMEPConnectorInfo().IsPrimary:
+					if KODelementa == 812 and not Kon.GetMEPConnectorInfo().IsPrimary:
 						konS.append(Kon)
-					if (paramF ==812 or model == 'P3-TAP') and Par.GetMEPConnectorInfo().IsPrimary:
+					elif (paramF ==812 or model == 'P3-TAP') and Par.GetMEPConnectorInfo().IsPrimary:
 						konU.append(Kon)
 					elif paramF ==812 and not Par.GetMEPConnectorInfo().IsPrimary:
 						konS.append(Kon)
@@ -54,7 +54,7 @@ for Kon in konektori:  #PROLAZI SE KROZ SVAKI KONEKTOR ELEMENTA
 			elif Par.Owner.Category.Name == 'Duct Accessories':
 				try:
 					paramDA=Par.Owner.GetParameters('TK_SetTipPrirubnice')[0].AsString()
-					if KODelementa == 812 and not Par.GetMEPConnectorInfo().IsPrimary:
+					if KODelementa == 812 and not Kon.GetMEPConnectorInfo().IsPrimary:
 						konU.append(Kon)
 					elif paramDA.upper()=='U':
 						konU.append(Kon)
