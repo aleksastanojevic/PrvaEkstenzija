@@ -81,7 +81,7 @@ def PretvoriJedinicu(RevitParametar):
 
 def Prirubnice(element):
     from  Autodesk.Revit.DB import BuiltInParameter
-
+    doc=__revit__.ActiveUIDocument.Document 
     dozvoljenaKategorija=['Duct Fittings',  'Duct Accessories', 'Air Terminals', 'Ducts','Mechanical Equipment']
     #ISPITUJE SE ELEMENT NA ULAZU FUNKCIJE KOJE JE KATEGORIJE - U ZAVISNOSTI OD KATEGORIJE DRUGACIJE SE CITA KOJI SU KONEKTORI
     if element.Category.Name=='Duct Fittings': 
@@ -95,7 +95,6 @@ def Prirubnice(element):
     else: 
         print('Kategorija elementa nije dobra')
         exit(1)
-
     konektori=[ElKon for ElKon in k if ElKon.IsConnected]
     KonElementi={}
     UklonjeniKonektori=[]
@@ -116,7 +115,7 @@ def Prirubnice(element):
                         if KODelementa == 812 and not Kon.GetMEPConnectorInfo().IsPrimary:
                             konS.append(Kon)
                         elif (paramF ==812 or model == 'P3-TAP') and Par.GetMEPConnectorInfo().IsPrimary:
-                            konU.append(Kon)
+                            konU.append(Kon)   # OTVOR U KANALU ZA UBOD CIPELICE- TREBA PROCITATI IZ FAMILIJE PRAVU DIMENZIJU
                         elif paramF ==812 and not Par.GetMEPConnectorInfo().IsPrimary:
                             konS.append(Kon)
                         elif model == 'P3-TAP'and not Par.GetMEPConnectorInfo().IsPrimary:
@@ -125,10 +124,11 @@ def Prirubnice(element):
                             UklonjeniKonektori.append(Kon) # ODSTRANJUJE SE KONEKTOR KOJI PRIPADA END CAP-u ili CEPU JER NA NJEGA NE IDE PRIRUBNICA
                         elif paramF:
                             konS.append(Kon)
+                            #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!TREBA DODATI KONEKTORE OD SPAJANJA NA UNION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
                 elif Par.Owner.Category.Name == 'Ducts':
                     if KODelementa == 812 and Kon.GetMEPConnectorInfo().IsPrimary:   #ako je primaran konektor elementa onda je ubod u kanal , u svakom drugom slucaju ako je P3 kanal onda je  S
-                        konF.append(Kon)
+                        konF.append(Kon)          #UBOD CIPELICE U KANAL- DIMENZIJA NIJE DOBRA VEC SE POSEBNO CITA IZ FAMILIJE
                     elif model == 'P3 - Rectangular':
                         konS.append(Kon)
 
@@ -155,8 +155,5 @@ def Prirubnice(element):
                     exit(1)
     
     prirubnice={'S': konS,'U':konU,'F':konF}
+
     return prirubnice
-
-
-     
-    

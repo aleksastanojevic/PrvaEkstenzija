@@ -13,6 +13,7 @@ from Autodesk.Revit.DB.Analysis import *
 from Autodesk.Revit.UI import *
 from System.Collections.Generic import *
 from P3CODE import NapraviNoviPosao, NapraviP3802 , NapraviP3803, NapraviP3847, NapraviP3812,NapraviP3827,NapraviP3843,NapraviP3853,NapraviP3801
+from DodatneFunkcije import Prirubnice
 from Windows_Forma import FormaPrograma
 from WindowsFormaJobInfo import FormaProgramaJob
 clr.AddReference('RevitAPIUI')
@@ -88,7 +89,9 @@ if __name__ == '__main__': #GLAVNI PROGRAM
         pokrenutUI2=FormaProgramaJob(ListaDefaultVrednosti)
         StatusUI2=pokrenutUI2[0]
         UnosOPoslu=pokrenutUI2[1]
-    if StatusUI1 and StatusUI2:  #PROGRAM SE MOZE POKRENUTI-Status predtavlja dugme dalje na prvom i drugom UI
+    if StatusUI1 and StatusUI2:  #PROGRAM SE MOZE POKRENUTI-Status predstavlja dugme dalje na prvom i drugom UI
+
+
         Kolena=NapraviP3802(DictKodova[802])
         TRacve=NapraviP3803(DictKodova[803])
         Redukcije=NapraviP3847(DictKodova[847])
@@ -120,5 +123,15 @@ if __name__ == '__main__': #GLAVNI PROGRAM
 
 
 
-        
+# PROBA ZA PRIRUBNICE - RADII!!!!!
+    # ZBIR=[]
+    # PrirubniceZ=[]
+    # for kod,elementi  in DictKodova.items():
+    #     ZBIR.append(elementi)
+    # flat_list = [item for sublist in ZBIR for item in sublist]
+    # # print(flat_list)
+    # for i in flat_list:
+    #     q=Prirubnice(i)
+    #     print(q)
+    
 
