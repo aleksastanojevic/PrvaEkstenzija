@@ -124,6 +124,7 @@ if __name__ == '__main__': #GLAVNI PROGRAM
 
 
 # PROBA ZA PRIRUBNICE - RADII!!!!!
+
     # ZBIR=[]
     # PrirubniceZ=[]
     # for kod,elementi  in DictKodova.items():

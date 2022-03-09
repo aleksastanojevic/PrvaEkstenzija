@@ -124,7 +124,8 @@ def Prirubnice(element):
                             UklonjeniKonektori.append(Kon) # ODSTRANJUJE SE KONEKTOR KOJI PRIPADA END CAP-u ili CEPU JER NA NJEGA NE IDE PRIRUBNICA
                         elif paramF:
                             konS.append(Kon)
-                            #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!TREBA DODATI KONEKTORE OD SPAJANJA NA UNION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        elif Par.Owner.MEPModel.PartType == PartType.Union:
+                            konS.append(Kon)
 
                 elif Par.Owner.Category.Name == 'Ducts':
                     if KODelementa == 812 and Kon.GetMEPConnectorInfo().IsPrimary:   #ako je primaran konektor elementa onda je ubod u kanal , u svakom drugom slucaju ako je P3 kanal onda je  S
