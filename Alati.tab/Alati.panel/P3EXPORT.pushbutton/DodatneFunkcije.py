@@ -81,6 +81,7 @@ def PretvoriJedinicu(RevitParametar):
 
 def Prirubnice(element):
     from  Autodesk.Revit.DB import BuiltInParameter
+    from  Autodesk.Revit.DB import PartType
     doc=__revit__.ActiveUIDocument.Document 
     dozvoljenaKategorija=['Duct Fittings',  'Duct Accessories', 'Air Terminals', 'Ducts','Mechanical Equipment']
     #ISPITUJE SE ELEMENT NA ULAZU FUNKCIJE KOJE JE KATEGORIJE - U ZAVISNOSTI OD KATEGORIJE DRUGACIJE SE CITA KOJI SU KONEKTORI

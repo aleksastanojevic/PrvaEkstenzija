@@ -125,14 +125,14 @@ if __name__ == '__main__': #GLAVNI PROGRAM
 
 # PROBA ZA PRIRUBNICE - RADII!!!!!
 
-    # ZBIR=[]
-    # PrirubniceZ=[]
-    # for kod,elementi  in DictKodova.items():
-    #     ZBIR.append(elementi)
-    # flat_list = [item for sublist in ZBIR for item in sublist]
-    # # print(flat_list)
-    # for i in flat_list:
-    #     q=Prirubnice(i)
-    #     print(q)
+    ZBIR=[]
+    PrirubniceZ=[]
+    for kod,elementi  in DictKodova.items():
+        ZBIR.append(elementi)
+    flat_list = [item for sublist in ZBIR for item in sublist]
+    # print(flat_list)
+    for i in flat_list:
+        q=Prirubnice(i)
+        print(q)
     
 
