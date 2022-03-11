@@ -13,7 +13,7 @@ from Autodesk.Revit.DB.Analysis import *
 from Autodesk.Revit.UI import *
 from System.Collections.Generic import *
 from P3CODE import NapraviNoviPosao, NapraviP3802 , NapraviP3803, NapraviP3847, NapraviP3812,NapraviP3827,NapraviP3843,NapraviP3853,NapraviP3801
-from DodatneFunkcije import Prirubnice
+from Prirubnice import NadjiPrirubnice
 from Windows_Forma import FormaPrograma
 from WindowsFormaJobInfo import FormaProgramaJob
 clr.AddReference('RevitAPIUI')
@@ -107,6 +107,9 @@ if __name__ == '__main__': #GLAVNI PROGRAM
         KOD+=Posao.CODE()
         RedniBroj=1  # Redni broj pocinje od 1 i ide kroz sve elemente jednog posla
         for P3 in P3Elementi:
+
+            #OVDE UBACITI KALKULACIJU PRIRUBNICA
+
             P3.RedniBroj=RedniBroj
             RedniBroj+=1
             KOD+=P3.CODE()
@@ -125,14 +128,23 @@ if __name__ == '__main__': #GLAVNI PROGRAM
 
 # PROBA ZA PRIRUBNICE - RADII!!!!!
 
-    ZBIR=[]
-    PrirubniceZ=[]
-    for kod,elementi  in DictKodova.items():
-        ZBIR.append(elementi)
-    flat_list = [item for sublist in ZBIR for item in sublist]
-    # print(flat_list)
-    for i in flat_list:
-        q=Prirubnice(i)
-        print(q)
+
+    # ZBIR=[]
+    PrirubniceS=[]
+    PrirubniceU=[]
+    PrirubniceF=[]
+    # for kod,elementi  in DictKodova.items():
+    #     ZBIR.append(elementi)
+    # flat_list = [item for sublist in ZBIR for item in sublist]
+    # # print(flat_list)
+    # for i in flat_list:
+    #     q=Prirubnice(i)
+    #     print(q)
     
 
+    # for i in P3Elementi:
+    #     e=doc.GetElement(i.ElId)
+    #     p=NadjiPrirubnice(e)
+
+    #     i.NadjiPrirubnice=p
+    #     print('PRIR', i.Prirubnice)
