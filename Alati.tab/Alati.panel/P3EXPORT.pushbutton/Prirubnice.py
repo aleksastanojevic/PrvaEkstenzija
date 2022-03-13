@@ -4,8 +4,32 @@ class P3Prirubnica():
         self.Duzina=Duzina
 
     def __str__(self):
-        s=self.TipPrirubnice + ' : ' + self.Duzina
+        s=self.TipPrirubnice +  self.Duzina
         return s
+
+
+def CitacKonektoraS(Konektor):
+    P1=[P3Prirubnica('S',Konektor.Width*304.8) for i in range(2)] 
+    P2=[P3Prirubnica('S',Konektor.Height*304.8) for i in range(2)] 
+    return P1+P2      
+def CitacKonektoraU_UBOD(Konektor):
+    #Ovde procitatu parametar cipelice
+    P1=P3Prirubnica('U',Konektor.Width*304.8)
+    P2=P3Prirubnica('U',Konektor.Width*304.8)
+    return P1
+def CitacKonektoraU(Konektor):
+    P1=[P3Prirubnica('U',Konektor.Width*304.8) for i in range(2)] 
+    P2=[P3Prirubnica('U',Konektor.Height*304.8) for i in range(2)] 
+    return P1+P2   
+def CitacKonektoraF(Konektor):
+    P1=[P3Prirubnica('F',Konektor.Width*304.8) for i in range(2)] 
+    P2=[P3Prirubnica('F',Konektor.Height*304.8) for i in range(2)] 
+    return P1+P2   
+def CitacKonektoraF_UBOD(Konektor):
+    #Ovde procitatu parametar cipelice
+    P1=P3Prirubnica('F',Konektor.Width*304.8 )
+    P2=P3Prirubnica('F',Konektor.Width*304.8 )
+    return P1
 
 def NadjiPrirubnice(element):
     from  Autodesk.Revit.DB import BuiltInParameter
@@ -25,10 +49,8 @@ def NadjiPrirubnice(element):
         print('Kategorija elementa nije dobra')
         exit(1)
     konektori=[ElKon for ElKon in k if ElKon.IsConnected]
+    PRIRUBNICElista=[]
     UklonjeniKonektori=[]
-    konS=[]
-    konU=[]
-    konF=[]
     for Kon in konektori:  #PROLAZI SE KROZ SVAKI KONEKTOR ELEMENTA
         for Par in Kon.AllRefs:  #PROLAZI SE KROZ SVE UPARENE KONEKTORE TOG KONEKTORA (MOZE BITI VISE KONEKTORA KONEKTOVANO NA OVAJ KONEKTOR npr. IZOLACIJA)
             if Par.Owner.Category.Name in dozvoljenaKategorija:  # ISPITUJE SE DA LI JE KONEKTOVANI ELEMENT U DOZVOLJENIM KATEGORIJAMA
@@ -41,52 +63,49 @@ def NadjiPrirubnice(element):
                         paramF=None
                     finally:
                         if KODelementa == 812 and not Kon.GetMEPConnectorInfo().IsPrimary:
-                            konS.append(Kon)
+                            PRIRUBNICElista.append(CitacKonektoraS(Kon))
                         elif (paramF ==812 or model == 'P3-TAP') and Par.GetMEPConnectorInfo().IsPrimary:
-                            konU.append(Kon)   # OTVOR U KANALU ZA UBOD CIPELICE- TREBA PROCITATI IZ FAMILIJE PRAVU DIMENZIJU
+                            PRIRUBNICElista.append(CitacKonektoraU_UBOD(Kon))   # OTVOR U KANALU ZA UBOD CIPELICE- TREBA PROCITATI IZ FAMILIJE PRAVU DIMENZIJU
                         elif paramF ==812 and not Par.GetMEPConnectorInfo().IsPrimary:
-                            konS.append(Kon)
+                            PRIRUBNICElista.append(CitacKonektoraS(Kon))
                         elif model == 'P3-TAP'and not Par.GetMEPConnectorInfo().IsPrimary:
-                            konF.append(Kon)
+                            PRIRUBNICElista.append(CitacKonektoraF(Kon))
                         elif paramF ==843:
                             UklonjeniKonektori.append(Kon) # ODSTRANJUJE SE KONEKTOR KOJI PRIPADA END CAP-u ili CEPU JER NA NJEGA NE IDE PRIRUBNICA
-                        elif paramF:
-                            konS.append(Kon)
-                        elif Par.Owner.MEPModel.PartType == PartType.Union:
-                            konS.append(Kon)
-
+                        elif Par.Owner.MEPModel.PartType == PartType.Union or paramF:
+                            PRIRUBNICElista.append(CitacKonektoraS(Kon))
                 elif Par.Owner.Category.Name == 'Ducts':
                     if KODelementa == 812 and Kon.GetMEPConnectorInfo().IsPrimary:   #ako je primaran konektor elementa onda je ubod u kanal , u svakom drugom slucaju ako je P3 kanal onda je  S
-                        konF.append(Kon)          #UBOD CIPELICE U KANAL- DIMENZIJA NIJE DOBRA VEC SE POSEBNO CITA IZ FAMILIJE
+                        PRIRUBNICElista.append(CitacKonektoraF_UBOD(Kon))     #UBOD CIPELICE U KANAL- DIMENZIJA NIJE DOBRA VEC SE POSEBNO CITA IZ FAMILIJE
                     elif model == 'P3 - Rectangular':
-                        konS.append(Kon)
-
+                        PRIRUBNICElista.append(CitacKonektoraS(Kon))
                 elif Par.Owner.Category.Name == 'Duct Accessories':
                     try:
                         paramDA=Par.Owner.GetParameters('TK_SetTipPrirubnice')[0].AsString()
                         if KODelementa == 812 and not Kon.GetMEPConnectorInfo().IsPrimary:
-                            konU.append(Kon)
+                            PRIRUBNICElista.append(CitacKonektoraU(Kon))    #PROVERITI !!!!!
                         elif paramDA.upper()=='U':
-                            konU.append(Kon)
+                            PRIRUBNICElista.append(CitacKonektoraU(Kon))
                         elif paramDA.upper()=='F':
-                            konF.append(Kon)
+                            PRIRUBNICElista.append(CitacKonektoraF(Kon))
                         else:
                             pass
                     except:
-                        konU.append(Kon)
+                        PRIRUBNICElista.append(CitacKonektoraU(Kon)) 
                 elif Par.Owner.Category.Name == 'Air Terminals':
-                    konF.append(Kon)
+                    PRIRUBNICElista.append(CitacKonektoraF(Kon))
 
                 elif Par.Owner.Category.Name == 'Mechanical Equipment':
-                    konU.append(Kon)
+                    PRIRUBNICElista.append(CitacKonektoraU(Kon))
                 else:
                     print('KATEGORIJA KONEKTOVANOG ELEMENTA NIJE DOZVOLJENA')
                     exit(1)
-    
-    # for i in konS:
-    #     P=P3Prirubnica('S',i.Width)
 
 
-    prirubnice={'S': konS,'U':konU,'F':konF}
+    return PRIRUBNICElista
 
-    return prirubnice
+if __name__=='__main__':
+    p=NadjiPrirubnice(a)
+    flat_list = [item for sublist in p for item in sublist]
+    for i in flat_list:
+        print(i)

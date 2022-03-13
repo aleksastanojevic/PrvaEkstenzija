@@ -136,15 +136,15 @@ if __name__ == '__main__': #GLAVNI PROGRAM
     # for kod,elementi  in DictKodova.items():
     #     ZBIR.append(elementi)
     # flat_list = [item for sublist in ZBIR for item in sublist]
-    # # print(flat_list)
+    # # print(flat_list)+
     # for i in flat_list:
     #     q=Prirubnice(i)
     #     print(q)
     
 
-    # for i in P3Elementi:
-    #     e=doc.GetElement(i.ElId)
-    #     p=NadjiPrirubnice(e)
+    for i in P3Elementi:
+        e=doc.GetElement(i.ElId)
+        p=NadjiPrirubnice(e)
 
-    #     i.NadjiPrirubnice=p
-    #     print('PRIR', i.Prirubnice)
+        i.NadjiPrirubnice=p
+        print('PRIR', i.Prirubnice)
