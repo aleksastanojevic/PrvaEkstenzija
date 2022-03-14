@@ -128,23 +128,24 @@ if __name__ == '__main__': #GLAVNI PROGRAM
 
 # PROBA ZA PRIRUBNICE - RADII!!!!!
 
-
-    # ZBIR=[]
     PrirubniceS=[]
     PrirubniceU=[]
     PrirubniceF=[]
-    # for kod,elementi  in DictKodova.items():
-    #     ZBIR.append(elementi)
-    # flat_list = [item for sublist in ZBIR for item in sublist]
-    # # print(flat_list)+
-    # for i in flat_list:
-    #     q=Prirubnice(i)
-    #     print(q)
-    
-
     for i in P3Elementi:
         e=doc.GetElement(i.ElId)
         p=NadjiPrirubnice(e)
-
-        i.NadjiPrirubnice=p
-        print('PRIR', i.Prirubnice)
+        i.Prirubnice=p
+        for j in i.Prirubnice:
+            if j.TipPrirubnice == 'S':
+                PrirubniceS.append(int(j.Duzina))
+            elif j.TipPrirubnice == 'U':
+                PrirubniceU.append(int(j.Duzina))
+            elif j.TipPrirubnice == 'F':
+                PrirubniceF.append(int(j.Duzina))   
+    
+    print('S')
+    print(PrirubniceS)
+    print('U')
+    print(PrirubniceU)
+    print('F')
+    print(PrirubniceF)
