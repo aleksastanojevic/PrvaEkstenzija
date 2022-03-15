@@ -6,8 +6,7 @@ class P3Prirubnica():
     def __str__(self):
         s=self.TipPrirubnice +' : '+ str(self.Duzina)
         return s
-
-
+        
 def CitacKonektoraS(Konektor):
     P1=[P3Prirubnica('S',Konektor.Width*304.8) for i in range(2)] 
     P2=[P3Prirubnica('S',Konektor.Height*304.8) for i in range(2)] 
@@ -38,6 +37,8 @@ def NadjiPrirubnice(element):
         k=element.MEPModel.ConnectorManager.Connectors		
         TipElementa=doc.GetElement(element.GetTypeId())
         KODelementa=TipElementa.GetParameters('P3 - Code')[0].AsInteger() # Ne treba Try jer je na ulazu element koji sigurno ima vrednost P3Code-a
+        if KODelementa == 843:       #Ukoliko je Cap element funkcije ovim se prekida i vraca praznu listu nastavku programa . 
+            return []   
     elif element.Category.Name=='Ducts':
         k=element.ConnectorManager.Connectors
         dozvoljenaKategorija=dozvoljenaKategorija[0:3]
@@ -61,10 +62,10 @@ def NadjiPrirubnice(element):
                     finally:
                         if KODelementa == 812 and not Kon.GetMEPConnectorInfo().IsPrimary:
                             PRIRUBNICElista.extend(CitacKonektoraS(Kon))
-                        elif paramF ==812 and Par.GetMEPConnectorInfo().IsPrimary:
-                            PRIRUBNICElista.extend(CitacKonektoraU_UBOD(Kon))   # OTVOR U KANALU ZA UBOD CIPELICE  -uvecava se za 100
+                        elif paramF == 812 and Par.GetMEPConnectorInfo().IsPrimary:  # U ovom slucaju se uzima konektovani konektor cipelice (PAR) jer konektor uboda cita dimenziju kanala a ne otvora od cipelice
+                            PRIRUBNICElista.extend(CitacKonektoraU_UBOD(Par))   # OTVOR U KANALU ZA UBOD CIPELICE  -uvecava se za 100
                         elif model == 'P3-TAP' and Par.GetMEPConnectorInfo().IsPrimary:
-                            PRIRUBNICElista.extend(CitacKonektoraU(Kon))   # OTVOR U KANALU ZA Direktan UBOD -MAGI UBOD
+                            PRIRUBNICElista.extend(CitacKonektoraU(Par))   # OTVOR U KANALU ZA Direktan UBOD -MAGI UBOD
                         elif paramF ==812 and not Par.GetMEPConnectorInfo().IsPrimary:
                             PRIRUBNICElista.extend(CitacKonektoraS(Kon))
                         elif model == 'P3-TAP'and not Par.GetMEPConnectorInfo().IsPrimary:
@@ -81,14 +82,10 @@ def NadjiPrirubnice(element):
                 elif Par.Owner.Category.Name == 'Duct Accessories':
                     try:
                         paramDA=Par.Owner.GetParameters('TK_SetTipPrirubnice')[0].AsString()
-                        if KODelementa == 812 and not Kon.GetMEPConnectorInfo().IsPrimary:
-                            PRIRUBNICElista.extend(CitacKonektoraU(Kon))    #PROVERITI !!!!!
-                        elif paramDA.upper()=='U':
+                        if paramDA.upper()=='U':
                             PRIRUBNICElista.extend(CitacKonektoraU(Kon))
                         elif paramDA.upper()=='F':
                             PRIRUBNICElista.extend(CitacKonektoraF(Kon))
-                        else:
-                            pass
                     except:
                         PRIRUBNICElista.extend(CitacKonektoraU(Kon)) 
                 elif Par.Owner.Category.Name == 'Air Terminals':
@@ -100,9 +97,41 @@ def NadjiPrirubnice(element):
                     print('KATEGORIJA KONEKTOVANOG ELEMENTA NIJE DOZVOLJENA')
                     exit(1)
 
-
     return PRIRUBNICElista
 
 if __name__=='__main__':
+
+    def PrebrojUnikate(lista):
+        '''
+        Na ulazu se ocekuje lista
+        '''
+        Unikati={}
+        for i in lista:
+            if i in Unikati:
+                Unikati[i]+=1
+            else:
+                Unikati[i]=1
+
+        return Unikati
+
+    PrirubniceS=[]
+    PrirubniceU=[]
+    PrirubniceF=[]
     p=NadjiPrirubnice(a)
-    print(p)
+    for j in p:
+        if j.TipPrirubnice == 'S':
+            PrirubniceS.append(int(j.Duzina))
+        elif j.TipPrirubnice == 'U':
+            PrirubniceU.append(int(j.Duzina))
+        elif j.TipPrirubnice == 'F':
+            PrirubniceF.append(int(j.Duzina))   
+    
+    print('S')
+    print(PrebrojUnikate(PrirubniceS))
+    print('U')
+    print(PrebrojUnikate(PrirubniceU))
+    print('F')
+    print(PrebrojUnikate(PrirubniceF))
+
+
+

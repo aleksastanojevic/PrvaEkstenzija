@@ -127,6 +127,18 @@ if __name__ == '__main__': #GLAVNI PROGRAM
 
 
 # PROBA ZA PRIRUBNICE - RADII!!!!!
+    def PrebrojUnikate(lista):
+        '''
+        Na ulazu se ocekuje lista
+        '''
+        Unikati={}
+        for i in lista:
+            if i in Unikati:
+                Unikati[i]+=1
+            else:
+                Unikati[i]=1
+
+        return Unikati
 
     PrirubniceS=[]
     PrirubniceU=[]
@@ -144,8 +156,12 @@ if __name__ == '__main__': #GLAVNI PROGRAM
                 PrirubniceF.append(int(j.Duzina))   
     
     print('S')
-    print(PrirubniceS)
+    print(PrebrojUnikate(PrirubniceS))
     print('U')
-    print(PrirubniceU)
+    print(PrebrojUnikate(PrirubniceU))
     print('F')
-    print(PrirubniceF)
+    print(PrebrojUnikate(PrirubniceF))
+
+
+
+
