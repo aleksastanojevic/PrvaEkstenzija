@@ -16,13 +16,18 @@ from P3CODE import NapraviNoviPosao, NapraviP3802 , NapraviP3803, NapraviP3847, 
 from Prirubnice import NadjiPrirubnice
 from Windows_Forma import FormaPrograma
 from WindowsFormaJobInfo import FormaProgramaJob
-clr.AddReference('RevitAPIUI')
+from DodatneFunkcije import PrebrojUnikate
 
+clr.AddReference('RevitAPIUI')
 uidoc=__revit__.ActiveUIDocument
 doc=__revit__.ActiveUIDocument.Document
 
 if __name__ == '__main__': #GLAVNI PROGRAM
     KOD=''
+    PrirubniceS=[]
+    PrirubniceU=[]
+    PrirubniceF=[]
+    NekonektovaniEl=[]
     pokrenutUI=FormaPrograma() #pokretanje prvog UI prozora
     #CITANJE IZLAZNIH PARAMETARA PRVOG UI-a
     Opcija = pokrenutUI[0]
@@ -90,8 +95,6 @@ if __name__ == '__main__': #GLAVNI PROGRAM
         StatusUI2=pokrenutUI2[0]
         UnosOPoslu=pokrenutUI2[1]
     if StatusUI1 and StatusUI2:  #PROGRAM SE MOZE POKRENUTI-Status predstavlja dugme dalje na prvom i drugom UI
-
-
         Kolena=NapraviP3802(DictKodova[802])
         TRacve=NapraviP3803(DictKodova[803])
         Redukcije=NapraviP3847(DictKodova[847])
@@ -107,12 +110,22 @@ if __name__ == '__main__': #GLAVNI PROGRAM
         KOD+=Posao.CODE()
         RedniBroj=1  # Redni broj pocinje od 1 i ide kroz sve elemente jednog posla
         for P3 in P3Elementi:
-
-            #OVDE UBACITI KALKULACIJU PRIRUBNICA
-
             P3.RedniBroj=RedniBroj
             RedniBroj+=1
             KOD+=P3.CODE()
+            EL=doc.GetElement(P3.ElId)
+            try:
+                PR=NadjiPrirubnice(EL)
+                P3.Prirubnice=PR
+                for j in P3.Prirubnice:
+                    if j.TipPrirubnice == 'S':
+                        PrirubniceS.append(int(j.Duzina))
+                    elif j.TipPrirubnice == 'U':
+                        PrirubniceU.append(int(j.Duzina))
+                    elif j.TipPrirubnice == 'F':
+                        PrirubniceF.append(int(j.Duzina))   
+            except:
+                NekonektovaniEl.append(P3.ElId)
         imeFajla=SysRef+'.BRV'
         lokacijaCuvanja=os.path.expanduser("~\\Desktop\\"+imeFajla) # CITA HOMEPATH I DODAJE DEKSTOP I IME FAJLA.BRV
         try:
@@ -127,33 +140,6 @@ if __name__ == '__main__': #GLAVNI PROGRAM
 
 
 # PROBA ZA PRIRUBNICE - RADII!!!!!
-    def PrebrojUnikate(lista):
-        '''
-        Na ulazu se ocekuje lista
-        '''
-        Unikati={}
-        for i in lista:
-            if i in Unikati:
-                Unikati[i]+=1
-            else:
-                Unikati[i]=1
-
-        return Unikati
-
-    PrirubniceS=[]
-    PrirubniceU=[]
-    PrirubniceF=[]
-    for i in P3Elementi:
-        e=doc.GetElement(i.ElId)
-        p=NadjiPrirubnice(e)
-        i.Prirubnice=p
-        for j in i.Prirubnice:
-            if j.TipPrirubnice == 'S':
-                PrirubniceS.append(int(j.Duzina))
-            elif j.TipPrirubnice == 'U':
-                PrirubniceU.append(int(j.Duzina))
-            elif j.TipPrirubnice == 'F':
-                PrirubniceF.append(int(j.Duzina))   
     
     print('S')
     print(PrebrojUnikate(PrirubniceS))
@@ -161,6 +147,8 @@ if __name__ == '__main__': #GLAVNI PROGRAM
     print(PrebrojUnikate(PrirubniceU))
     print('F')
     print(PrebrojUnikate(PrirubniceF))
+    print('NekonektovaniElementi : ')
+    print(NekonektovaniEl)
 
 
 

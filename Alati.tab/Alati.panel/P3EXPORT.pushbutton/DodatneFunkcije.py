@@ -77,3 +77,16 @@ def PretvoriJedinicu(RevitParametar):
             return str(round(V,3))
     except TypeError:  
         return 'GRESKA U PRETVARANJU'
+
+def PrebrojUnikate(lista):
+        '''
+        FUNKCIJA PREBROJAVA UNIKATE IZ LISTE NA ULAZU
+        '''
+        Unikati={}
+        for i in lista:
+            if i in Unikati:
+                Unikati[i]+=1
+            else:
+                Unikati[i]=1
+
+        return Unikati
