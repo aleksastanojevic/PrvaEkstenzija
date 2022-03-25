@@ -27,11 +27,14 @@ def CitacKonektoraF_UBOD(Konektor):
     P1=[P3Prirubnica('F',Konektor.Width*304.8+100) for i in range(2)] 
     P2=[P3Prirubnica('F',Konektor.Height*304.8) for i in range(2)] 
     return P1+P2   
+    
 def NadjiPrirubnice(element):
     from  Autodesk.Revit.DB import BuiltInParameter
     from  Autodesk.Revit.DB import PartType
     doc=__revit__.ActiveUIDocument.Document 
     dozvoljenaKategorija=['Duct Fittings',  'Duct Accessories', 'Air Terminals', 'Ducts','Mechanical Equipment']
+    konektori=[]
+    Nekonektovani=[]
     #ISPITUJE SE ELEMENT NA ULAZU FUNKCIJE KOJE JE KATEGORIJE - U ZAVISNOSTI OD KATEGORIJE DRUGACIJE SE CITA KOJI SU KONEKTORI
     if element.Category.Name=='Duct Fittings': 
         k=element.MEPModel.ConnectorManager.Connectors		
@@ -46,7 +49,13 @@ def NadjiPrirubnice(element):
     else: 
         print('Kategorija elementa nije dobra')
         exit(1)
-    konektori=[ElKon for ElKon in k if ElKon.IsConnected]
+    for ElKon in k:
+        if ElKon.IsConnected:
+            konektori.append(ElKon)
+        else:
+            Nekonektovani.append(ElKon)
+    if len(Nekonektovani) != 0:
+        return False
     PRIRUBNICElista=[]
     UklonjeniKonektori=[]
     for Kon in konektori:  #PROLAZI SE KROZ SVAKI KONEKTOR ELEMENTA
@@ -117,21 +126,23 @@ if __name__=='__main__':
     PrirubniceS=[]
     PrirubniceU=[]
     PrirubniceF=[]
-    p=NadjiPrirubnice(a)
-    for j in p:
-        if j.TipPrirubnice == 'S':
-            PrirubniceS.append(int(j.Duzina))
-        elif j.TipPrirubnice == 'U':
-            PrirubniceU.append(int(j.Duzina))
-        elif j.TipPrirubnice == 'F':
-            PrirubniceF.append(int(j.Duzina))   
-    
-    print('S')
-    print(PrebrojUnikate(PrirubniceS))
-    print('U')
-    print(PrebrojUnikate(PrirubniceU))
-    print('F')
-    print(PrebrojUnikate(PrirubniceF))
+    try:
+        p=NadjiPrirubnice(a)
+        for j in p:
+            if j.TipPrirubnice == 'S':
+                PrirubniceS.append(int(j.Duzina))
+            elif j.TipPrirubnice == 'U':
+                PrirubniceU.append(int(j.Duzina))
+            elif j.TipPrirubnice == 'F':
+                PrirubniceF.append(int(j.Duzina))   
 
+        print('S')
+        print(PrebrojUnikate(PrirubniceS))
+        print('U')
+        print(PrebrojUnikate(PrirubniceU))
+        print('F')
+        print(PrebrojUnikate(PrirubniceF))
+    except:
+        print(str(a.Id) + '  nije dobro povezan(STAVITI CEP AKO JE NAMERNO NEPOVEZAN)' )
 
 

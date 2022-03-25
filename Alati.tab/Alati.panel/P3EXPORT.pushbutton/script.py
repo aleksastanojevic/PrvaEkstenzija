@@ -112,7 +112,7 @@ if __name__ == '__main__': #GLAVNI PROGRAM
         for P3 in P3Elementi:
             P3.RedniBroj=RedniBroj
             RedniBroj+=1
-            KOD+=P3.CODE()
+            KOD+=P3.CODE()  #METODOM CODE SE PRAVI KOD ZA SVAKI ELEMENT
             EL=doc.GetElement(P3.ElId)
             try:
                 PR=NadjiPrirubnice(EL)
