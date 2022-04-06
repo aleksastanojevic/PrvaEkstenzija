@@ -1,15 +1,21 @@
-import clr 
+
+import clr
 import os
+
 clr.AddReference('Microsoft.Office.Interop.Excel')
-from Microsoft.Office.Interop import Excell
+from Microsoft.Office.Interop import Excel
 
 lokacijaCuvanja=os.path.expanduser("~\\Desktop\\"+ 'Aleksa.xlsx')
 
-ex=Excell.ApplicationClass()
+ex=Excel.ApplicationClass()
+
 ex.Visible=True
-ex.DisplayAlerts = False
+# ex.DisplayAlerts = False
+xlbook = ex.Workbooks.Add()
 
-workbook=ex.Workbooks.Open(lokacijaCuvanja)
+xlsheet= ex.Worksheets['PRIRUBNICE']
+xlbook.ActiveSheet
 
+xlbook.SaveAs(lokacijaCuvanja)
 
 
