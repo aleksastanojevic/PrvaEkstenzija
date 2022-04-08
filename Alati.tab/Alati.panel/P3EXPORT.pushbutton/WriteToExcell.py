@@ -1,4 +1,3 @@
-
 import clr
 import os
 
@@ -6,23 +5,23 @@ clr.AddReference('Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neut
 from Microsoft.Office.Interop import Excel
 from System.Runtime.InteropServices import Marshal
 
-lokacijaCuvanja=os.path.expanduser("~\\Desktop\\"+ 'Aleksa.xlsx')
+lokacijaCuvanja=os.path.expanduser("~\\Desktop\\"+ 'PRIRUBNICE.xlsx')
 
-with open(lokacijaCuvanja,'w',) as f:
-	print('NEW FILE')
-	
-
-
-excelApp=Excel.ApplicationClass()
-excelApp.Visible=True
-excelApp.DisplayAlerts = False
-
-xlbook = excelApp.Workbooks.Open('asdasd')
-# xlsheet=xlbook.Worksheets['Sheet1']
-ws=xlbook.Worksheets[1]
-
-xlsheet= excelApp.Worksheets['PRIRUBNICE']
-xlbook.ActiveSheet
-
+exApp = Excel.ApplicationClass()   
+exApp.Visible = True
+exApp.DisplayAlerts = False   
+xlbook=exApp.Workbooks.Add()
+xlsheet=xlbook.Worksheets[1]
+xlsheet2=xlbook.Worksheets.Add()
 xlbook.SaveAs(lokacijaCuvanja)
-Marshal.ReleaseComObject(ws)
+
+xlsheet.Name='PRIRUBNICE'
+xlsheet2.Name='DODATNO'
+
+print(xlbook.Name)
+print(xlsheet.Name)
+
+
+Marshal.ReleaseComObject(exApp)
+Marshal.ReleaseComObject(xlbook)
+Marshal.ReleaseComObject(xlsheet)
