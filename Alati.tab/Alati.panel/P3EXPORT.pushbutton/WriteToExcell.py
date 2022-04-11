@@ -13,14 +13,19 @@ exApp.DisplayAlerts = False
 xlbook=exApp.Workbooks.Add()
 xlsheet=xlbook.Worksheets[1]
 xlsheet2=xlbook.Worksheets.Add()
-xlbook.SaveAs(lokacijaCuvanja)
+
 
 xlsheet.Name='PRIRUBNICE'
 xlsheet2.Name='DODATNO'
 
-print(xlbook.Name)
-print(xlsheet.Name)
+xlsheet.Cells[8, 2].Value = "Salary"
 
+#print(xlbook.Name)
+#print(xlsheet.Name)
+
+xlbook.SaveAs(lokacijaCuvanja)
+xlbook.Close()
+exApp.Quit()
 
 Marshal.ReleaseComObject(exApp)
 Marshal.ReleaseComObject(xlbook)
