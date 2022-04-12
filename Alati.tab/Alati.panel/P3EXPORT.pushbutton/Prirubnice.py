@@ -1,3 +1,6 @@
+import string
+
+
 class P3Prirubnica():
     def __init__(self, TipPrirubnice, Duzina):
         self.TipPrirubnice=TipPrirubnice
@@ -136,13 +139,39 @@ if __name__=='__main__':
             elif j.TipPrirubnice == 'F':
                 PrirubniceF.append(int(j.Duzina))   
 
+        stringSlist=[['TIP PROFILA : ','U172P2'],['dužina (mm)','kom.']]
+        unikatiSdict=PrebrojUnikate(PrirubniceS)
+        stringUlist=[['TIP PROFILA : ','U172P1'],['dužina (mm)','kom.']]
+        unikatiUdict=PrebrojUnikate(PrirubniceU)
+        stringFlist=[['TIP PROFILA : ','F - dostavlja TERMOVENT'],['dužina (mm)','kom.']]
+        unikatiFdict=PrebrojUnikate(PrirubniceF)
+
+        if len(PrirubniceS) != 0:
+            listaS=stringSlist+[[i,unikatiSdict[i]] for i in unikatiSdict]
+        else:
+            listaS=[]
+
+        if len(PrirubniceU) != 0:
+            listaU=stringUlist+[[i,unikatiUdict[i]] for i in unikatiUdict]
+        else:
+            listaU=[]
+        if len(PrirubniceF) != 0:
+            listaF=stringFlist+[[i,unikatiFdict[i]] for i in unikatiFdict]
+        else:
+            listaF=[]
+
+
+        listaZaEksport=listaU+listaS+listaF
+
+
         print('S')
-        print(PrebrojUnikate(PrirubniceS))
+        # print(unikatiSdict)
         print('U')
-        print(PrebrojUnikate(PrirubniceU))
+        # print(unikatiUdict)
         print('F')
-        print(PrebrojUnikate(PrirubniceF))
+        # print(unikatiFdict)
+
     except:
-        print(str(a.Id) + '  nije dobro povezan(STAVITI CEP AKO JE NAMERNO NEPOVEZAN)' )
+        print('Елемент: ID(' + str(a.Id) +') није добро повезан (СТАВИТИ ЧЕП АКО ЈЕ ОСТАЈЕ НЕПОВЕЗАН)' )
 
 
