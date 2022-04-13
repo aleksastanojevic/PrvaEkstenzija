@@ -1,6 +1,4 @@
-import string
-
-
+# This Python file uses the following encoding: utf-8
 class P3Prirubnica():
     def __init__(self, TipPrirubnice, Duzina):
         self.TipPrirubnice=TipPrirubnice
@@ -150,7 +148,6 @@ if __name__=='__main__':
             listaS=stringSlist+[[i,unikatiSdict[i]] for i in unikatiSdict]
         else:
             listaS=[]
-
         if len(PrirubniceU) != 0:
             listaU=stringUlist+[[i,unikatiUdict[i]] for i in unikatiUdict]
         else:
@@ -160,9 +157,8 @@ if __name__=='__main__':
         else:
             listaF=[]
 
-
-        listaZaEksport=listaU+listaS+listaF
-
+        listaZaEksport=listaU+listaS+listaF    #lista napravljena da bi se u ovakvom formatu prosledila funkciji za upis u Eksel
+  
 
         print('S')
         # print(unikatiSdict)

@@ -17,6 +17,7 @@ from Prirubnice import NadjiPrirubnice
 from Windows_Forma import FormaPrograma
 from WindowsFormaJobInfo import FormaProgramaJob
 from DodatneFunkcije import PrebrojUnikate
+from WriteToExcell import ExcelExport
 
 clr.AddReference('RevitAPIUI')
 uidoc=__revit__.ActiveUIDocument
@@ -123,32 +124,62 @@ if __name__ == '__main__': #GLAVNI PROGRAM
                     elif j.TipPrirubnice == 'U':
                         PrirubniceU.append(int(j.Duzina))
                     elif j.TipPrirubnice == 'F':
-                        PrirubniceF.append(int(j.Duzina))   
+                        PrirubniceF.append(int(j.Duzina))  
             except:
-                NekonektovaniEl.append(P3.ElId)
+                NekonektovaniEl.append(P3.ElId.IntegerValue)
+
+        #U ovom delu koda se saklupljaju unikati i broj unikata prirubnica i sprema se lista u predodredjenom formatu za upis u Eksel a zatim upis
+        stringSlist=[['TIP PROFILA : ','U172P2'],['dužina (mm)','kom.']]
+        unikatiSdict=PrebrojUnikate(PrirubniceS)
+        stringUlist=[['TIP PROFILA : ','U172P1'],['dužina (mm)','kom.']]
+        unikatiUdict=PrebrojUnikate(PrirubniceU)
+        stringFlist=[['TIP PROFILA : ','F - dostavlja TERMOVENT'],['dužina (mm)','kom.']]
+        unikatiFdict=PrebrojUnikate(PrirubniceF)
+        if len(NekonektovaniEl) == 0:
+            if len(PrirubniceS) != 0:
+                listaS=stringSlist+[[i,unikatiSdict[i]] for i in unikatiSdict]
+            else:
+                listaS=[]
+            if len(PrirubniceU) != 0:
+                listaU=stringUlist+[[i,unikatiUdict[i]] for i in unikatiUdict]
+            else:
+                listaU=[]
+            if len(PrirubniceF) != 0:
+                listaF=stringFlist+[[i,unikatiFdict[i]] for i in unikatiFdict]
+            else:
+                listaF=[]
+            listaZaEksport=listaU+listaS+listaF  
+            try:
+                eksel=ExcelExport(SysRef, listaZaEksport)   #Eksport u eksel
+                WF.MessageBox.Show(" УСПЕШНО ЈЕ НАПИСАНА СПЕЦИФИКАЦИЈА ПРИРУБНИЦА !",' УСПЕХ ')
+            except:
+                WF.MessageBox.Show('ПРОБЛЕМ ПРИ ЕКСПОРТУ У ЕКСЕЛ !',' УПС ')
+        else:
+            WF.MessageBox.Show('НИЈЕ МОГУЋ ЕКСПОРТ У EXCEL ! \nЕлементи: IDs :' + str(NekonektovaniEl) + ' нису добро повезани! \n(СТАВИТИ ЧЕП АКО ЕЛЕМЕНТ ОСТАЈЕ НЕПОВЕЗАН)' ,' УПС ')
+
+        #UPIS .BRV fajla
         imeFajla=SysRef+'.BRV'
         lokacijaCuvanja=os.path.expanduser("~\\Desktop\\"+imeFajla) # CITA HOMEPATH I DODAJE DEKSTOP I IME FAJLA.BRV
         try:
             with codecs.open(lokacijaCuvanja,'w', 'utf-8') as f:   #ZA PYTHON 3 (with open(lokacijaCuvanja,'w', encoding='utf-8') as f:)
                 f.write(KOD)
-                WF.MessageBox.Show(" УСПЕШНО ЈЕ НАПИСАН КОД !",' УСПЕХ ')
+                WF.MessageBox.Show(" УСПЕШНО ЈЕ НАПИСАН .BRV КОД !",' УСПЕХ ')
                 subprocess.Popen('explorer /select ,'+lokacijaCuvanja , shell=True) # Otvara Windows Explorer sa selektovanim fajlom
         except:
             WF.MessageBox.Show(" ПРОБЛЕМ ПРИ УПИСИВАЊУ У ДАТОТЕКУ !",' УПС ')
 
 
-
-
 # PROBA ZA PRIRUBNICE - RADII!!!!!
-    
-    print('S')
-    print(PrebrojUnikate(PrirubniceS))
-    print('U')
-    print(PrebrojUnikate(PrirubniceU))
-    print('F')
-    print(PrebrojUnikate(PrirubniceF))
-    print('NekonektovaniElementi : ')
-    print(NekonektovaniEl)
+    # print('S')
+    # print(PrebrojUnikate(PrirubniceS))
+    # print('U')
+    # print(PrebrojUnikate(PrirubniceU))
+    # print('F')
+    # print(PrebrojUnikate(PrirubniceF))
+    # print('NekonektovaniElementi : ')
+    # print(NekonektovaniEl)
+
+
 
 
 
