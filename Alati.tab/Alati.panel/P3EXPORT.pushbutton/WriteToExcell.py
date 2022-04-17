@@ -23,17 +23,14 @@ def ExcelExport(imeSistema,lista):
             x+=1      # xlsheet.Cells f-ja pristupa celijama sheeta i dodaje im vrednost 
         y+=1
 
-    #print(xlbook.Name)
-    #print(xlsheet.Name)
-
     xlbook.SaveAs(lokacijaCuvanja)    # Snima se na zeljenu lokaciju
     xlbook.Close()                    # Gasi se workbook
     exApp.Quit()                      # Napusta se eksel aplikacija
 
-    Marshal.ReleaseComObject(exApp)  #Ceo modul Marshal modul sluzi da otpusti objecte COM Object i sike Excel sa task manager liste
+    Marshal.ReleaseComObject(exApp)  #Ceo modul Marshal modul sluzi da otpusti objecte COM Object i skida Excel sa task manager liste
     Marshal.ReleaseComObject(xlbook)
     Marshal.ReleaseComObject(xlsheet)
 
-if __name__ == '__main__':
+if __name__ == '__main__':   #TEST PROGRAM YA UPIS U EKSEL
     excel=ExcelExport('AHU76-R',[['a','b'],['c','d'],['e','f']])
 

@@ -80,7 +80,7 @@ def PretvoriJedinicu(RevitParametar):
 
 def PrebrojUnikate(lista):
         '''
-        FUNKCIJA PREBROJAVA UNIKATE IZ LISTE NA ULAZU
+        FUNKCIJA PREBROJAVA UNIKATE IZ LISTE NA ULAZU I VRACA DICTIONARY UNKATA I BROJA PONAVLJANJA
         '''
         Unikati={}
         for i in lista:

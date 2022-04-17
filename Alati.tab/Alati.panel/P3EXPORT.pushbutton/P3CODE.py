@@ -22,6 +22,7 @@ class P3Posao:
 def NapraviNoviPosao(UnosOPoslu):
     NoviPosao=P3Posao(*UnosOPoslu)
     return NoviPosao
+    
 ##### ##### ##### ##### KLASA P3!!!!!!
 class P3:
     def __init__(self,DebMat, Mark,ElId):

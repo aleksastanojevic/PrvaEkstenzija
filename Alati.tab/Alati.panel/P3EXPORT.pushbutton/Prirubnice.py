@@ -7,29 +7,48 @@ class P3Prirubnica():
     def __str__(self):
         s=self.TipPrirubnice +' : '+ str(self.Duzina)
         return s
-        
-def CitacKonektoraS(Konektor):
+
+# CITAC KONEKTORA JE FUKNCIJA KOJA CITA I PRETVARA PROCITANU VREDNOST IZ REVITA U JEDINICI FEET I PRETVARA U MILIMETRE. TAKO RADI ZA SVAKU VRSTU PROFILA
+def CitacKonektoraS(Konektor): 
+    '''
+    OVA FUNKCIJA CITA DIMENZIJE KONEKTORA, I PRAVI OBJEKTE KLASE P3Prirubnica, SA TIPOM 'S' I DIMENZIJOM.
+    '''    
     P1=[P3Prirubnica('S',Konektor.Width*304.8) for i in range(2)] 
     P2=[P3Prirubnica('S',Konektor.Height*304.8) for i in range(2)] 
     return P1+P2      
 def CitacKonektoraU_UBOD(Konektor):
+    '''
+    OVA FUNKCIJA CITA DIMENZIJE KONEKTORA, I PRAVI OBJEKTE KLASE P3Prirubnica, SA TIPOM 'U-UBOD' I DIMENZIJOM.
+    '''  
     P1=[P3Prirubnica('U',Konektor.Width*304.8+100) for i in range(2)] 
     P2=[P3Prirubnica('U',Konektor.Height*304.8) for i in range(2)] 
     return P1+P2  
 def CitacKonektoraU(Konektor):
+    '''
+    OVA FUNKCIJA CITA DIMENZIJE KONEKTORA, I PRAVI OBJEKTE KLASE P3Prirubnica, SA TIPOM 'U' I DIMENZIJOM.
+    '''  
     P1=[P3Prirubnica('U',Konektor.Width*304.8) for i in range(2)] 
     P2=[P3Prirubnica('U',Konektor.Height*304.8) for i in range(2)] 
     return P1+P2   
 def CitacKonektoraF(Konektor):
+    '''
+    OVA FUNKCIJA CITA DIMENZIJE KONEKTORA, I PRAVI OBJEKTE KLASE P3Prirubnica, SA TIPOM 'F' I DIMENZIJOM.
+    '''  
     P1=[P3Prirubnica('F',Konektor.Width*304.8) for i in range(2)] 
     P2=[P3Prirubnica('F',Konektor.Height*304.8) for i in range(2)] 
     return P1+P2   
 def CitacKonektoraF_UBOD(Konektor):
+    '''
+    OVA FUNKCIJA CITA DIMENZIJE KONEKTORA, I PRAVI OBJEKTE KLASE P3Prirubnica, SA TIPOM 'F-UBOD' I DIMENZIJOM.
+    '''  
     P1=[P3Prirubnica('F',Konektor.Width*304.8+100) for i in range(2)] 
     P2=[P3Prirubnica('F',Konektor.Height*304.8) for i in range(2)] 
     return P1+P2   
     
 def NadjiPrirubnice(element):
+    '''
+    OVA FUNNKCIJA NA ULAZU OCEKUJE REVIT ELEMENT, A NA IZLAZU DOBIJA LISTU PRIRUBNICA , SVAKU POJEDINACNO (TIP,DUZINA)
+    '''
     from  Autodesk.Revit.DB import BuiltInParameter
     from  Autodesk.Revit.DB import PartType
     doc=__revit__.ActiveUIDocument.Document 
@@ -55,7 +74,7 @@ def NadjiPrirubnice(element):
             konektori.append(ElKon)
         else:
             Nekonektovani.append(ElKon)
-    if len(Nekonektovani) != 0:
+    if len(Nekonektovani) != 0:  #AKO JE LISTA NEKONEKTOVANIH KONEKTORA VECA OD 0 , FUNKCIJA VRACA FALSE I PREKIDA SE ZA TAJ ELEMENT.
         return False
     PRIRUBNICElista=[]
     UklonjeniKonektori=[]
@@ -109,11 +128,11 @@ def NadjiPrirubnice(element):
 
     return PRIRUBNICElista
 
-if __name__=='__main__':
+if __name__=='__main__':   #TEST PROGRAM KOJI TESTIRA FUNKCIJU NadjiPrirubnice NA POJEDINACNOM ELEMENTU A ZATIM PRAVI PRIRPREMLJENU LISTU ZA IZLAZ I ISPIS.
 
     def PrebrojUnikate(lista):
         '''
-        Na ulazu se ocekuje lista
+    OVA FUNKCIJA TRAZI UNIKATE I PREBROJAVA IH.VRACA DICTIONARY UNIKATA I NJIHOVOG BROJA
         '''
         Unikati={}
         for i in lista:
@@ -129,14 +148,15 @@ if __name__=='__main__':
     PrirubniceF=[]
     try:
         p=NadjiPrirubnice(a)
-        for j in p:
+        for j in p:  #PRIRUBNICE SE RAYVRSTAVAJU PO TIPU U PRIRPADAJUCE LISTE
             if j.TipPrirubnice == 'S':
                 PrirubniceS.append(int(j.Duzina))
             elif j.TipPrirubnice == 'U':
                 PrirubniceU.append(int(j.Duzina))
             elif j.TipPrirubnice == 'F':
                 PrirubniceF.append(int(j.Duzina))   
-
+                
+        #PRAVE SE LISTE STRINGOVA NASLOVA KOLONA, PO DVA ELEMENTA DA BI SE UPISALO U EKSEL U DVA REDA
         stringSlist=[['TIP PROFILA : ','U172P2'],['dužina (mm)','kom.']]
         unikatiSdict=PrebrojUnikate(PrirubniceS)
         stringUlist=[['TIP PROFILA : ','U172P1'],['dužina (mm)','kom.']]
@@ -144,6 +164,7 @@ if __name__=='__main__':
         stringFlist=[['TIP PROFILA : ','F - dostavlja TERMOVENT'],['dužina (mm)','kom.']]
         unikatiFdict=PrebrojUnikate(PrirubniceF)
 
+        #AKO JE JEDNA OD LISTA PRAYNA ,ONDA SE NI NASLOV NE ISPISUJE
         if len(PrirubniceS) != 0:
             listaS=stringSlist+[[i,unikatiSdict[i]] for i in unikatiSdict]
         else:
@@ -157,15 +178,14 @@ if __name__=='__main__':
         else:
             listaF=[]
 
-        listaZaEksport=listaU+listaS+listaF    #lista napravljena da bi se u ovakvom formatu prosledila funkciji za upis u Eksel
-  
+        listaZaEksport=listaU+listaS+listaF    #LISTA NAPRAVLJENA DA BI SE U OVAKVOM FORMATU PROSLEDILA FUNKCIJI ZA UPIS U EKSEL
 
         print('S')
-        # print(unikatiSdict)
+        print(unikatiSdict)
         print('U')
-        # print(unikatiUdict)
+        print(unikatiUdict)
         print('F')
-        # print(unikatiFdict)
+        print(unikatiFdict)
 
     except:
         print('Елемент: ID(' + str(a.Id) +') није добро повезан (СТАВИТИ ЧЕП АКО ЈЕ ОСТАЈЕ НЕПОВЕЗАН)' )

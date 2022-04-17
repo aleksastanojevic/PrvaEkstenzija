@@ -116,7 +116,7 @@ if __name__ == '__main__': #GLAVNI PROGRAM
             KOD+=P3.CODE()  #METODOM CODE SE PRAVI KOD ZA SVAKI ELEMENT
             EL=doc.GetElement(P3.ElId)
             try:
-                PR=NadjiPrirubnice(EL)
+                PR=NadjiPrirubnice(EL)  #OVOM METODOM SE ZA ODREDJENI ELEMENT TRAZE PRIRUBNICE I SORTIRAJU U PRIPADAJUCE LISTE
                 P3.Prirubnice=PR
                 for j in P3.Prirubnice:
                     if j.TipPrirubnice == 'S':
@@ -126,9 +126,9 @@ if __name__ == '__main__': #GLAVNI PROGRAM
                     elif j.TipPrirubnice == 'F':
                         PrirubniceF.append(int(j.Duzina))  
             except:
-                NekonektovaniEl.append(P3.ElId.IntegerValue)
+                NekonektovaniEl.append(P3.ElId.IntegerValue)    #UKOLIKO IMA ELEMENATA KOJI NISU KONEKTOVANI PROGRAM VRACA LISTU SA ID ELEMENATA
 
-        #U ovom delu koda se saklupljaju unikati i broj unikata prirubnica i sprema se lista u predodredjenom formatu za upis u Eksel a zatim upis
+        #U ovom delu koda se saklupljaju unikati, broj unikata prirubnica i sprema se lista u predodredjenom formatu za upis u Eksel a zatim upis
         stringSlist=[['TIP PROFILA : ','U172P2'],['dužina (mm)','kom.']]
         unikatiSdict=PrebrojUnikate(PrirubniceS)
         stringUlist=[['TIP PROFILA : ','U172P1'],['dužina (mm)','kom.']]
@@ -150,14 +150,14 @@ if __name__ == '__main__': #GLAVNI PROGRAM
                 listaF=[]
             listaZaEksport=listaU+listaS+listaF  
             try:
-                eksel=ExcelExport(SysRef, listaZaEksport)   #Eksport u eksel
+                eksel=ExcelExport(SysRef, listaZaEksport)   #METODA ExcelExport EKPORTUJE TACNOI PRIPREMLJENU LISTU U DVA REDA U EKSEL SHEET
                 WF.MessageBox.Show(" УСПЕШНО ЈЕ НАПИСАНА СПЕЦИФИКАЦИЈА ПРИРУБНИЦА !",' УСПЕХ ')
             except:
                 WF.MessageBox.Show('ПРОБЛЕМ ПРИ ЕКСПОРТУ У ЕКСЕЛ !',' УПС ')
         else:
             WF.MessageBox.Show('НИЈЕ МОГУЋ ЕКСПОРТ У EXCEL ! \nЕлементи: IDs :' + str(NekonektovaniEl) + ' нису добро повезани! \n(СТАВИТИ ЧЕП АКО ЕЛЕМЕНТ ОСТАЈЕ НЕПОВЕЗАН)' ,' УПС ')
 
-        #UPIS .BRV fajla
+        #UPIS .BRV fajla   
         imeFajla=SysRef+'.BRV'
         lokacijaCuvanja=os.path.expanduser("~\\Desktop\\"+imeFajla) # CITA HOMEPATH I DODAJE DEKSTOP I IME FAJLA.BRV
         try:
@@ -168,16 +168,6 @@ if __name__ == '__main__': #GLAVNI PROGRAM
         except:
             WF.MessageBox.Show(" ПРОБЛЕМ ПРИ УПИСИВАЊУ У ДАТОТЕКУ !",' УПС ')
 
-
-# PROBA ZA PRIRUBNICE - RADII!!!!!
-    # print('S')
-    # print(PrebrojUnikate(PrirubniceS))
-    # print('U')
-    # print(PrebrojUnikate(PrirubniceU))
-    # print('F')
-    # print(PrebrojUnikate(PrirubniceF))
-    # print('NekonektovaniElementi : ')
-    # print(NekonektovaniEl)
 
 
 
