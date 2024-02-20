@@ -41,7 +41,7 @@ def KolektorP3Schedula():
     '''
     IZ REVITA VRSI SAKUPLJANJE SVIH POSTOJECIH SCHEDULA I NA IZLAZ DAJE DICTIONARY IMENA SCHEDULA i SCHEDULA
     '''
-    Dozvoljeni=['P3 - Duct Fitting Schedule - Code 802','P3 - Duct Fitting Schedule - Code 803','P3 - Duct Fitting Schedule - Code 804','P3 - Duct Fitting Schedule - Code 827','P3 - Duct Fitting Schedule - Code 843','P3 - Duct Fitting Schedule - Code 847','P3 - Duct Fitting Schedule - Code 853','P3 - Duct Fitting Schedule - Code 854','P3 - Rectangular Duct Schedule','P3 - Duct Fitting Schedule - All']
+    Dozvoljeni=['P3 - Duct Fitting Schedule - Code 802','P3 - Duct Fitting Schedule - Code 803','P3 - Duct Fitting Schedule - Code 804','P3 - Duct Fitting Schedule - Code 827','P3 - Duct Fitting Schedule - Code 843','P3 - Duct Fitting Schedule - Code 847','P3 - Duct Fitting Schedule - Code 853','P3 - Duct Fitting Schedule - Code 854','P3 - Rectangular Duct Schedule','P3 - Duct Fitting Schedule - All','P3 - Duct Fitting Schedule - Code 812']
     imenaSchedula={}
     try:
         from  Autodesk.Revit.DB import FilteredElementCollector,ViewSchedule
