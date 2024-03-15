@@ -431,7 +431,7 @@ class P3801(P3):
 
     def CODE(self):
         s='*\n'+ '801\n' + str(self.RedniBroj) + '\n' + '1\n' + '11\n' 
-        l=[self.P3_Width,self.P3_Height,self.P3_Length,self.ductType_1234,self.cutOption]
+        l=[self.P3_Width,self.P3_Height,str(int(float(self.P3_Length))),self.ductType_1234,self.cutOption]
         s+= (',').join(l)+ ',0,0,0,0,0,0'+'\n' 
         s+='0,0,0,0,0,0,0,0,0,0,0,0\n'
         if self.Mark == None:
