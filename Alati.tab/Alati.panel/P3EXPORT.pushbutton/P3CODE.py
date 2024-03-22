@@ -418,9 +418,27 @@ class P3801(P3):
         self.Prirubnice=[]
         
         Obim=(float(self.P3_Width)+float(self.P3_Height))*2
-        if Obim<=3960 and (float(self.P3_Length))<=1200:
+        Poluobim=(float(self.P3_Width)+float(self.P3_Height))
+        Tristrane1=(float(self.P3_Width)+float(self.P3_Height)+float(self.P3_Width))
+        Tristrane2=(float(self.P3_Height)+float(self.P3_Width)+float(self.P3_Height))
+        if Obim<=3840 and (float(self.P3_Length))<=1190:
             self.ductType_1234='1'
             self.cutOption='1'
+        elif Obim<=3840 and (float(self.P3_Length))<=1200 and (float(self.P3_Length))>1190:
+            self.ductType_1234='1'
+            self.cutOption='2'
+        elif (Tristrane1<=3880 or Tristrane2<=3880) and (float(self.P3_Length))<=1190:
+            self.ductType_1234='3'
+            self.cutOption='1'
+        elif (Tristrane1<=3880 or Tristrane2<=3880) and (float(self.P3_Length))<=1200 and (float(self.P3_Length))>1190:
+            self.ductType_1234='3'
+            self.cutOption='2'
+        elif Poluobim<=3920 and (float(self.P3_Length))<=1190:
+            self.ductType_1234='2'
+            self.cutOption='1'
+        elif Poluobim<=3920 and (float(self.P3_Length))<=1200 and (float(self.P3_Length))>1190:
+            self.ductType_1234='2'
+            self.cutOption='2'
         else:
             self.ductType_1234='4'
             self.cutOption='0'

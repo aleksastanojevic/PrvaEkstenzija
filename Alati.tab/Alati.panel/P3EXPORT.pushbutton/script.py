@@ -28,6 +28,7 @@ if __name__ == '__main__': #GLAVNI PROGRAM
     PrirubniceS=[]
     PrirubniceU=[]
     PrirubniceF=[]
+    PrirubniceB=[]
     NekonektovaniEl=[]
     pokrenutUI=FormaPrograma() #pokretanje prvog UI prozora
     #CITANJE IZLAZNIH PARAMETARA PRVOG UI-a
@@ -124,7 +125,9 @@ if __name__ == '__main__': #GLAVNI PROGRAM
                     elif j.TipPrirubnice == 'U':
                         PrirubniceU.append(int(j.Duzina))
                     elif j.TipPrirubnice == 'F':
-                        PrirubniceF.append(int(j.Duzina))  
+                        PrirubniceF.append(int(j.Duzina)) 
+                    elif j.TipPrirubnice == 'B':
+                        PrirubniceB.append(int(j.Duzina))   
             except:
                 NekonektovaniEl.append(P3.ElId.IntegerValue)    #UKOLIKO IMA ELEMENATA KOJI NISU KONEKTOVANI PROGRAM VRACA LISTU SA ID ELEMENATA
 
@@ -135,6 +138,8 @@ if __name__ == '__main__': #GLAVNI PROGRAM
         unikatiUdict=PrebrojUnikate(PrirubniceU)
         stringFlist=[['TIP PROFILA : ','F - dostavlja TERMOVENT'],['dužina (mm)','kom.']]
         unikatiFdict=PrebrojUnikate(PrirubniceF)
+        stringBlist=[['TIP PROFILA : ','U172P3'],['dužina (mm)','kom.']]
+        unikatiBdict=PrebrojUnikate(PrirubniceB)
         if len(NekonektovaniEl) == 0:
             if len(PrirubniceS) != 0:
                 listaS=stringSlist+[[i,unikatiSdict[i]] for i in unikatiSdict]
@@ -148,7 +153,12 @@ if __name__ == '__main__': #GLAVNI PROGRAM
                 listaF=stringFlist+[[i,unikatiFdict[i]] for i in unikatiFdict]
             else:
                 listaF=[]
-            listaZaEksport=listaU+listaS+listaF  
+            if len(PrirubniceB) != 0:
+                listaB=stringBlist+[[i,unikatiBdict[i]] for i in unikatiBdict]
+            else:
+                listaB=[]
+                
+            listaZaEksport=listaU+listaS+listaF+listaB
             try:
                 eksel=ExcelExport(SysRef, listaZaEksport)   #METODA ExcelExport EKPORTUJE TACNOI PRIPREMLJENU LISTU U DVA REDA U EKSEL SHEET
                 WF.MessageBox.Show(" УСПЕШНО ЈЕ НАПИСАНА СПЕЦИФИКАЦИЈА ПРИРУБНИЦА !",' УСПЕХ ')
