@@ -5,7 +5,7 @@ def ExcelExport(imeSistema,lista):
     from Microsoft.Office.Interop import Excel      
     from System.Runtime.InteropServices import Marshal  #potreban kako bi se uklonio COM objekat koji ostaje nakon gasenja EXCEL aplikacije u Task manageru i yauyima RAM
     imeFajla=imeSistema+'PRIRUBNICE.xlsx'
-    lokacijaCuvanja=os.path.expanduser("~\\Desktop\\"+ str(imeFajla)) 
+    lokacijaCuvanja=os.path.expanduser("~\\Documents\\"+ str(imeFajla)) 
     exApp = Excel.ApplicationClass()     #Pravi se novi objekat klase Excel Aplikacije  
     exApp.Visible = True
     exApp.DisplayAlerts = False   
