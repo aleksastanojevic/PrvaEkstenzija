@@ -20,8 +20,12 @@ def CitacKonektoraB(Konektor):
     '''
     OVA FUNKCIJA CITA DIMENZIJE KONEKTORA, I PRAVI OBJEKTE KLASE P3Prirubnica, SA TIPOM 'B' I DIMENZIJOM.-spojnica
     '''    
-    B1=[P3Prirubnica('B',Konektor.Width*304.8+23)]
-    B2=[P3Prirubnica('B',Konektor.Height*304.8+11)]
+    if (Konektor.Width*304.8)>(Konektor.Height*304.8):
+        B1=[P3Prirubnica('B',Konektor.Width*304.8+23+40)]
+        B2=[P3Prirubnica('B',Konektor.Height*304.8+11+40)]
+    else:
+        B1=[P3Prirubnica('B',Konektor.Width*304.8+11+40)]
+        B2=[P3Prirubnica('B',Konektor.Height*304.8+23+40)]
     return B1+B2  
 def CitacKonektoraU_UBOD(Konektor):
     '''
