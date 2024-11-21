@@ -60,23 +60,44 @@ def KolektorP3Schedula():
 def PretvoriJedinicu(RevitParametar):
     '''
     FUNKCIJA PRETVARA RADIJANE U UGAO ILI FITE U MILIMETRE.
-    NA ULAZU POTREBNO DOVESTI Autodesk.Revit.DB.ParameterType.HVACDuctSize ili Angle
+    NA ULAZU POTREBNO DOVESTI Autodesk.Revit.DB.ParameterType.HVACDuctSize ili Angle . Postoje dva koda u zavisnosti od verzije Revita.
     '''
-    try:
-        import math
-        from  Autodesk.Revit.DB import ParameterType
-        if RevitParametar.Definition.ParameterType == ParameterType.HVACDuctSize :
-            V=RevitParametar.AsDouble()*304.8
-        elif RevitParametar.Definition.ParameterType == ParameterType.Length :
-            V=RevitParametar.AsDouble()*304.8
-        elif RevitParametar.Definition.ParameterType == ParameterType.Angle :
-            V=RevitParametar.AsDouble()*180/math.pi
-        if round(V,3).is_integer():
-            return str(int(round(V,3)))
-        else:
-            return str(round(V,3))
-    except TypeError:  
-        return 'GRESKA U PRETVARANJU'
+    from Autodesk.Revit.DB import *
+    uidoc = __revit__.ActiveUIDocument
+    if uidoc.Document.Application.VersionNumber <2023:
+        try:
+            import math
+            from  Autodesk.Revit.DB import ParameterType
+            if RevitParametar.Definition.ParameterType == ParameterType.HVACDuctSize :
+                V=RevitParametar.AsDouble()*304.8
+            elif RevitParametar.Definition.ParameterType == ParameterType.Length :
+                V=RevitParametar.AsDouble()*304.8
+            elif RevitParametar.Definition.ParameterType == ParameterType.Angle :
+                V=RevitParametar.AsDouble()*180/math.pi
+            if round(V,3).is_integer():
+                return str(int(round(V,3)))
+            else:
+                return str(round(V,3))
+        except TypeError:  
+            return 'GRESKA U PRETVARANJU'
+
+    else:
+
+        try:
+            import math
+            from  Autodesk.Revit.DB import Definition
+            if RevitParametar.Definition.GetDataType().TypeId.Contains('ductSize') :
+                V=RevitParametar.AsDouble()*304.8
+            elif RevitParametar.Definition.GetDataType().TypeId.Contains('length') :
+                V=RevitParametar.AsDouble()*304.8
+            elif RevitParametar.Definition.GetDataType().TypeId.Contains('angle') :
+                V=RevitParametar.AsDouble()*180/math.pi
+            if round(V,3).is_integer():
+                return str(int(round(V,3)))
+            else:
+                return str(round(V,3))
+        except TypeError:  
+            return 'GRESKA U PRETVARANJU'
 
 def PrebrojUnikate(lista):
         '''
