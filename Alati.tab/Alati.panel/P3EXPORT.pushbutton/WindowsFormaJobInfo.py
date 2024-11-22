@@ -33,6 +33,14 @@ class ProzorJ(System.Windows.Forms.Form):
         self.naslov.Height = 25
         self.naslov.Width = 500
         self.CenterToScreen()  
+        #Kreiranje 
+        self.pov = Label()
+        self.pov.Text = "Површина канала :"
+        self.pov.Font= Font(FontFamily("Arial"),12.0, FontStyle.Regular)
+        self.pov.Location = Point(45,50)
+        self.pov.Height = 25
+        self.pov.Width = 500
+        self.CenterToScreen()  
         #kreiranje dugmeta1
         self.dugme1=Button()
         self.dugme1.Location=Point(380,500)
@@ -86,6 +94,7 @@ class ProzorJ(System.Windows.Forms.Form):
         # self.AcceptButton = self.dugme1
         self.CancelButton = self.dugme2
         self.Controls.Add(self.naslov)
+        self.Controls.Add(self.pov)
         self.Controls.Add(self.dugme1)
         self.Controls.Add(self.dugme2)
         self.Controls.Add(self.logo)
@@ -115,7 +124,7 @@ class ProzorJ(System.Windows.Forms.Form):
         self.Status = False
         self.Close()
             
-def FormaProgramaJob(ulaz): 
+def FormaProgramaJob(ulaz,Pov): 
     '''
     Kreiranje funkcije u kojoj se kreira objekat klase ProzorJ i dodeljuju stavke za popunjavanje
     (ulaz-->Lista ulaznih default textova za UI2)
@@ -124,6 +133,7 @@ def FormaProgramaJob(ulaz):
     FormaJ.Status=None   
     for i in range(len(ulaz)):
         FormaJ.listaInputa[i].Text = ulaz[i]
+    FormaJ.pov.Text=Pov
     Application.EnableVisualStyles()    
     Application.Run(FormaJ)          
 
@@ -132,8 +142,10 @@ def FormaProgramaJob(ulaz):
 
 if __name__=='__main__':   #ZA TESTIRANJE-NIJE GLAVNI PROGRAM
     ulaz=['A','V','l','r','k','V','s','\n '] 
-    a=FormaProgramaJob(ulaz)
+    POV='Површина P3 канала је: 233'
+    a=FormaProgramaJob(ulaz,POV)
     print(a[0])
+    print(a[1][1])
 
 
     

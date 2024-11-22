@@ -30,6 +30,7 @@ if __name__ == '__main__': #GLAVNI PROGRAM
     PrirubniceF=[]
     PrirubniceB=[]
     NekonektovaniEl=[]
+    povrsinaP3kanala=0
     pokrenutUI=FormaPrograma() #pokretanje prvog UI prozora
     #CITANJE IZLAZNIH PARAMETARA PRVOG UI-a
     Opcija = pokrenutUI[0]
@@ -71,8 +72,20 @@ if __name__ == '__main__': #GLAVNI PROGRAM
             for kod in DictKodova:
                 if P3Code == kod:
                     DictKodova[kod].append(fiting)
+                    try:
+                        paramA=fiting.GetParameters('P3_Sup_S.app')[0].AsDouble()/10.76389999
+                        paramA2=fiting.GetParameters('P3_Sup_S.app2')[0].AsDouble()/10.76389999
+                        paramA3=fiting.GetParameters('P3_Sup_S.app3')[0].AsDouble()/10.76389999
+                        povrsinaP3kanala+=paramA+paramA2+paramA3 
+                    except:
+                        paramA=fiting.GetParameters('P3_Sup_S.app')[0].AsDouble()/10.76389999
+                        povrsinaP3kanala+=paramA 
         if paramD and paramD=='P3 - Rectangular' and fiting.Category.Name=='Ducts':
             DictKodova[801].append(fiting)
+            paramA=fiting.GetParameters('Area')[0].AsDouble()/10.76389999
+            povrsinaP3kanala+=paramA
+            POV='Површина селектованих P3 канала је: '+ str(round(povrsinaP3kanala))+ str(' m2')
+    #WF.MessageBox.Show('Површина селектованих P3 канала је: '+ str(povrsinaP3kanala), 'ПОВРШИНА КАНАЛА')
     if StatusUI1:  
         #PROVERA DA LI IMA ELEMENATA U JEDINSTVENOM RECNIKU ELEMENATA
         nula=0
@@ -93,9 +106,10 @@ if __name__ == '__main__': #GLAVNI PROGRAM
         Notes= '\n\n'
         ListaDefaultVrednosti=[SysRef,SysDes,ClName,Add,Tel,DateOrder,DateOrder,Notes]  
         #POKRETANJE DRUGOG UI PROGRAMA ZA UNOS PODATAKA O POSLU I UNOS DEFAULT VREDNOSTI
-        pokrenutUI2=FormaProgramaJob(ListaDefaultVrednosti)
+        pokrenutUI2=FormaProgramaJob(ListaDefaultVrednosti,POV)
         StatusUI2=pokrenutUI2[0]
         UnosOPoslu=pokrenutUI2[1]
+        
     if StatusUI1 and StatusUI2:  #PROGRAM SE MOZE POKRENUTI-Status predstavlja dugme dalje na prvom i drugom UI
         Kolena=NapraviP3802(DictKodova[802])
         TRacve=NapraviP3803(DictKodova[803])
@@ -140,6 +154,9 @@ if __name__ == '__main__': #GLAVNI PROGRAM
         unikatiFdict=PrebrojUnikate(PrirubniceF)
         stringBlist=[['TIP PROFILA : ','U172P3'],['dužina (mm)','kom.']]
         unikatiBdict=PrebrojUnikate(PrirubniceB)
+        SysRef=UnosOPoslu[0] #SysRef se prepisuje vrednoscu upisanom u UI upitniku
+
+        #WF.MessageBox.Show(SysRef)
         if len(NekonektovaniEl) == 0:
             if len(PrirubniceS) != 0:
                 listaS=stringSlist+[[i,unikatiSdict[i]] for i in unikatiSdict]
@@ -168,6 +185,7 @@ if __name__ == '__main__': #GLAVNI PROGRAM
             WF.MessageBox.Show('НИЈЕ МОГУЋ ЕКСПОРТ У EXCEL ! \nЕлементи: IDs :' + str(NekonektovaniEl) + ' нису добро повезани! \n(СТАВИТИ ЧЕП АКО ЕЛЕМЕНТ ОСТАЈЕ НЕПОВЕЗАН)' ,' УПС ')
 
         #UPIS .BRV fajla   
+        
         imeFajla=SysRef+'.BRV'
         lokacijaCuvanja=os.path.expanduser("~\\Desktop\\"+imeFajla) # CITA HOMEPATH I DODAJE DEKSTOP I IME FAJLA.BRV
         try:

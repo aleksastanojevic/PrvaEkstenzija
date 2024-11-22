@@ -62,7 +62,7 @@ def PretvoriJedinicu(RevitParametar):
     FUNKCIJA PRETVARA RADIJANE U UGAO ILI FITE U MILIMETRE.
     NA ULAZU POTREBNO DOVESTI Autodesk.Revit.DB.ParameterType.HVACDuctSize ili Angle . Postoje dva koda u zavisnosti od verzije Revita.
     '''
-    from Autodesk.Revit.DB import *
+
     uidoc = __revit__.ActiveUIDocument
     if uidoc.Document.Application.VersionNumber <2023:
         try:

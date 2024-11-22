@@ -4,8 +4,8 @@ def ExcelExport(imeSistema,lista):
     clr.AddReference('Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c') #referencira se Interop.Excel it CLR modula
     from Microsoft.Office.Interop import Excel      
     from System.Runtime.InteropServices import Marshal  #potreban kako bi se uklonio COM objekat koji ostaje nakon gasenja EXCEL aplikacije u Task manageru i yauyima RAM
-    imeFajla=imeSistema+'PRIRUBNICE.xlsx'
-    lokacijaCuvanja=os.path.expanduser("~\\Documents\\"+ str(imeFajla)) 
+    imeFajla=imeSistema+' PRIRUBNICE.xlsx'
+    lokacijaCuvanja=os.path.expanduser("~\\Desktop\\"+ str(imeFajla)) 
     exApp = Excel.ApplicationClass()     #Pravi se novi objekat klase Excel Aplikacije  
     exApp.Visible = True
     exApp.DisplayAlerts = False   
