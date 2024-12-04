@@ -3,7 +3,7 @@ from Autodesk.Revit.DB import *
 from Autodesk.Revit.DB.Architecture import *
 from Autodesk.Revit.DB.Analysis import *
 import clr
-import math
+import sys
 clr.AddReference("RevitServices")
 import RevitServices
 from RevitServices.Persistence import DocumentManager
@@ -18,58 +18,39 @@ from Autodesk.Revit.UI import TaskDialog
 from Autodesk.Revit.UI import UIApplication
 uidoc = __revit__.ActiveUIDocument
 doc = __revit__.ActiveUIDocument.Document
+#import System.Windows.Forms as WF
 
-#from DodatneFunkcijeSplit import SortedPoints, ConnectElements, IsParallel, measure, copyElement, GetDirection, GetClosestDirection, placeFitting
+from DodatneFunkcijeSplit import SortedPoints, ConnectElements, IsParallel, measure, copyElement, GetDirection, GetClosestDirection, placeFitting
 
-SveNoveTacke=[]
-
-selektovanoU_revitu=[doc.GetElement(id) for id in __revit__.ActiveUIDocument.Selection.GetElementIds()]
-
-for el in selektovanoU_revitu:
+def DUCTsplit(duct,famtype):
+    '''Ova funkcija ulazni kanal deli na deonice na odredjenu duzinu i ubaciuje union familiju na spojeve'''
+    
+    ductsout = []
+    fittingsout = []
+    combilist = []
+    
     noveTacke=[]
-    l=el.Location.Curve
-    pocetna=l.Origin
-    pravac=l.Direction
-    splitl=round(3000) #OVDE DEFINISATI DUZINU DELJENJA
-    duzina=round(l.Length*304.8)
-    tacke=[pravac.Multiply(i/304.8) for i in xrange(splitl,duzina,splitl)]
-    for tacka in tacke:
-        novaTacka=pocetna.Add(tacka)
-        noveTacke.append(novaTacka)
-    SveNoveTacke.append(noveTacke)
-
-
-famtype = []
-Tipovi=FilteredElementCollector(doc).WhereElementIsElementType()
-for i in Tipovi:
-    if i.FamilyName=='M_Rectangular Union' :
-        famtype.append(i)
-
-ducts = selektovanoU_revitu
-points = SveNoveTacke
-print(ducts)
-print(points[0])
-ftl = len(famtype)
-ductsout = []
-fittingsout = []
-combilist = []
-
-t=Transaction(doc, "Transaction")
-t.Start()
-
-for typ in famtype:
-    if typ.IsActive == False:
-        typ.Activate()
-        doc.Regenerate()
-t.Commit()
-
-t=Transaction(doc, "Add new fitting")
-t.Start()
-for i,duct in enumerate(ducts):
-    ListOfPoints = [x for x in points[i]]
-    familytype = famtype[i%ftl]
-    #create duct location line
     ductline = duct.Location.Curve
+    ductStartPoint = ductline.GetEndPoint(0)
+    #print(ductStartPoint)
+    pravac=ductline.Direction
+    splitl=round(1200) #OVDE DEFINISATI DUZINU DELJENJA
+    duzina=int(ductline.Length*304.8)
+    minduzina=round(400)
+    if duzina<=splitl:
+        return
+    if duzina<splitl+400 :
+        tacke=[pravac.Multiply(i/304.8) for i in xrange(minduzina,duzina,splitl)]
+    else:
+        tacke=[pravac.Multiply(i/304.8) for i in xrange(splitl,duzina,splitl)]
+
+    for tacka in tacke:
+        novaTacka=ductStartPoint.Add(tacka)
+        noveTacke.append(novaTacka)
+
+    ListOfPoints = [x for x in noveTacke]
+    familytype = famtype
+    #create duct location line
     ductStartPoint = ductline.GetEndPoint(0)
     ductEndPoint = ductline.GetEndPoint(1)
     #get end connector to reconnect later
@@ -83,6 +64,7 @@ for i,duct in enumerate(ducts):
                     if refconn.ConnectorType != ConnectorType.Logical and refconn.Owner.Id.IntegerValue != duct.Id.IntegerValue:
                         endrefconn = refconn
     
+    
             #sort the points from start of duct to end of duct
     pointlist = SortedPoints(ListOfPoints,ductStartPoint)
     ductlist = []
@@ -95,15 +77,10 @@ for i,duct in enumerate(ducts):
 	
     for i,p in enumerate(pointlist):		
         output = placeFitting(duct,p,familytype,lineDirection)
-        print(p)
-        print(duct.Location.Curve.GetEndPoint(0),duct.Location.Curve.GetEndPoint(1))
-        #print(output)
         newfitting = output.keys()[0]
         newFittings.append(newfitting)
         fittingpoints = output.values()[0]
         tempPoints = SortedPoints(fittingpoints,ductStartPoint)
-        #print(tempPoints)
-        
         if i == 0:
             tempEndPoint = tempPoints[0]
             tempStartPoint = tempPoints[1]			
@@ -125,8 +102,7 @@ for i,duct in enumerate(ducts):
     ductlist[-1].Location.Curve = newline
     ductsout.append(ductlist)
     fittingsout.append(newFittings)
-    doc.Regenerate()
-    
+    #doc.Regenerate()
     if endIsConnected:
         for conn in ductlist[-1].ConnectorManager.Connectors:
             if conn.Origin.DistanceTo(ductEndPoint) < 5/304.8:
@@ -135,8 +111,23 @@ for i,duct in enumerate(ducts):
     for combi in combilist:
         ConnectElements(combi[0],combi[1])
 
-t.Commit()
+    #doc.Regenerate()
+    
+    OUT= [ductsout,fittingsout]
+    return OUT
 
-OUT= [ductsout,fittingsout]
-print(OUT)
+if __name__ == '__main__': #GLAVNI PROGRAM
+    selektovanoU_revitu=[doc.GetElement(id) for id in __revit__.ActiveUIDocument.Selection.GetElementIds()]
+    filter=ElementCategoryFilter(BuiltInCategory.OST_DuctCurves)
+    kanali=[el for el in selektovanoU_revitu if filter.PassesFilter(el)]
+    Tipovi=FilteredElementCollector(doc).WhereElementIsElementType()
+    for i in Tipovi:
+        if i.FamilyName=='M_Rectangular Union' :
+            famtype=i
+    
+    t=Transaction(doc, "Optimizacija kanala ")
+    t.Start() 
+    [DUCTsplit(kanal,famtype) for kanal in kanali]
+    t.Commit()
 
+        
