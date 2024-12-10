@@ -20,6 +20,13 @@ selektovanoU_revitu=[doc.GetElement(id) for id in __revit__.ActiveUIDocument.Sel
 s0=selektovanoU_revitu[0]
 schema_guid = Guid('061a4c59-b31b-47ee-87df-412c1113c7be')
 
+
+
+schema_guid1=Guid( '4142a05d-4095-4108-a86a-27180e33a2c8')
+
+
+
+
 schema = Schema.Lookup(schema_guid)
 print(schema)
 entity=Entity(schema)
@@ -61,7 +68,7 @@ t.Commit()
 '''
 #READING
 '''
-#SchemaGUID: 061a4c59-b31b-47ee-87df-412c1113c7be
+schema_guid1=Guid( '4142a05d-4095-4108-a86a-27180e33a2c8')
 from Autodesk.Revit.DB.ExtensibleStorage import Schema
 from Autodesk.Revit.DB.ExtensibleStorage import Field
 from System import Guid
