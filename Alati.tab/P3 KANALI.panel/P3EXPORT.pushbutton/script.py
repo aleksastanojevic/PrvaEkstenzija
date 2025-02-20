@@ -96,7 +96,12 @@ if __name__ == '__main__': #GLAVNI PROGRAM
             WF.MessageBox.Show(" НЕМА 'P3' КАНАЛСКИХ ЕЛЕМЕНАТА ", 'УПС')
             sys.exit('')
         #PRAVLJANJE JEDINSTVENE LISTE DEFAULT VREDNOSTI ZA PODATKE O POSLU
-        SysRef=Elementi[0].LookupParameter('System Name').AsString()
+        try:
+            SysRef=Elementi[0].LookupParameter('System Name').AsString()
+            if SysRef == None:
+                SysRef='SISTEM NIJE DODELJEN'
+        except:
+            SysRef='SISTEM NIJE DODELJEN'
         SysDes=SysRef + ' Ducting System'
         ClName = doc.ProjectInformation.ClientName
         Add = doc.ProjectInformation.Address
