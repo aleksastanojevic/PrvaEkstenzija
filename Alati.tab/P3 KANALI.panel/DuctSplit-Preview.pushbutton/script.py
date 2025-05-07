@@ -21,7 +21,6 @@ doc = __revit__.ActiveUIDocument.Document
 #import System.Windows.Forms as WF
 
 from DodatneFunkcijeSplit import SortedPoints, ConnectElements, IsParallel, measure, copyElement, GetDirection, GetClosestDirection, placeFitting
-
 def DUCTsplit(duct,famtype):
     '''Ova funkcija ulazni kanal deli na deonice na odredjenu duzinu i ubaciuje union familiju na spojeve'''
     
@@ -31,19 +30,66 @@ def DUCTsplit(duct,famtype):
     
     noveTacke=[]
     ductline = duct.Location.Curve
-    ductStartPoint = ductline.GetEndPoint(0)
-    #print(ductStartPoint)
-    pravac=ductline.Direction
-    splitl=round(1200) #OVDE DEFINISATI DUZINU DELJENJA
-    duzina=int(ductline.Length*304.8)
-    minduzina=round(400)
-    if duzina<=splitl:
-        return
-    if duzina<splitl+400 :
-        tacke=[pravac.Multiply(i/304.8) for i in xrange(minduzina,duzina,splitl)]
-    else:
-        tacke=[pravac.Multiply(i/304.8) for i in xrange(splitl,duzina,splitl)]
 
+    splitl=1210.5 #OVDE DEFINISATI DUZINU DELJENJA
+    ListOfPoints=[]
+    ductline = duct.Location.Curve
+    ductStartPoint = ductline.GetEndPoint(0)
+    ductEndPoint = ductline.GetEndPoint(1)
+    pravac=ductline.Direction
+    DL=Line.CreateBound(ductStartPoint,ductEndPoint)
+    duzina=ductline.Length*304.8
+    minduzina=400
+    TAPSCons={}
+    for conn in duct.ConnectorManager.Connectors:  
+        if conn.ConnectorType == ConnectorType.Curve:
+            for Cconn in conn.AllRefs:
+                if Cconn.ConnectorType != ConnectorType.Logical and Cconn.Owner.Id.IntegerValue != duct.Id.IntegerValue:
+                    TAPSCons[Cconn]=[Cconn.Origin,Cconn.Width,DL.Project(Cconn.Origin).Parameter]##TREBA DODATI KRUZNI UBOD ili vise uboda razlicitih oblika
+
+
+    TAPSConsSortedTuple =sorted(TAPSCons.items(), key=lambda item: item[1][2])
+    nedozvoljenaDistanca=[(tap[1][2]-tap[1][1]/2-0.5,tap[1][2]+tap[1][1]/2+0.5) for tap in TAPSConsSortedTuple]       #0.5 feet - 150mm  50mmx2+20mm
+    #### FUNKICJA ZA UTVRDJIVANJE VALIDNOSTI TACKE U ODNOSU NA TUPLU DEDOZVOLJENIH DISTANCI
+    def is_valid(p):
+        return 0 <= p <= duzina/304.8 and all(not (start <= p < end) for start, end in nedozvoljenaDistanca)
+    #### NAREDNI DEO KODA POSTAVLJA TACKE DA OBILAZI LISTU TAPOVA ######
+    Nt=[]
+    tacka=0
+    pomeraj=0
+    while tacka<duzina/304.8:
+        tacka+=splitl/304.8
+        if tacka>duzina/304.8:
+            break
+        Validna=is_valid(tacka)
+        while not Validna :
+            tacka-=0.0164041995
+            Validna=is_valid(tacka)
+            pomeraj+=0.0164041995
+        Nt.append(tacka)
+    # NACI I POKUSATI DOTERATI DEONICU DA IMA STO VISE CELIH KOMADA KANALA I DA PRVA I POSLEDNJA BUDU OSTACI DODELJIVI FITINZIMA
+    Nt.insert(0,0)
+    Nt.append(duzina/304.8)
+
+    for p,point in enumerate(Nt[::-1]):
+        if p==0 or p==len(Nt)-1:
+            continue
+        distanca=Nt[len(Nt)-p]-Nt[len(Nt)-p-1]
+        while distanca<=splitl/304.8:
+            if is_valid(point):
+                point-=0.0164041995  
+                distanca=Nt[len(Nt)-p]-point
+            else:
+                break
+        if (((splitl-10)/304.8<distanca<(splitl+10)/304.8)):
+            Nt[len(Nt)-p-1]=point
+        else:
+            continue
+
+    Nt.pop(0)
+    Nt.pop(len(Nt)-1)
+    #### DALJE KOD STAVLJA SPLITOVE ###
+    tacke=[pravac.Multiply(i) for i in Nt]
     for tacka in tacke:
         novaTacka=ductStartPoint.Add(tacka)
         noveTacke.append(novaTacka)
