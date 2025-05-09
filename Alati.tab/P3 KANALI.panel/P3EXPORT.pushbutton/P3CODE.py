@@ -22,7 +22,6 @@ class P3Posao:
 def NapraviNoviPosao(UnosOPoslu):
     NoviPosao=P3Posao(*UnosOPoslu)
     return NoviPosao
-    
 ##### ##### ##### ##### KLASA P3!!!!!!
 class P3:
     def __init__(self,DebMat, Mark,ElId):
@@ -154,7 +153,6 @@ def NapraviP3803(Elementi):
         Tracva=P3803(debljinaMaterijala, Mark,ElId,**parametri)
         listaTracvi.append(Tracva)
     return listaTracvi
-
 ##### ##### ##### ##### KLASA P3847 REDUKCIJA!!!!!!
 class P3847(P3):
     LineType_012='1'
@@ -307,7 +305,6 @@ def NapraviP3827(Elementi):
         LastinRep=P3827(debljinaMaterijala, Mark,ElId,**parametri)
         listaLastinRep.append(LastinRep)
     return listaLastinRep
-
 ##### ##### ##### ##### KLASA P3827 ČEP-END CAP!!!!!!
 class P3843(P3):
     holeNew='-1'
@@ -354,7 +351,6 @@ def NapraviP3843(Elementi):
         Cep=P3843(debljinaMaterijala, Mark,ElId,**parametri)
         listaCepova.append(Cep)
     return listaCepova
-
 ##### ##### ##### ##### KLASA P3853 RACVA-SKRETANJE-PROLAZ-Redukcija!!!!!!
 class P3853(P3):
     cutDef_01='0'
@@ -404,8 +400,205 @@ def NapraviP3853(Elementi):
         RacvaRedukcija=P3853(debljinaMaterijala, Mark,ElId,**parametri)
         listaRacviRedukcija.append(RacvaRedukcija)
     return listaRacviRedukcija
+##### ##### ##### ##### KLASA P3828 RACVA-SKRETANJE-PROLAZ (PROSTA RACVA BEZ REDUKCIJE)!!!!!!
+class P3828(P3):
+    cutDef_01='0'
+    LineDef='2'
+    LineType_012='1'
+    def __init__(self,DebMat, Mark,ElId ,**kwargs):
+        P3.__init__(self,DebMat, Mark,ElId)
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+        self.RedniBroj=None
+        self.Prirubnice=[]
+		    
+    def __str__(self):
+        s =self.__class__.__name__ +'>>>' +' C:'+ self.P3_CWidth_1 +' B:'+  self.P3_BDepth +\
+            ' M:'+ self.P3_MWidth_2+ ' P:'+  self.P3_PWidth_3 +' Mark:'+ self.Mark +' ID:'+ self.ElId
+        return s
 
+    def CODE(self):
+        s='*\n'+ '828\n' +  str(self.RedniBroj) + '\n' + '1\n' + '11\n' 
+        l=[self.P3_CWidth_1,self.P3_BDepth,self.P3_MWidth_2,self.P3_PWidth_3,self.P3_ELine_1,self.P3_FLine_2,\
+            self.P3_RRadius_1,self.P3_Angle,self.P3_HHeight,self.P3_R1D,self.P3_R2D,self.P3_R3D,self.P3_R4D,\
+                self.cutDef_01,self.LineDef,self.P3_SRadius_2,self.LineType_012]
+        s+= (',').join(l)+'\n' 
+        s+='0,0,0,0,0,0,0,0,0,0,0,0\n'
+        if self.Mark == None:
+            s+='\n'
+        else:
+            s+= self.Mark+'\n'
+        return s
 
+def NapraviP3828(Elementi):
+    '''
+    Funkcija od Elemenata na unosu pravi elemente klase P3828 i popunjava ga parametrima iz modela,kao i nephodnim parametrima za softver BRAVO i prirubnicama
+    '''
+    doc=__revit__.ActiveUIDocument.Document
+    from  Autodesk.Revit.DB import BuiltInParameter
+    parametri828=['P3 - C Width_1','P3 - B Depth','P3 - M Width_2','P3 - P Width_3','P3 - E Line_1','P3 - F Line_2','P3 - R Radius_1','P3 - Angle','P3 - H Height','P3 - R1D','P3 - R2D','P3 - R3D','P3 - R4D','P3 - S Radius_2']
+    listaProstihRacvi=[]
+    for element in Elementi:
+        debljinaMaterijala=element.get_Parameter(BuiltInParameter.RBS_REFERENCE_INSULATION_THICKNESS).AsInteger()
+        Mark=element.get_Parameter(BuiltInParameter.ALL_MODEL_MARK).AsString()
+        ElId=element.Id
+        parametri={}
+        for j in parametri828:
+            parametri[j.replace(' ','').replace('-','_')]=PretvoriJedinicu(element.GetParameters(j)[0])
+        Racva=P3828(debljinaMaterijala, Mark,ElId,**parametri)
+        listaProstihRacvi.append(Racva)
+    return listaProstihRacvi
+##### ##### ##### ##### KLASA P3823 REDUKCIONO KOLENO !!!!!!
+class P3823(P3):
+    cutDef_01='0'
+    LineDef='100'
+    def __init__(self,DebMat, Mark,ElId ,**kwargs):
+        P3.__init__(self,DebMat, Mark,ElId)
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+        self.RedniBroj=None
+        self.Prirubnice=[]
+		    
+    def __str__(self):
+        s =self.__class__.__name__ +'>>>' +' A:'+ self.P3_AWidth_1 +' B:'+  self.P3_BDepth_1 +\
+            ' M:'+ self.P3_MWidth_2+ ' N:'+  self.P3_NDepth_2 +' Mark:'+ self.Mark +' ID:'+ self.ElId
+        return s
+
+    def CODE(self):
+        s='*\n'+ '823\n' +  str(self.RedniBroj) + '\n' + '1\n' + '11\n' 
+
+        l=[self.P3_AWidth_1,self.P3_BDepth_1,self.P3_MWidth_2,self.P3_NDepth_2,self.P3_RRadius_1,self.P3_SRadius_2,self.P3_ELine_1,self.P3_FLine_2,\
+            self.P3_Ydisplacement,self.P3_Angle,self.P3_GLine_3,self.P3_HLine_4,self.P3_R1D,self.P3_R2D,self.P3_R3D,self.P3_R4D,\
+                self.LineDef,self.cutDef_01]
+        s+= (',').join(l)+'\n' 
+        s+='0,0,0,0,0,0,0,0,0,0,0,0\n'
+        if self.Mark == None:
+            s+='\n'
+        else:
+            s+= self.Mark+'\n'
+        return s
+
+def NapraviP3823(Elementi):
+    '''
+    Funkcija od Elemenata na unosu pravi elemente klase P3823 i popunjava ga parametrima iz modela,kao i nephodnim parametrima za softver BRAVO i prirubnicama
+    '''
+    from Autodesk.Revit.DB import BuiltInParameter
+    doc = __revit__.ActiveUIDocument.Document
+    parametri823 = ['P3 - A Width_1', 'P3 - B Depth_1', 'P3 - M Width_2', 'P3 - N Depth_2', 'P3 - R Radius_1', 'P3 - S Radius_2', 'P3 - E Line_1', 'P3 - F Line_2',
+                    'P3 - Y displacement', 'P3 - Angle', 'P3 - G Line_3', 'P3 - H Line_4', 'P3 - R1D', 'P3 - R2D', 'P3 - R3D', 'P3 - R4D']
+    listaRedukcionihKolena = []
+
+    for element in Elementi:
+        debljinaMaterijala = element.get_Parameter(BuiltInParameter.RBS_REFERENCE_INSULATION_THICKNESS).AsInteger()
+        Mark = element.get_Parameter(BuiltInParameter.ALL_MODEL_MARK).AsString()
+        ElId = element.Id
+        parametri = {}
+        for j in parametri823:
+            parametri[j.replace(' ', '').replace('-', '_')] = PretvoriJedinicu(element.GetParameters(j)[0])
+        RedukcionoKoleno = P3823(debljinaMaterijala, Mark, ElId, **parametri)
+        listaRedukcionihKolena.append(RedukcionoKoleno)
+    return listaRedukcionihKolena
+##### ##### ##### ##### KLASA P3813 PANTALONE !!!!!!
+class P3813(P3):
+    LineType_012='1'
+    def __init__(self,DebMat, Mark,ElId ,**kwargs):
+        P3.__init__(self,DebMat, Mark,ElId)
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+        self.RedniBroj=None
+        self.Prirubnice=[]
+		    
+    def __str__(self):
+        s =self.__class__.__name__ +'>>>' +' A:'+ self.P3_AWidth_1 +' B:'+  self.P3_BDepth_1 +\
+            ' M:'+ self.P3_MWidth_2+ ' N:'+  self.P3_NDepth_2+ ' P:'+  self.P3_PWidth_3 +' Mark:'+ self.Mark +' ID:'+ self.ElId
+        return s
+
+    def CODE(self):
+        s='*\n'+ '813\n' +  str(self.RedniBroj) + '\n' + '1\n' + '11\n' 
+
+        l=[self.P3_AWidth_1,self.P3_MWidth_2,self.P3_PWidth_3,self.P3_BDepth_1,self.P3_NDepth_2,self.P3_LLength,self.P3_Qdimension1,self.P3_Rdimension2,\
+            self.P3_ZShift,self.P3_ELine_1,self.P3_FLine_2,self.P3_Ydisplacement,self.P3_angleTop,self.P3_angleBottom,self.P3_angleBehind,self.P3_angleForward,\
+            self.LineType_012]
+        s+= (',').join(l)+'\n' 
+        s+='0,0,0,0,0,0,0,0,0,0,0,0\n'
+        if self.Mark == None:
+            s+='\n'
+        else:
+            s+= self.Mark+'\n'
+        return s
+
+def NapraviP3813(Elementi):
+    '''
+    Funkcija od Elemenata na unosu pravi elemente klase P3813 i popunjava ga parametrima iz modela,kao i nephodnim parametrima za softver BRAVO i prirubnicama
+    '''
+    from Autodesk.Revit.DB import BuiltInParameter
+    doc = __revit__.ActiveUIDocument.Document
+    parametri813 = ['P3 - A Width_1', 'P3 - B Depth_1', 'P3 - M Width_2', 'P3 - N Depth_2', 'P3 - P Width_3', 'P3 - L Length', 'P3 - Q dimension1', 'P3 - R dimension2',
+                    'P3 - Z Shift', 'P3 - E Line_1', 'P3 - F Line_2', 'P3 - Y displacement', 'P3 - angleTop', 'P3 - angleBottom', 'P3 - angleBehind', 'P3 - angleForward']
+    listaPantalona = []
+
+    for element in Elementi:
+        debljinaMaterijala = element.get_Parameter(BuiltInParameter.RBS_REFERENCE_INSULATION_THICKNESS).AsInteger()
+        Mark = element.get_Parameter(BuiltInParameter.ALL_MODEL_MARK).AsString()
+        ElId = element.Id
+        parametri = {}
+        for j in parametri813:
+            parametri[j.replace(' ', '').replace('-', '_')] = PretvoriJedinicu(element.GetParameters(j)[0])
+        Pantalone = P3813(debljinaMaterijala, Mark, ElId, **parametri)
+        listaPantalona.append(Pantalone)
+    return listaPantalona
+##### ##### ##### ##### KLASA P3826 KRST RACVA !!!!!!
+class P3826(P3):
+    cutDef_01='0'
+    LineDef='0'
+    LineType_012='1'
+    def __init__(self,DebMat, Mark,ElId ,**kwargs):
+        P3.__init__(self,DebMat, Mark,ElId)
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+        self.RedniBroj=None
+        self.Prirubnice=[]
+            
+    def __str__(self):
+        s =self.__class__.__name__ +'>>>' +' C:'+ self.P3_CWidth_1 +' B:'+  self.P3_BDepth +\
+            ' M:'+ self.P3_MWidth_2+ ' P:'+  self.P3_PWidth_3+ ' N:'+  self.P3_NWidth_3 +' Mark:'+ self.Mark +' ID:'+ self.ElId
+        return s
+
+    def CODE(self):
+        s='*\n'+ '826\n' +  str(self.RedniBroj) + '\n' + '1\n' + '11\n' 
+        l=[self.P3_MWidth_2, self.P3_BDepth, self.P3_ELine_1, self.P3_FLine_2, self.P3_RRadius_1, self.P3_AngleLt, self.P3_NWidth_3, self.P3_GLine_3, 
+           self.P3_ILine_Rt, self.P3_TRadius_3, self.P3_AngleRt, self.P3_PWidth_3, self.P3_CWidth_1, self.P3_HHeight, self.P3_R1D, self.P3_R2D, 
+           self.P3_R3D, self.P3_R4D, self.P3_R1D_Dx, self.P3_R2D_Dx, self.P3_R3D_Dx, self.P3_R4D_Dx, self.cutDef_01, self.LineDef, self.P3_SRadius_2, 
+           self.P3_URadius_4, self.LineType_012]
+        s+= (',').join(l)+'\n' 
+        s+='0,0,0,0,0,0,0,0,0,0,0,0\n'
+        if self.Mark == None:
+            s+='\n'
+        else:
+            s+= self.Mark+'\n'
+        return s
+
+def NapraviP3826(Elementi):
+    '''
+    Funkcija od Elemenata na unosu pravi elemente klase P3826 i popunjava ga parametrima iz modela,kao i nephodnim parametrima za softver BRAVO i prirubnicama
+    '''
+    from Autodesk.Revit.DB import BuiltInParameter
+    doc = __revit__.ActiveUIDocument.Document
+    parametri826 = ['P3 - M Width_2', 'P3 - B Depth', 'P3 - E Line_1', 'P3 - F Line_2', 'P3 - R Radius_1', 'P3 - AngleLt', 'P3 - N Width_3', 'P3 - G Line_3', 
+                    'P3 - I Line_Rt', 'P3 - T Radius_3', 'P3 - AngleRt', 'P3 - P Width_3', 'P3 - C Width_1', 'P3 - H Height', 'P3 - R1D', 'P3 - R2D', 
+                    'P3 - R3D', 'P3 - R4D', 'P3 - R1D_Dx', 'P3 - R2D_Dx', 'P3 - R3D_Dx', 'P3 - R4D_Dx', 'P3 - S Radius_2', 'P3 - U Radius_4']
+    listaKrstRacvi = []
+
+    for element in Elementi:
+        debljinaMaterijala = element.get_Parameter(BuiltInParameter.RBS_REFERENCE_INSULATION_THICKNESS).AsInteger()
+        Mark = element.get_Parameter(BuiltInParameter.ALL_MODEL_MARK).AsString()
+        ElId = element.Id
+        parametri = {}
+        for j in parametri826:
+            parametri[j.replace(' ', '').replace('-', '_').replace('/', '_')] = PretvoriJedinicu(element.GetParameters(j)[0])
+        KrstRacva = P3826(debljinaMaterijala, Mark, ElId, **parametri)
+        listaKrstRacvi.append(KrstRacva)
+    return listaKrstRacvi
 ##### ##### ##### ##### KLASA P3801 PRAVOUGAONI KANAL!!!!!!
 class P3801(P3):
     ductType_1234=None  #ako je kanal iz jednog dela onda je 1.Moze biti i 2,3,4

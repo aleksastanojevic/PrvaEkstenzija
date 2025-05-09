@@ -27,6 +27,7 @@ def GenericDuctSplitAndPrefab(duct,familytype,DTtapfamtype,splitl=1210.5):
     -splitl: duzina deljenja kanala    
     ''' 
     from Autodesk.Revit.DB import Line
+    import math
     endIsConnected,startIsConnected = False,False     
     endrefconn,startrefconn=None,None  
     ListOfPoints=[]
@@ -38,13 +39,34 @@ def GenericDuctSplitAndPrefab(duct,familytype,DTtapfamtype,splitl=1210.5):
     duzina=ductline.Length*304.8
     minduzina=400
     TAPSCons={}
-    TAPSConsPriv={}
+
+    '''
     for conn in duct.ConnectorManager.Connectors:  
         if conn.ConnectorType == ConnectorType.Curve:
             for Cconn in conn.AllRefs:
                 if Cconn.ConnectorType != ConnectorType.Logical and Cconn.Owner.Id.IntegerValue != duct.Id.IntegerValue:
-                    TAPSCons[Cconn]=[Cconn.Origin,Cconn.Width,pravac.Multiply(DL.Project(Cconn.Origin).Parameter)]##TREBA DODATI KRUZNI UBOD ili vise uboda razlicitih oblika
-                    TAPSConsPriv[Cconn]=[Cconn.Origin,Cconn.Width,DL.Project(Cconn.Origin).Parameter]
+                    TAPSCons[Cconn]=[Cconn.Origin,Cconn.Width,DL.Project(Cconn.Origin).Parameter]##TREBA DODATI KRUZNI UBOD ili vise uboda razlicitih oblika
+                    #TAPSConsPriv[Cconn]=[Cconn.Origin,Cconn.Width,DL.Project(Cconn.Origin).Parameter]
+
+                '''
+    for conn in duct.ConnectorManager.Connectors:  
+        if conn.ConnectorType == ConnectorType.Curve:
+            for Cconn in conn.AllRefs:
+                if Cconn.ConnectorType == ConnectorType.Logical and Cconn.Owner.Id.IntegerValue == duct.Id.IntegerValue :
+                    continue
+                if Cconn.Shape==ConnectorProfileType.Round:
+                    TAPSCons[Cconn]=[Cconn.Origin,(Cconn.Radius)*2,DL.Project(Cconn.Origin).Parameter]##TREBA DODATI KRUZNI UBOD ili vise uboda razlicitih oblika
+                elif Cconn.Shape==ConnectorProfileType.Rectangular or Cconn.Shape==ConnectorProfileType.Oval:
+                    dp=abs(pravac.DotProduct(Cconn.CoordinateSystem.BasisX))
+                    
+                    if dp>=1:
+                        TAPSCons[Cconn]=[Cconn.Origin,Cconn.Width,DL.Project(Cconn.Origin).Parameter]
+                    elif dp==0:
+                        TAPSCons[Cconn]=[Cconn.Origin,Cconn.Height,DL.Project(Cconn.Origin).Parameter]
+                    else:
+                        d=math.sqrt((Cconn.Width)*2+(Cconn.Height)*2)
+                        TAPSCons[Cconn]=[Cconn.Origin,d,DL.Project(Cconn.Origin).Parameter]
+                    
         elif conn.Origin.DistanceTo(ductEndPoint) < 5/304.8 and conn.IsConnected:
             endIsConnected = True
             for refconn in conn.AllRefs:
@@ -58,6 +80,7 @@ def GenericDuctSplitAndPrefab(duct,familytype,DTtapfamtype,splitl=1210.5):
         else :
             continue
 ###OVAJ DEO KODA PROVERA INICIJALNE KONEKTOVANE ELEMENTE I PROVERAVA DA LI SU IZ P3 PORODICE JER TO MENJA PREDLOG TRACAKA PODELE KANALA. AKO SU OBA P3 ONDA SE MALI DODATAK PRERASPDELJUJE NA NJIH
+    print(TAPSCons)
     PrikljuceniKonektori=[]
     try:   
         StartFamilyOwner=startrefconn.Owner
@@ -74,9 +97,7 @@ def GenericDuctSplitAndPrefab(duct,familytype,DTtapfamtype,splitl=1210.5):
         EndP3code=None
         EndFamilyOwner=None
 #####################################################################################
-
     #OVDE DODATI ANALIZU PRIKLJUCENIH KOMADA 
-
     ###########################################
     if duzina<=splitl:
         tacke=[]
@@ -86,7 +107,7 @@ def GenericDuctSplitAndPrefab(duct,familytype,DTtapfamtype,splitl=1210.5):
         tacke=[pravac.Multiply(i/304.8) for i in xrange(splitl,duzina,splitl)]
 
     ###--------ANALIZA TACAKA I POZICIJA UBODA I ADAPTACIJA --------------
-    TAPSConsSortedTuple =sorted(TAPSConsPriv.items(), key=lambda item: item[1][2])
+    TAPSConsSortedTuple =sorted(TAPSCons.items(), key=lambda item: item[1][2])
     nedozvoljenaDistanca=[(tap[1][2]-tap[1][1]/2-0.5,tap[1][2]+tap[1][1]/2+0.5) for tap in TAPSConsSortedTuple]
     ##############################################-DEO KODA ODGOVORAN ZA PRAVLJENJE SPLIT TACAKA ZA DELJENJE-#########################################
     def is_valid(p):
@@ -203,9 +224,6 @@ def GenericDuctSplitAndPrefab(duct,familytype,DTtapfamtype,splitl=1210.5):
     
     return NewFittingsDuctsTaps, NewFittingsDucts, NewFittingsDuctsSHORT #vraca listu fittinga i listu ductova koji su dodati u funkciji placeFittingAndLength
 
-
-
-
 def PrefabrikovanjeElemenata(SelektovaniKanali):
     '''OVA FUNKCIJA SE POKRECE NA LISTU SELEKTOVANIH P3 Duct KANALA I PREFABRIKUJE IH U DuctFitting ELEMENTE
     -Selektovani Kanali- INPUT SELEKCIJE IZ REVITA'''
@@ -264,12 +282,10 @@ def PrefabrikovanjeElemenata(SelektovaniKanali):
                     doc.Regenerate()
                 except:
                     SubTr.RollBack()
-
         else:
             Tr.Commit()
             uidoc.Selection.SetElementIds(List[ElementId]()) # --brisanje selekcije kako ne bi ostali selektovani elementi nakon zavrsetka
             return 
-
 
 if __name__ == '__main__': #GLAVNI PROGRAM - OVDE TREBA ANALIZIRATI KANALE I POZIVATI FUNKCIJU ZA DELJENJE KANALA NA DUZINE I DODAVANJE FITTINGA
         from Autodesk.Revit.DB.Mechanical import Duct

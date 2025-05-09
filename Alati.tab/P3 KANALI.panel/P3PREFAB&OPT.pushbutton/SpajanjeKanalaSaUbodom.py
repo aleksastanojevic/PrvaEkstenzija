@@ -19,7 +19,7 @@ def SpojKanalaIuboda(selekcija):
 	doc = __revit__.ActiveUIDocument.Document
 	from Autodesk.Revit.DB import Line
 	DUCT=[el for el in selekcija if el.Symbol.FamilyName=='P3 - Straight Duct-Tap Alt'][0]
-	TAPS=[tel for tel in selekcija if tel.Symbol.FamilyName=='P3 - Rectangular Takeoff-P3-AH']
+	TAPS=[tel for tel in selekcija if not tel.Symbol.FamilyName=='P3 - Straight Duct-Tap Alt']  #Sve sto nije kanal je Tap 
 	nTaps=10-len(TAPS)
 	DuctConnectors=[]
 	for h in range(len(TAPS)+1,10+1):

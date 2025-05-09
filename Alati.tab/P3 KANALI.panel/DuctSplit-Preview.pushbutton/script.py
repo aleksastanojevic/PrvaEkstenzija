@@ -23,7 +23,7 @@ doc = __revit__.ActiveUIDocument.Document
 from DodatneFunkcijeSplit import SortedPoints, ConnectElements, IsParallel, measure, copyElement, GetDirection, GetClosestDirection, placeFitting
 def DUCTsplit(duct,famtype):
     '''Ova funkcija ulazni kanal deli na deonice na odredjenu duzinu i ubaciuje union familiju na spojeve'''
-    
+    import math
     ductsout = []
     fittingsout = []
     combilist = []
@@ -44,9 +44,20 @@ def DUCTsplit(duct,famtype):
     for conn in duct.ConnectorManager.Connectors:  
         if conn.ConnectorType == ConnectorType.Curve:
             for Cconn in conn.AllRefs:
-                if Cconn.ConnectorType != ConnectorType.Logical and Cconn.Owner.Id.IntegerValue != duct.Id.IntegerValue:
-                    TAPSCons[Cconn]=[Cconn.Origin,Cconn.Width,DL.Project(Cconn.Origin).Parameter]##TREBA DODATI KRUZNI UBOD ili vise uboda razlicitih oblika
-
+                if Cconn.ConnectorType == ConnectorType.Logical and Cconn.Owner.Id.IntegerValue == duct.Id.IntegerValue :
+                    continue
+                if Cconn.Shape==ConnectorProfileType.Round:
+                    TAPSCons[Cconn]=[Cconn.Origin,(Cconn.Radius)*2,DL.Project(Cconn.Origin).Parameter]##TREBA DODATI KRUZNI UBOD ili vise uboda razlicitih oblika
+                elif Cconn.Shape==ConnectorProfileType.Rectangular or Cconn.Shape==ConnectorProfileType.Oval:
+                    dp=abs(pravac.DotProduct(Cconn.CoordinateSystem.BasisX))
+                    print(dp)
+                    if dp>=1:
+                        TAPSCons[Cconn]=[Cconn.Origin,Cconn.Width,DL.Project(Cconn.Origin).Parameter]
+                    elif dp==0:
+                        TAPSCons[Cconn]=[Cconn.Origin,Cconn.Height,DL.Project(Cconn.Origin).Parameter]
+                    else:
+                        d=math.sqrt((Cconn.Width)*2+(Cconn.Height)*2)
+                        TAPSCons[Cconn]=[Cconn.Origin,d,DL.Project(Cconn.Origin).Parameter]
 
     TAPSConsSortedTuple =sorted(TAPSCons.items(), key=lambda item: item[1][2])
     nedozvoljenaDistanca=[(tap[1][2]-tap[1][1]/2-0.5,tap[1][2]+tap[1][1]/2+0.5) for tap in TAPSConsSortedTuple]       #0.5 feet - 150mm  50mmx2+20mm

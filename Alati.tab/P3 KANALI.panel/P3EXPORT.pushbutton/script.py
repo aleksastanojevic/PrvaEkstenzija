@@ -12,7 +12,7 @@ from Autodesk.Revit.DB.Architecture import *
 from Autodesk.Revit.DB.Analysis import *
 from Autodesk.Revit.UI import *
 from System.Collections.Generic import *
-from P3CODE import NapraviNoviPosao, NapraviP3802 , NapraviP3803, NapraviP3847, NapraviP3812,NapraviP3827,NapraviP3843,NapraviP3853,NapraviP3801
+from P3CODE import NapraviNoviPosao, NapraviP3802, NapraviP3803, NapraviP3847, NapraviP3812, NapraviP3827, NapraviP3843, NapraviP3853, NapraviP3801, NapraviP3813, NapraviP3828, NapraviP3823, NapraviP3826
 from Prirubnice import NadjiPrirubnice
 from Windows_Forma import FormaPrograma
 from WindowsFormaJobInfo import FormaProgramaJob
@@ -62,7 +62,7 @@ if __name__ == '__main__': #GLAVNI PROGRAM
             if len(Elementi)==0:
                 WF.MessageBox.Show(" НЕМА КАНАЛСКИХ ЕЛЕМЕНАТА У ОДАБРАНИМ 'SCHEDULE-има !", '  УПС  ')
                 sys.exit(3)
-    DictKodova={801 :[], 802 :[],803:[],804:[],827:[],843:[],847:[],853:[],854:[],812:[]} #Kreira se dictionary po kodu elemenata i zatim se sortira u odredjenu listu unutar vrednosti kljuca()REVIT ELEMENATA
+    DictKodova={801 :[], 802 :[],803:[],804:[],827:[],843:[],847:[],853:[],854:[],812:[],813:[],828:[],823:[],826:[]} #Kreira se dictionary po kodu elemenata i zatim se sortira u odredjenu listu unutar vrednosti kljuca()REVIT ELEMENATA
     for fiting in Elementi:
         tip=doc.GetElement(fiting.GetTypeId())  # GetElement Type
         paramF=tip.GetParameters('P3 - Code') #traži parametre prema imenu i kreira listu.Ako je jedan nađen, svakako je lista pa je potrebno uzeti element na indeksu 0
@@ -84,7 +84,7 @@ if __name__ == '__main__': #GLAVNI PROGRAM
             DictKodova[801].append(fiting)
             paramA=fiting.GetParameters('Area')[0].AsDouble()/10.76389999
             povrsinaP3kanala+=paramA
-            POV='Површина селектованих P3 канала је: '+ str(round(povrsinaP3kanala))+ str(' m2')
+        POV='Површина селектованих P3 канала је: '+ str(round(povrsinaP3kanala))+ str(' m2')
     #WF.MessageBox.Show('Површина селектованих P3 канала је: '+ str(povrsinaP3kanala), 'ПОВРШИНА КАНАЛА')
     if StatusUI1:  
         #PROVERA DA LI IMA ELEMENATA U JEDINSTVENOM RECNIKU ELEMENATA
@@ -98,11 +98,12 @@ if __name__ == '__main__': #GLAVNI PROGRAM
         #PRAVLJANJE JEDINSTVENE LISTE DEFAULT VREDNOSTI ZA PODATKE O POSLU
         try:
             SysRef=Elementi[0].LookupParameter('System Name').AsString()
-            if SysRef == None:
-                SysRef='SISTEM NIJE DODELJEN'
         except:
-            SysRef='SISTEM NIJE DODELJEN'
-        SysDes=SysRef + ' Ducting System'
+            SysRef='NEPOZNATO'
+        try:
+            SysDes=SysRef + ' Ducting System'
+        except:
+            SysDes='NEPOZNATO'
         ClName = doc.ProjectInformation.ClientName
         Add = doc.ProjectInformation.Address
         Tel = '-'
@@ -122,10 +123,16 @@ if __name__ == '__main__': #GLAVNI PROGRAM
         Cipele=NapraviP3812(DictKodova[812])
         LastinRep=NapraviP3827(DictKodova[827])
         Cep=NapraviP3843(DictKodova[843])
-        RacvaRedukcije=NapraviP3853(DictKodova[853])
+        RacvaRedukcije=NapraviP3853(DictKodova[853])  # 813:[],828:[],823:[],826:[]
+
+        Pantalone=NapraviP3813(DictKodova[813])  
+        ProstaRacva=NapraviP3828(DictKodova[828])      
+        RedukcionoKoleno=NapraviP3823(DictKodova[823]) 
+        KrstRacva=NapraviP3826(DictKodova[826]) 
+
         Kanali=NapraviP3801(DictKodova[801])
 
-        P3Elementi=Kolena+TRacve+Redukcije+Cipele+LastinRep+Cep+RacvaRedukcije+Kanali
+        P3Elementi = Kolena + TRacve + Redukcije + Cipele + LastinRep + Cep + RacvaRedukcije + Pantalone + ProstaRacva + RedukcionoKoleno + KrstRacva + Kanali
 
         Posao=NapraviNoviPosao(UnosOPoslu)
         KOD+=Posao.CODE()
