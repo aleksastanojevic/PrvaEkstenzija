@@ -13,9 +13,10 @@ if __name__ == '__main__': #GLAVNI PROGRAM - OVDE TREBA ANALIZIRATI KANALE I POZ
 
         count = 1
         try:
-            SelektovaniKanali = [el for el in FilteredElementCollector(doc, uidoc.Selection.GetElementIds()).OfClass(Duct).ToElements()]
+            SelektovaniKanali = [el for el in FilteredElementCollector(doc, uidoc.Selection.GetElementIds()).OfClass(Duct).ToElements() if el.DuctType.GetParameters('Model')[0].AsString()=='P3 - Rectangular']
+            
         except:
-            forms.alert("ODABIR JE PRAZAN! IZABERI ELEMENTE ZA PREFABRIKACIJU")
+            forms.alert("ODABIR JE PRAZAN! IZABERI P3 ELEMENTE ZA PREFABRIKACIJU")
             SelektovaniKanali = []
         finally:
             Prefabrikovani=PrefabrikovanjeElemenata(SelektovaniKanali)
