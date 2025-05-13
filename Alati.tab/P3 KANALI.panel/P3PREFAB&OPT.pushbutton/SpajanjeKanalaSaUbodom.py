@@ -20,23 +20,20 @@ def SpojKanalaIuboda(selekcija):
 	from Autodesk.Revit.DB import Line
 	DUCT=[el for el in selekcija if el.Symbol.FamilyName=='P3 - Straight Duct-Tap Alt'][0]
 	TAPS=[tel for tel in selekcija if not tel.Symbol.FamilyName=='P3 - Straight Duct-Tap Alt']  #Sve sto nije kanal je Tap 
-	nTaps=10-len(TAPS)
-	DuctConnectors=[]
-	for h in range(len(TAPS)+1,10+1):
-		sTv0='TapVis'+str(h)
-		DUCT.GetParameters(sTv0)[0].Set(0)
-	doc.Regenerate()
+	nTaps=len(TAPS)
+	print('POCELA JE FUNKCIJA SPOJ KANALAiUBODA',nTaps,'SELEKCIJA:',selekcija)
 	for i in DUCT.MEPModel.ConnectorManager.Connectors:
 		if i.GetMEPConnectorInfo().IsPrimary:
 			PconnO=i.Origin
 			PconnC=i
-			LconnC=i.GetMEPConnectorInfo().LinkedConnector
-			LconnO=LconnC.Origin
-		DuctConnectors.append(i)
-	
+		elif i.GetMEPConnectorInfo().IsSecondary:
+			LconnO=i.Origin
+			LconnC=i
+
 	DuctLine=Line.CreateBound(PconnO,LconnO)
 	DuctDir=DuctLine.Direction
 	RightVector=PconnC.CoordinateSystem.BasisX	
+	TapsConnectors=[]
 	for j,tap in enumerate(TAPS):
 		for cc in tap.MEPModel.ConnectorManager.Connectors:
 			if cc.GetMEPConnectorInfo().IsPrimary:
@@ -64,12 +61,22 @@ def SpojKanalaIuboda(selekcija):
 		Ty=DUCT.GetParameters(sTy)[0].Set(Y)
 		Tv=DUCT.GetParameters(sTvis)[0].Set(1)
 		doc.Regenerate()
-		DuctingConnForTap=[c for c in DuctConnectors if c.Origin.DistanceTo(PtapConnO)< 50/304.8]
-		try:
-			DuctingConnForTap[0].ConnectTo(PtapConnC)
-		except:
-			pass
-	return		
+		TapsConnectors.append(PtapConnC)
+
+	DuctConnectors=[]
+	for i in DUCT.MEPModel.ConnectorManager.Connectors:
+		if i.GetMEPConnectorInfo().IsPrimary or i.GetMEPConnectorInfo().IsSecondary or i.IsConnected:
+			continue
+		DuctConnectors.append(i)
+	
+	for tc in TapsConnectors:
+		for c in DuctConnectors:
+			if tc.Origin.DistanceTo(c.Origin)< 5/304.8:
+				tc.ConnectTo(c)
+			else:
+				continue
+		
+	return	True
 
 if __name__=='__main__': #ZA TESTIRANJE-NIJE GLAVNI PROGRAM
 

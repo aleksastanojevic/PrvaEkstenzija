@@ -39,23 +39,16 @@ def GenericDuctSplitAndPrefab(duct,familytype,DTtapfamtype,splitl=1210.5):
     duzina=ductline.Length*304.8
     minduzina=400
     TAPSCons={}
-
-    '''
+    if duct.DuctType.GetParameters('Model')[0].AsString()!='P3 - Rectangular':
+        return False
     for conn in duct.ConnectorManager.Connectors:  
-        if conn.ConnectorType == ConnectorType.Curve:
+        if conn.ConnectorType == ConnectorType.Curve:  # Trazi tip konektora koji je Curve i nije End tip konektora -(Tap konektor sa strane kanala)
             for Cconn in conn.AllRefs:
-                if Cconn.ConnectorType != ConnectorType.Logical and Cconn.Owner.Id.IntegerValue != duct.Id.IntegerValue:
-                    TAPSCons[Cconn]=[Cconn.Origin,Cconn.Width,DL.Project(Cconn.Origin).Parameter]##TREBA DODATI KRUZNI UBOD ili vise uboda razlicitih oblika
-                    #TAPSConsPriv[Cconn]=[Cconn.Origin,Cconn.Width,DL.Project(Cconn.Origin).Parameter]
-
-                '''
-    for conn in duct.ConnectorManager.Connectors:  
-        if conn.ConnectorType == ConnectorType.Curve:
-            for Cconn in conn.AllRefs:
-                if Cconn.ConnectorType == ConnectorType.Logical and Cconn.Owner.Id.IntegerValue == duct.Id.IntegerValue :
+                if Cconn.ConnectorType == ConnectorType.Logical or Cconn.Owner.Id.IntegerValue == duct.Id.IntegerValue :
                     continue
                 if Cconn.Shape==ConnectorProfileType.Round:
                     TAPSCons[Cconn]=[Cconn.Origin,(Cconn.Radius)*2,DL.Project(Cconn.Origin).Parameter]##TREBA DODATI KRUZNI UBOD ili vise uboda razlicitih oblika
+                    
                 elif Cconn.Shape==ConnectorProfileType.Rectangular or Cconn.Shape==ConnectorProfileType.Oval:
                     dp=abs(pravac.DotProduct(Cconn.CoordinateSystem.BasisX))
                     
@@ -64,9 +57,9 @@ def GenericDuctSplitAndPrefab(duct,familytype,DTtapfamtype,splitl=1210.5):
                     elif dp==0:
                         TAPSCons[Cconn]=[Cconn.Origin,Cconn.Height,DL.Project(Cconn.Origin).Parameter]
                     else:
-                        d=math.sqrt((Cconn.Width)*2+(Cconn.Height)*2)
+                        d=math.sqrt((Cconn.Width)*2+(Cconn.Height)*2)   #dijagonala
                         TAPSCons[Cconn]=[Cconn.Origin,d,DL.Project(Cconn.Origin).Parameter]
-                    
+
         elif conn.Origin.DistanceTo(ductEndPoint) < 5/304.8 and conn.IsConnected:
             endIsConnected = True
             for refconn in conn.AllRefs:
@@ -80,7 +73,6 @@ def GenericDuctSplitAndPrefab(duct,familytype,DTtapfamtype,splitl=1210.5):
         else :
             continue
 ###OVAJ DEO KODA PROVERA INICIJALNE KONEKTOVANE ELEMENTE I PROVERAVA DA LI SU IZ P3 PORODICE JER TO MENJA PREDLOG TRACAKA PODELE KANALA. AKO SU OBA P3 ONDA SE MALI DODATAK PRERASPDELJUJE NA NJIH
-    print(TAPSCons)
     PrikljuceniKonektori=[]
     try:   
         StartFamilyOwner=startrefconn.Owner
@@ -173,24 +165,30 @@ def GenericDuctSplitAndPrefab(duct,familytype,DTtapfamtype,splitl=1210.5):
         ####----------------######
         ######### SVE UBODE KOJI SE UBADAJU U OVAJ SEKTOR IZMEDJU TACAKA(KANAL) STAVLJA U NewFittingsDuctsTaps DICTIONARY KAKO BI KASNIJE MOGAO DA PROMENI TIP I DODELI UBODE U FAMILIJI KANALA  
         if len(TAPSCons)!=0:       #proverava da li ima uboda
-            a=DtLine.GetEndPoint(0)
+            a=DtLine.GetEndPoint(0)   #pocetna tacka kanala
             IntersectionA=DtLine.Project(a).Parameter   #projekcija tacke A na liniju
-            b=DtLine.GetEndPoint(1)
+            b=DtLine.GetEndPoint(1)   #krajnja tacka kanala
             IntersectionB=DtLine.Project(b).Parameter   #projekcija tacke B na liniju
-            DtLine.MakeUnbound() # Skidamo granice krivoj Tako da moze u sledecem koraku da da Parametar van granica pocetne i krajnje tacke
-            for tapConn in TAPSCons: #prolazi kroz sve Tapove i proverava da li su u opsegu tacke A i B
+            DtLine.MakeUnbound() # Skidamo granice krivoj DtLine Tako da moze u sledecem koraku da da Parametar van granica pocetne i krajnje tacke
+            for tapConn in TAPSCons: #prolazi kroz sve konektore Tapova i proverava da li su njihove pozijcije u opsegu tacke A i B
                 Intersection=DtLine.Project(tapConn.Origin).Parameter
-                if IntersectionA<Intersection<IntersectionB: #proverava da li je ubod u opsegu tacke A i B (AKO JE UBOD NA OVOM KANALU)
+                if IntersectionA<Intersection<IntersectionB: #proverava da li je ubod u opsegu tacke A i B (Proverava da li JE UBOD NA OVOM KANALU)
                     if newfitting in NewFittingsDuctsTaps:  
-                        NewFittingsDuctsTaps[newfitting].append(tapConn.Owner)   #ukoliko je dodat vec u listu dodaje sledeci ubod
+                        NewFittingsDuctsTaps[newfitting].append(tapConn.Owner)   #ukoliko je dodat vec u listu dodaje sledeci ubod    new fitting je kanal za ubadanje
                     else:
-                        NewFittingsDuctsTaps[newfitting]=[tapConn.Owner]      #dodaje novi ubod u listu
-                    newfitting.ChangeTypeId(DTtapfamtype.Id)   # PROMENA TIPA
+                        NewFittingsDuctsTaps[newfitting]=[tapConn.Owner]      #dodaje novi ubod u listu uboda      new fitting je kanal za ubadanje
+                    newfitting.ChangeTypeId(DTtapfamtype.Id)   # PROMENA TIPA OBICNOG KANALA U KANAL SA UBODIMA
+                    ###### RESETUJE SVE UBODE DA SE NE VIDE DO FUNKCIJE UBADANJA
+                    for h in range(1,11):    #prolazi kroz sve Visibility paramtetre Tapova i stavlja na 0 
+                        sTv0='TapVis'+str(h)  #kreira ime parametra Visibility uboda
+                        newfitting.GetParameters(sTv0)[0].Set(0)    #setuje vrednost uboda
+                    ###### RESETUJE SVE UBODE DA SE NE VIDE DO FUNKCIJE UBADANJA
                 else:
                     if tempL*304.8<=minduzina-5:
                         NewFittingsDuctsSHORT.append(newfitting) #dodaje fitting u listu samo ako je manji od 400mm
                     else:
                         NewFittingsDucts.append(newfitting)
+            doc.Regenerate()
         else:             
             if tempL*304.8<=minduzina-5:
                 NewFittingsDuctsSHORT.append(newfitting) #dodaje fitting u listu samo ako je manji od 400mm
@@ -239,7 +237,6 @@ def PrefabrikovanjeElemenata(SelektovaniKanali):
     options = Tr.GetFailureHandlingOptions() # Get the current failure handling options 
     options = options.SetFailuresPreprocessor(AutoAcceptWarnings())  # Set the preprocessor
     Tr.SetFailureHandlingOptions(options) # Set the new options to the transaction
-
     count=0
     maxelements=len(SelektovaniKanali) # maximalan broj elemenata
     with forms.ProgressBar(title='P3 - PREFABRICATION PROGRESS : No Of Elements: '+str(maxelements), cancellable=True) as pb:
@@ -257,46 +254,55 @@ def PrefabrikovanjeElemenata(SelektovaniKanali):
                 SubTrPrefab.Commit()
             except:
                 SubTrPrefab.RollBack()
-                Tr.RollBack()
-
-            PrefabDucts=NewPrefabFittings[1]  
+                break
+                
             PrefabDuctsTaps=NewPrefabFittings[0]
+            PrefabDucts=NewPrefabFittings[1]  
             PrefabDuctsShort=NewPrefabFittings[2]
-            for f,fitting in enumerate(PrefabDuctsTaps):  #--prolazi kroz sve fittinge i dodaje im tapove
-                selekcijaZaSpajanjeTapa=PrefabDuctsTaps[fitting]  # selekcija kanala i uboda koji treba spojiti   (FORMA DICT-a [Kanal]-ubodi)
-                selekcijaZaSpajanjeTapa.append(fitting) #--dodaje fitting u selekciju
-                for spoj in selekcijaZaSpajanjeTapa:
-                    SubTrUbod=SubTransaction(doc) 
+
+            if len(PrefabDuctsTaps)>0:
+                for f,fitting in enumerate(PrefabDuctsTaps):  #--prolazi kroz sve fittinge i dodaje im tapove      fitting je DUCT TAP ALT
+                    selekcijaZaSpajanjeTapa=PrefabDuctsTaps[fitting]  # selekcija kanala i uboda koji treba spojiti   (FORMA DICT-a [Kanal]-ubodi)
+                    selekcijaZaSpajanjeTapa.append(fitting) #--dodaje fitting u selekciju
+                    SubTrUbod=SubTransaction(doc)
                     SubTrUbod.Start()
                     try:
                         spoj=SpojKanalaIuboda(selekcijaZaSpajanjeTapa) #--poziva funkciju za spajanje kanala i uboda
                         SubTrUbod.Commit()
                     except:
                         SubTrUbod.RollBack()
-            for s,short in enumerate(PrefabDuctsShort):      
-                SubTr=SubTransaction(doc)
-                SubTr.Start()
-                try:
-                    KratakUFiting=KratakKanal_DodatakNaFiting(short)
-                    SubTr.Commit()
-                    doc.Regenerate()
-                except:
-                    SubTr.RollBack()
+                        continue
+            
+            if len(PrefabDuctsShort)>0:
+                for s,short in enumerate(PrefabDuctsShort):      
+                    SubTr=SubTransaction(doc)
+                    SubTr.Start()
+                    try:
+                        KratakUFiting=KratakKanal_DodatakNaFiting(short)
+                        SubTr.Commit()
+                    except:
+                        print('KratakKanal_DodatakNaFiting ima gresku. ID kanala:',short.Id)
+                        SubTr.RollBack()
+                        continue
+            kanal.Dispose()
         else:
             Tr.Commit()
             uidoc.Selection.SetElementIds(List[ElementId]()) # --brisanje selekcije kako ne bi ostali selektovani elementi nakon zavrsetka
-            return 
+            return  True
 
 if __name__ == '__main__': #GLAVNI PROGRAM - OVDE TREBA ANALIZIRATI KANALE I POZIVATI FUNKCIJU ZA DELJENJE KANALA NA DUZINE I DODAVANJE FITTINGA
         from Autodesk.Revit.DB.Mechanical import Duct
         from pyrevit import forms
-        count = 1
         try:
-            SelektovaniKanali = [el for el in FilteredElementCollector(doc, uidoc.Selection.GetElementIds()).OfClass(Duct).ToElements()]
-            Prefabrikovani=PrefabrikovanjeElemenata(SelektovaniKanali)
+            SelektovaniKanali = [el for el in FilteredElementCollector(doc, uidoc.Selection.GetElementIds()).OfClass(Duct).ToElements() if el.DuctType.GetParameters('Model')[0].AsString()=='P3 - Rectangular']
+            if len(SelektovaniKanali)>0:
+                Prefabrikovani=PrefabrikovanjeElemenata(SelektovaniKanali)
+            else:
+                 forms.alert("ODABIR JE PRAZAN! IZABERI P3 ELEMENTE ZA PREFABRIKACIJU")
         except:
-            forms.alert("ODABIR JE PRAZAN! IZABERI ELEMENTE ZA PREFABRIKACIJU")
+            forms.alert("ODABIR JE PRAZAN! IZABERI P3 ELEMENTE ZA PREFABRIKACIJU")
             SelektovaniKanali = []
+
 
 
 
