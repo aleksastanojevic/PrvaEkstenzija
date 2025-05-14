@@ -20,15 +20,12 @@ def SpojKanalaIuboda(selekcija):
 	from Autodesk.Revit.DB import Line
 	DUCT=[el for el in selekcija if el.Symbol.FamilyName=='P3 - Straight Duct-Tap Alt'][0]
 	TAPS=[tel for tel in selekcija if not tel.Symbol.FamilyName=='P3 - Straight Duct-Tap Alt']  #Sve sto nije kanal je Tap 
-	nTaps=len(TAPS)
-	print('POCELA JE FUNKCIJA SPOJ KANALAiUBODA',nTaps,'SELEKCIJA:',selekcija)
 	for i in DUCT.MEPModel.ConnectorManager.Connectors:
 		if i.GetMEPConnectorInfo().IsPrimary:
 			PconnO=i.Origin
 			PconnC=i
 		elif i.GetMEPConnectorInfo().IsSecondary:
 			LconnO=i.Origin
-			LconnC=i
 
 	DuctLine=Line.CreateBound(PconnO,LconnO)
 	DuctDir=DuctLine.Direction
@@ -76,10 +73,9 @@ def SpojKanalaIuboda(selekcija):
 			else:
 				continue
 		
-	return	True
+	return True
 
 if __name__=='__main__': #ZA TESTIRANJE-NIJE GLAVNI PROGRAM
-
 	Tr=Transaction(doc, "TAP kanala ")
 	Tr.Start() 
 	options = Tr.GetFailureHandlingOptions()
